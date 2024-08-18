@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Shadows+Into+Light&display=swap');
+
+
+/* Home */
+
+*{
+
+font-family: 'Cairo';
+box-sizing: border-box;
+margin: 0px;
+padding:0px;
+scroll-behavior: smooth;
+}
+
+header {
+
+ display: flex;
+ justify-content: space-between;
+ background-color: #2C3E50 ;
+ color: white;
+ align-items: center;
+ padding: 0px 100px;
+ border-top: solid crimson 4px;
+ position: fixed;
+ width: 100% ;
+}
+
+header:hover{
+   border-top: solid #1ABC9C 4px;
+
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    margin-right: 10px;
+    font-size: 18px;
+    transition: ease 1s;
+}
+
+header a:hover {
+   color:#1ABC9C;
+   font-size: 20px;
+
+}
+
+
+.carsour {
+   height: 100vh;
+   display: flex;
+   align-items: center;
+   color: rgb(255, 255, 255);
+   padding: 0px 100px;
+   background-image: url(/src/images/home-bg.jpg);
+   background-size: cover;
+   background-attachment: fixed;
+   background-blend-mode: overlay;
+   background-color: grey;
+   background-color: rgba(0, 0, 0, 0.4);
+   background-position: center;
+}
+
+.carsour div {
+ margin-left: 80px; 
+}
+
+.carsour p {
+   text-align: justify;
+}
+
+.carsour h2{
+   font-size: 30px;
+}
+
+.carsour a {
+   color:white;
+   text-decoration: none;
+   background-color: #1ABC9C;
+   padding: 10px;
+   border-radius: 10px;
+   display: inline-block;
+   margin-top:20px;
+   font-size: 18px;
+   transition: ease 1s;
+}
+
+.carsour a:hover{
+   transform: scale(1.1);
+   background-color: #2C3E50;
+
+}
+
+.comment h2 {
+ text-align: center;
+ margin: 30px 0px ;
+}
+
+.comment .container {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   padding: 0px 80px;
+}
+
+.comment .card {
+   margin-right:20px ;
+   box-shadow:  3px 3px 6px 6px #ccc;
+   padding: 10px;
+   width: 16em;
+   margin-bottom: 40px;
+   text-align: center;
+}
+
+.card h3 {
+  color: crimson; 
+}
+
+.card p a{
+   font-size: 14px;
+   font-weight: 1000 ;
+
+}
+
+.card a {
+   color:white;
+   text-decoration: none;
+   background-color: #1ABC9C;
+   padding: 5px;
+   border-radius: 10px;
+   display: inline-block;
+   margin-top:10px;
+   font-size: 14px;
+   transition: ease 1s;
+}
+
+.card a:hover{
+   transform: scale(1.1);
+   background-color: #2C3E50;
+
+}
+
+.comment .card > div{
+   color: #2C3E50;
+   font-size: 50px;
+
+}
+
+
+footer a {
+margin: 0;
+padding: 0;
+box-sizing: inherit;
+text-decoration: none;
+}
+
+footer p {
+   margin-bottom: 15px;
+}
+
+footer {
+ background-color: #2C3E50;
+ text-align: center ;
+ text-transform: uppercase ;
+ padding-top: 30px ;
+ margin-top: auto;
+}
+
+footer li {
+ list-style: none;
+ display: inline-block;
+ margin: 10px;
+}
+
+.footer-icons a {
+   background: #1ABC9C ;
+   color: #2C3E50 ;
+   padding: 15px;
+   border-radius: 100px;
+   display: flex;
+   font-size: 25px;
+   transition: ease 1s;
+
+}
+
+.footer-icons a:hover{
+color:#ffffff;
+font-size: 30px;
+}
+
+.footer-menu a{
+color: #ffffff;
+transition: ease 1s;
+font-size: 18px;
+}
+
+.footer-menu a:hover{
+   color:#1ABC9C;
+   font-size: 20px;
+}
+
+.footer-copyright {
+   background-color:#1ABC9C ;
+   color: #ffffff;
+   padding: 15px ;
+   margin-top: 30px;
+
+}
+
+.footer-copyright p{
+   margin-bottom: 0px ;
+}
+
+.up{
+ 
+   position: fixed;
+   bottom: 20px;
+   right: 20px;
+   background-color: crimson;
+   padding: 10px;
+   border-radius: 50%;
+   width: 40px ;
+   height: 40px ;
+   justify-content: center;
+   display: flex;
+   align-items: center;
+   color: #ffffff;
+
+}
+
+
+/* scrollbar */
+
+/* width */
+::-webkit-scrollbar {
+   width: 10px;
+ }
+ 
+ /* Track */
+ ::-webkit-scrollbar-track {
+   box-shadow: inset 0 0 5px grey; 
+ }
+  
+ /* Handle */
+ ::-webkit-scrollbar-thumb {
+   background: crimson; 
+ }
+ 
+ /* Media querry */
+
+@media (max-width: 600px){
+   header {
+       flex-direction: column; /* Stack header items vertically */
+       padding: 10px; /* Adjust padding for smaller screens */
+   }
+
+   header a {
+       font-size: 16px; /* Reduce font size for links */
+       margin-right: 0; /* Remove margin between links */
+       margin-bottom: 10px; /* Add space between stacked links */
+   }
+
+   .carsour {
+       padding: 0 20px; /* Reduce padding for content */
+       text-align: center; /* Center the text */
+   }
+
+   .carsour div {
+       margin-left: 0; /* Remove margin for better alignment */
+   }
+
+   .carsour h2 {
+       font-size: 24px; /* Reduce heading size */
+   }
+
+   .comment .container {
+       padding: 0 20px; /* Reduce container padding */
+   }
+
+   .comment .card {
+       width: 100%; /* Make cards full-width */
+       margin-right: 0; /* Remove right margin */
+   }
+
+   .footer-icons a {
+       font-size: 20px; /* Reduce icon size */
+       padding: 10px; /* Adjust padding */
+   }
+
+   .footer-menu a {
+       font-size: 16px; /* Reduce footer link font size */
+   }
+
+   .up {
+       width: 30px; /* Adjust size of scroll-to-top button */
+       height: 30px;
+   }
+}
