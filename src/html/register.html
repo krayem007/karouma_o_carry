@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link rel="stylesheet" href="/src/css/style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+</head>
+<body class="register">
+    <header>
+        <a href=""><h2 id="home">Déclaration Facile</h2></a>
+        <nav>
+            <a href="">Créer un compte</a>
+            <a href="">Connexion</a>
+        </nav>
+    </header>
+
+    <section class="register-page">
+            <h1 class="form-title">Inscription</h1>
+            <form action="#" class="register">
+                <div class="section_title">Informations de l'entreprise :</div>
+                <div class="main-user-info">
+                    <label for="code_acte">Code acte :</label>
+                    <input type="number" name="code_acte"/>
+                    <label for="mois">Mois :</label>
+                    <input type="number" name="mois" min="1" max="12" oninput="if(this.value.length > 2) this.value = this.value.slice(0, 2);" />
+                    <label for="anne">Année :</label>
+                    <input type="number" name="anne" min="1900" max="2200" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"/>
+                </div>
+                <div class="main-user-info">
+                    <label for="identifiant_fiscal">Identifiant fiscal :</label>
+                    <input class="fixed" type="text" name="identifiant_fiscal"/>
+                    <label for="identifiant_tva">Identifiant T.V.A :</label>
+                    <input class="fixed" type="text" name="identifiant_tva" />
+                    <label for="code_categorie">Code catégorie :</label>
+                    <input class="fixed" type="text" name="code_categorie" />
+                    <label for="nombre_filial">Nombre de filiale (2) :</label>
+                    <input class="fixed" type="number" name="nombre_filial" />
+                </div>
+                <div class="main-user-info">
+                    <label for="nom_prenom_raison" >Nom et Prénom ou Raison sociale :</label>
+                    <input type="text" name="nom_prenom_raison" class="long1"/>
+                </div>
+                <div class="main-user-info">
+                    <label for="adresse">Adresse ou siège social :</label>
+                    <input type="text" name="adresse" class="long2"/>
+                    <label for="postal_code" class="postal_code">Code postal :</label>
+                    <input type="number" name="postal1" class="postal1" min="0" max="9" oninput="if(this.value.length > 1) this.value = this.value.slice(0, 1);"/>
+                    <input type="number" name="postal2" class="postal2" min="0" max="9" oninput="if(this.value.length > 1) this.value = this.value.slice(0, 1);"/>
+                    <input type="number" name="postal3" class="postal3" min="0" max="9" oninput="if(this.value.length > 1) this.value = this.value.slice(0, 1);"/>
+                    <input type="number" name="postal4" class="postal4" min="0" max="9" oninput="if(this.value.length > 1) this.value = this.value.slice(0, 1);"/>
+                </div>
+                <div class="main-user-info">
+                    <label for="activite">Activité :</label>
+                    <input type="text" name="activite"/>
+                    <label for="cessation">Date de cessation d’activité :</label>
+                    <label for="cessation_jour">Jour :</label>
+                    <input type="number" name="cessation_jour" min="1" max="31" oninput="if(this.value.length > 2) this.value = this.value.slice(0, 2);"/>
+                    <label for="cessation_mois">Mois :</label>
+                    <input type="number" name="cessation_mois" min="1" max="12" oninput="if(this.value.length > 2) this.value = this.value.slice(0, 2);" />
+                    <label for="cessation_annee">Année :</label>
+                    <input type="number" name="cessation_annee" min="1900" max="2200" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"/>
+                </div>
+                <div class="section_title">Identification :</div>
+                <div class="main-user-info">
+                    <label for="email" class="mail">E-mail :</label>
+                    <input type="email" name="email" class="mail_input" required />
+                </div>
+                <div class="main-user-info">
+                    <label for="password" class="mail">Mot de passe :</label>
+                    <input type="password" name="password" class="mail_input" required/>
+                </div>
+                <div class="main-user-info">
+                    <label for="confirm_password" class="mail">Confirmation du mot de passe :</label>
+                    <input type="password" name="confirm_password" class="mail_input" required />
+                </div>
+                <div class="boutons">
+                    <button class="button" type="submit">Enregistrer</button>
+                    <button type="button" onclick="#">Annuler</button>
+                </div>
+            </form>
+     
+    </section>
+
+    <footer>
+        <ul class="footer-icons">
+            <li><a href="#"><ion-icon name="logo-facebook"></ion-icon></a></li>
+            <li><a href="#"><ion-icon name="logo-twitter"></ion-icon></a></li>
+            <li><a href="#"><ion-icon name="logo-instagram"></ion-icon></a></li>
+            <li><a href="#"><ion-icon name="logo-linkedin"></ion-icon></a></li>
+        </ul>
+        <ul class="footer-menu">
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Conditions générales</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">A propos</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="footer-copyright">
+            <p>Copyright 2024 Déclaration Facile. All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <a href="#">
+        <div class="up">
+            <i class="fa fa-angle-up" aria-hidden="true"></i>
+        </div>
+    </a>
+</body>
+</html>

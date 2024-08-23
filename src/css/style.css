@@ -289,9 +289,162 @@ font-size: 18px;
    .footer-menu a {
        font-size: 16px; /* Reduce footer link font size */
    }
-
+   
+   footer {
+      margin-top: auto;
+   }
    .up {
        width: 30px; /* Adjust size of scroll-to-top button */
        height: 30px;
    }
+
+   .register-page {
+      padding: 40px 20px;
+    }
+  
+    .form-title {
+      font-size: 24px;
+      margin-top: 40px;
+    }
+  
+    .section_title {
+      font-size: 18px;
+      padding-bottom: 4px;
+    }
+  
+    .main-user-info {
+      display: block;
+      padding: 15px 0;
+    }
+  
+    .long1 {
+      width: 100%;
+    }
+  
+    .long2 {
+      width: 100%;
+    }
+  
+    label.mail {
+      width: 100%;
+    }
+  
+    .mail_input {
+      width: 100%;
+    }
+  
+    .boutons button {
+      margin-top: 15px;
+      margin-right: 5px;
+      font-size: 14px;
+    }
+  
+    .postal1, .postal2, .postal3, .postal4 {
+      width: 25px;
+    }
 }
+
+
+/* Register */
+
+.register {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+}
+
+.register-page {
+   padding: 60px 30px;
+   width: 100%;
+   flex: 1;
+}
+
+.form-title {
+   font-size: 28px;
+   font-weight: 600;
+   text-align: center;
+   padding-bottom: 6px;
+   margin-top: 50px;
+   color: #2C3E50;
+}
+
+.section_title{
+   font-size: 20px;
+   border-bottom: solid 2px #009ad6;
+   border-bottom-width: 2px;
+   border-bottom-style: solid;
+   border-bottom-color: rgb(0, 154, 214); 
+   padding-bottom: 5px;
+}
+.main-user-info{
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 0;
+
+}
+
+label {
+   padding-right: 7px;
+   padding-left: 7px;
+   font-weight: 400;
+}
+
+input {
+   outline: none;
+   border: 1px solid grey;
+}
+
+.fixed{
+   width: 100px;
+}
+.long1 {
+   width: 685px;
+}
+
+.long2 {
+   width: 547px;
+}
+
+label.mail {
+   width: 300px;
+}
+
+.mail_input {
+   width: 500px;
+}
+
+.boutons button {
+   color: white;
+   text-decoration: none;
+   background-color: #1ABC9C;
+   padding: 5px;
+   border-radius: 10px;
+   margin-top: 20px;
+   margin-right: 7px;
+   font-size: 15px;
+   transition: ease 1s;
+   border: none;
+   cursor: pointer;
+ 
+}
+
+.boutons button:hover {
+   transform: scale(1.1);
+   background-color: #2C3E50;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+   -moz-appearance: textfield;
+ }
+
+.postal1, .postal2, .postal3, .postal4 {
+   width: 27px;
+}
+
