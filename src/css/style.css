@@ -52,6 +52,7 @@ body, html {
 
 .boutons {
    margin-bottom: 0;
+
 }
 
 
@@ -127,6 +128,23 @@ body, html {
  
 }
 
+.button-gerer {
+   padding: 0px 7px;
+   font-size: 15px;
+   background-color: #1ABC9C;
+   border-radius: 10px;
+   color: white;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   transition: ease 1s;
+}
+
+.button-gerer:hover {
+   background-color: #2C3E50; /* Green */
+   color: white;
+}
+
 .boutons button:hover {
    transform: scale(1.1);
    background-color: #2C3E50;
@@ -146,7 +164,7 @@ input[type=number] {
    width: 27px;
 }
 
-footer a {
+   footer a {
    margin: 0;
    padding: 0;
    box-sizing: inherit;
@@ -299,9 +317,6 @@ footer a {
        height: 30px;
    }
 
-   .register-page {
-       padding: 40px 20px;
-   }
 
    .form-title {
        font-size: 24px;
@@ -347,7 +362,7 @@ footer a {
 }
 
 .register-page {
-   padding: 60px 30px 30px 30px;
+   padding: 70px 30px 30px 30px;
    width: 100%;
    flex: 1;
 }
@@ -495,13 +510,89 @@ label.mail {
 }
 
 .login-page {
-   padding: 60px 30px 30px 30px;
+   display: flex;
+   flex-direction: column;
+   min-height: 100%;
+   padding: 70px 30px 30px 30px;
    width: 100%;
    flex: 1;
    height:50%;
 }
 
 
+/* gerer */
+
+.content { 
+   padding: 0 18px;
+   max-height: 0;
+   overflow: hidden;
+   transition: max-height 0.2s ease-out;
+   background-color:  #f1f1f1;
+ }
+
+ .collapsible {
+
+   cursor: pointer;
+   font-size: 18px;
+   padding: 5px 30px;
+   width: 100%;
+   text-align: left;
+   outline:#2C3E50;
+ }
+ .collapsible:after {
+   content: '\02795'; /* Unicode character for "plus" sign (+) */
+   font-size: 13px;
+   color: white;
+   float: right;
+   margin-left: 5px;
+ }
+ 
+ .active:after {
+   content: "\2796"; /* Unicode character for "minus" sign (-) */
+ }
+
+ tr, th{
+   width: 206px;
+   text-align:left;
+ }
+
+ .form-group {
+   margin-top: 70px;
+ }
+
+ .form-group h1 {
+   color: #2C3E50;
+   margin-bottom: 10px;
+   text-align: center;
+ }
+
+ .content-wrapper {
+   padding: 0px 30px 30px 30px;
+ }
+
+ .form-row {
+   display: flex;
+   align-items: center;
+}
+
+.first{
+   padding-bottom:15px ;
+}
+
+table.table-hover{
+   padding: 7px;
+}
+
+
+th.checkbox-column  {
+   width: 50px;
+}
+
+.password-forgot {
+   display: inline-block; /* Ensure the margin applies */
+   margin-top: 10px; 
+   text-decoration: none;
+}
 
 
 
