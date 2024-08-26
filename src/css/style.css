@@ -594,9 +594,27 @@ th.checkbox-column  {
    text-decoration: none;
 }
 
+/* welcome */
 
+.welcome h1 {
+   padding: 40px 0;
+}
+.welcome {
+   padding-bottom: 80px;
+}
+.welcome p {
+   text-align: justify;
+   padding-bottom: 7px;
+}
 
-
+.welcome-section {
+      display: flex;
+      min-height: 100%;
+      width: 100%;
+      flex: 1;
+      height:50%;
+   
+}
 
 
 
