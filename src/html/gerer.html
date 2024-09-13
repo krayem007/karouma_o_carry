@@ -26,7 +26,7 @@
             <h1 class="form-title"> Gérer mes déclarations </h1> 
             <div class="first">
             <label for="invoicedate">Année :</label>
-            <input type="text" class="date-control" id="annee">
+            <input type="number" name="anne" min="1900" max="2200" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"/>
             <label for="invoicedate">Mois :</label>
             <select class="date-control" id="mois">
                 <option></option>
@@ -69,7 +69,20 @@
                         </tr>
                     </thead>
                     <tbody id="Factures">
-                        <!-- Rows will be added here -->
+                        <td>
+                            <input type="checkbox" class="factureCheckbox">
+                          </td>
+                          <td><input type="text" class="form-control" placeholder="Date"></td>
+                          <td><select class="form-control">
+                              <option value="selection">Sélectionner un type de facture</option>
+                              <option value="Type 1">Facture d'achat</option>
+                              <option value="Type 2">Facture de vente</option>
+                            </select></td>
+                          <td><input type="text" class="form-control" placeholder="Réf facture"></td>
+                          <td><input type="number" class="form-control" placeholder="Total HT"></td>
+                          <td><input type="number" class="form-control" placeholder="TVA"></td>
+                          <td><input type="number" class="form-control" placeholder="Timbre"></td>
+                          <td><input type="number" class="form-control" placeholder="Total TTC"></td>
                     </tbody>
                 </table>
             </div>   
@@ -95,7 +108,23 @@
                         </tr>
                     </thead>
                     <tbody id="Paie">
-                        <!-- Rows will be added here -->
+                        <td>
+                            <input type="checkbox" class="paieCheckbox">
+                          </td>
+                          <td><select class="form-control">
+                              <option value="">Sélectionner le secteur d'activité</option>
+                              <option value="Type 1">Industriel</option>
+                              <option value="Type 2">Autre</option>
+                            </select></td>
+                          <td><input type="text" class="form-control" placeholder="Salarier"></td>
+                          <td><select class="form-control">
+                              <option value="">Chef de famille ou non ?</option>
+                              <option value="Type 1">Oui</option>
+                              <option value="Type 2">Non</option>
+                            </select></td>
+                          <td><input type="number" class="form-control" placeholder="Nombre d'enfants"></td>
+                          <td><input type="number" class="form-control" placeholder="Salaire Brut"></td>
+                          <td><input type="number" class="form-control" placeholder="Salaire Net"></td>
                     </tbody>
                 </table>
             </div>
@@ -118,7 +147,17 @@
                         </tr>
                     </thead>
                     <tbody id="Retenue">
-                        <!-- Rows will be added here -->
+                        <td>
+                            <input type="checkbox" class="retenueCheckbox">
+                          </td>
+                          <td><select class="form-control">
+                              <option value="">Retenue à la source sur :</option>
+                              <option value="Type 1">Loyer</option>
+                              <option value="Type 2">Honoraires</option>
+                            </select></td>
+                          <td><input type="number" class="form-control" placeholder="Montant HT"></td>
+                          <td><input type="number" class="form-control" placeholder="TVA"></td>
+                          <td><input type="number" class="form-control" placeholder="Montant TTC"></td>
                     </tbody>
                 </table>
             </div>

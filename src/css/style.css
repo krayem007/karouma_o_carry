@@ -86,11 +86,10 @@ body, html {
 .section_title{
    font-size: 20px;
    font-weight: bold;
-   border-bottom: solid 2px #009ad6;
-   border-bottom-width: 2px;
-   border-bottom-style: solid;
-   border-bottom-color: rgb(0, 154, 214); 
-   padding-bottom: 5px;
+   width:1000px;
+   border-bottom: 2px solid #e61010;
+   margin-bottom: 15px;
+   color: #2C3E50
 }
 
 .main-user-info{
@@ -568,8 +567,12 @@ label.mail {
  tr:nth-child(odd)  { background-color : #E8EBF5; }
  
  tr, th{
-   width: 206px;
+   width: 500px;
    text-align:center;
+ }
+
+ th {
+   color: white;
  }
 
  .form-group {
@@ -601,7 +604,8 @@ table.table-hover{
 
 
 th.checkbox-column  {
-   width: 50px;
+   width: 40px;
+   padding: 0 10px;
 }
 
 /* welcome */
