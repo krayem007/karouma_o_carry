@@ -1,0 +1,65 @@
+[33mcommit 0d665d7590af7d9da3666965e85ce7f9703b6d72[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mAKR[m[33m)[m
+Author: KING <test@test.tn>
+Date:   Sun Nov 3 13:09:54 2024 +0100
+
+    ok
+
+[33mcommit ca3e022617f06a9d85b274770dbd9caefe88e02e[m[33m ([m[1;31morigin/AKR[m[33m)[m
+Author: KING <test@test.tn>
+Date:   Fri Sep 13 21:30:36 2024 +0100
+
+    100% modif
+
+[33mcommit 761b274cc7fda663c524e200924bbea8b9088b94[m
+Author: KING <test@test.tn>
+Date:   Mon Sep 9 22:09:22 2024 +0100
+
+    50% modif
+
+[33mcommit 4d015a3e66c7e613f3929a2ca5f3f772133795ac[m
+Author: KING <test@test.tn>
+Date:   Sat Sep 7 21:02:38 2024 +0100
+
+     Imprimer mes déclarations ok
+
+[33mcommit d7eabcabcee95e3767770b73874cae9752bb8074[m
+Author: KING <test@test.tn>
+Date:   Mon Aug 26 20:18:24 2024 +0100
+
+    welcome ok
+
+[33mcommit 6e13f0181dc282553d9a2735cb9391dd0d1e2921[m
+Author: KING <test@test.tn>
+Date:   Sun Aug 25 16:44:37 2024 +0100
+
+    Gerer mes declaration ok
+
+[33mcommit d592339a027f20f5b0c6ffb4f79ea4a6773ae3ec[m
+Author: KING <test@test.tn>
+Date:   Sat Aug 24 11:34:21 2024 +0100
+
+    login page ok
+
+[33mcommit 1aaca5420a57bd9521a6b81d20048fbf4096c2bf[m
+Author: KING <test@test.tn>
+Date:   Fri Aug 23 20:36:19 2024 +0100
+
+    register page ok
+
+[33mcommit ea65f82f5b934acfb6cd81aea7010c4081f2b14c[m
+Author: KING <test@test.tn>
+Date:   Sun Aug 18 17:22:47 2024 +0100
+
+    home page ok
+
+[33mcommit 8461ce103c59176540b7a17088db59313f5fdd19[m[33m ([m[1;31morigin/project_struct[m[33m, [m[1;32mproject_struct[m[33m)[m
+Author: ghassenhd <94930743+ghassenhd@users.noreply.github.com>
+Date:   Sat Aug 10 22:40:45 2024 +0100
+
+    init project
+
+[33mcommit 61f9a1f757265066d97800160c8f2ebfca7b6c87[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: ghassen <94930743+ghassenhd@users.noreply.github.com>
+Date:   Sat Aug 10 22:19:50 2024 +0100
+
+    Initial commit
