@@ -1,3 +1,4 @@
+import icon from "../images/icon.png";
 import React from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
@@ -6,7 +7,6 @@ import { Card, Container, Row, Col } from "react-bootstrap";
 const TITLE = "Home | " + Config.SITE_TITLE;
 const DESC = "Home";
 const CANONICAL = Config.SITE_DOMAIN + "/";
-import icon from "../images/icon.png";
 
 class Home extends React.Component {
   render() {

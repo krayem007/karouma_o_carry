@@ -1,10 +1,10 @@
+import logo from "../images/logo.png";
 import React from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons"; // Import the specific icon
-import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
-import logo from "../images/logo.png";
+import { Container, Navbar, Nav } from "react-bootstrap";
 
 class Header extends React.Component {
   render() {

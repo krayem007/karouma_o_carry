@@ -1,9 +1,9 @@
+import icon from "../images/icon.png";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import icon from "../images/icon.png";
-
 import {
   Breadcrumb,
   Row,
@@ -13,6 +13,7 @@ import {
   Container,
   Table,
   Accordion,
+  Toast,
 } from "react-bootstrap";
 const TITLE = "Gérer mes déclarations | " + Config.SITE_TITLE;
 const DESC = "Gérer mes déclarations ";
@@ -28,6 +29,8 @@ const Gerer = () => {
   const [selectAllRetenue, setSelectAllRetenue] = useState(false);
   const [isSaisieClicked, setIsSaisieClicked] = useState(false);
   const [validated, set_Validated] = useState(false);
+  const [alert, setAlert] = useState({ message: "", type: "" });
+  const navigate = useNavigate(); // Initialize navigate hook
 
   const handleSaisie = (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -54,11 +57,6 @@ const Gerer = () => {
     setFactures([]);
     setPaie([]);
     setRetenue([]);
-  };
-
-  const handleOtherButtonClick = () => {
-    // Example action for the other button
-    console.log("Other action performed");
   };
 
   const handleAddPaie = () => {
@@ -108,11 +106,24 @@ const Gerer = () => {
 
   // Handle form submission
   const submitFn = (event) => {
+    event.preventDefault(); // Prevent default form submission
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
+    } else {
+      setAlert({
+        message:
+          "Vous avez saisi vos données. Vous pouvez maintenant imprimer votre déclaration.",
+        type: "success",
+      });
+      console.log("Alert shown, waiting to navigate");
+
+      setTimeout(() => {
+        navigate("/visualiser");
+      }, 3000);
     }
+
     set_Validated(true);
   };
 
@@ -157,6 +168,15 @@ const Gerer = () => {
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
       </Helmet>
+      {alert.message && (
+        <Toast
+          className="toast"
+          bg={alert.type}
+          onClose={() => setAlert({ message: "", type: "" })}
+        >
+          <Toast.Body>{alert.message}</Toast.Body>
+        </Toast>
+      )}
       <Container className="register-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
@@ -499,7 +519,7 @@ const Gerer = () => {
                       <Table hover className="table-custom">
                         <thead>
                           <tr>
-                            <th class="checkbox-column">
+                            <th className="checkbox-column">
                               <input
                                 type="checkbox"
                                 onChange={handleSelectAllPaie}
@@ -736,7 +756,7 @@ const Gerer = () => {
                       <Table hover className="table-custom">
                         <thead>
                           <tr>
-                            <th class="checkbox-column">
+                            <th className="checkbox-column">
                               <input
                                 type="checkbox"
                                 onChange={handleSelectAllRetenue}
@@ -874,7 +894,12 @@ const Gerer = () => {
             </Accordion>
           </Row>
           <div className="boutons">
-            <Button variant="primary" type="submit" className="custom-primary">
+            <Button
+              variant="primary"
+              type="submit"
+              className="custom-primary"
+              disabled={!isSaisieClicked}
+            >
               Enregistrer
             </Button>
           </div>

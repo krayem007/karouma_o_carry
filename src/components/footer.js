@@ -57,22 +57,38 @@ class Footer extends React.Component {
               <Col className="footer-icons">
                 <ul className="list-unstyled d-flex justify-content-center">
                   <li className="mx-3">
-                    <a href="#">
+                    <a
+                      href="https://www.facebook.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <ion-icon name="logo-facebook"></ion-icon>
                     </a>
                   </li>
                   <li className="mx-3">
-                    <a href="#">
+                    <a
+                      href="https://twitter.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <ion-icon name="logo-twitter"></ion-icon>
                     </a>
                   </li>
                   <li className="mx-3">
-                    <a href="#">
+                    <a
+                      href="https://www.instagram.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <ion-icon name="logo-instagram"></ion-icon>
                     </a>
                   </li>
                   <li className="mx-3">
-                    <a href="#">
+                    <a
+                      href="https://www.linkedin.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <ion-icon name="logo-linkedin"></ion-icon>
                     </a>
                   </li>

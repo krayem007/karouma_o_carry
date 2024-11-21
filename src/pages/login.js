@@ -1,9 +1,8 @@
+import icon from "../images/icon.png";
 import React, { useState } from "react";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import icon from "../images/icon.png";
-
 import { Container, Col, Row, Form, Breadcrumb, Button } from "react-bootstrap";
 
 const TITLE = "Connexion | " + Config.SITE_TITLE;

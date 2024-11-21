@@ -1,28 +1,51 @@
+import icon from "../images/icon.png";
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
-import icon from "../images/icon.png";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { Container, Col, Row, Button, Form, Breadcrumb } from "react-bootstrap";
+import {
+  Container,
+  Col,
+  Row,
+  Button,
+  Form,
+  Breadcrumb,
+  Toast,
+} from "react-bootstrap";
 
 const TITLE = "Inscription | " + Config.SITE_TITLE;
 const DESC = "Inscription ";
 const CANONICAL = Config.SITE_DOMAIN + "/inscription";
 
 const Inscription = () => {
+  const navigate = useNavigate(); // Initialize navigate hook
   const [validated, set_Validated] = useState(false);
   const [form_Data, set_Form_Data] = useState({
     password: "",
     confirm_password: "",
     email: "",
   });
+  const [alert, setAlert] = useState({ message: "", type: "" });
+
   const submitFn = (event) => {
+    event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+    } else {
+      // Show success alert
+      setAlert({
+        message:
+          "L'inscription a été effectuée avec succès. Vous devez maintenant vous connecter.",
+        type: "success",
+      });
+      setTimeout(() => {
+        navigate("/connexion");
+      }, 2000);
     }
     set_Validated(true);
   };
@@ -57,6 +80,15 @@ const Inscription = () => {
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
       </Helmet>
+      {alert.message && (
+        <Toast
+          className="toast"
+          bg={alert.type}
+          onClose={() => setAlert({ message: "", type: "" })}
+        >
+          <Toast.Body>{alert.message}</Toast.Body>
+        </Toast>
+      )}
       <Container className="register-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
@@ -66,7 +98,6 @@ const Inscription = () => {
         </Breadcrumb>
 
         <h1 className="form-title">Inscription</h1>
-
         <Form
           noValidate
           validated={validated}
@@ -76,8 +107,8 @@ const Inscription = () => {
           <div className="section_title">Informations de l'entreprise :</div>
           <Row className="main-user-info">
             <Col md={1}>
-              <Form.Group controlId="code_acte">
-                <Form.Label ClasseName="label">Code acte :</Form.Label>
+              <Form.Group controlId="code_acte" className="form-group required">
+                <Form.Label className="control-label">Code acte :</Form.Label>
                 <Form.Control
                   type="text"
                   name="code_acte"
@@ -94,8 +125,13 @@ const Inscription = () => {
 
           <Row className="main-user-info">
             <Col md={3}>
-              <Form.Group controlId="identifiant_fiscal">
-                <Form.Label>Identifiant fiscal :</Form.Label>
+              <Form.Group
+                controlId="identifiant_fiscal"
+                className="form-group required"
+              >
+                <Form.Label className="control-label">
+                  Identifiant fiscal :
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="identifiant_fiscal"
@@ -109,8 +145,13 @@ const Inscription = () => {
             </Col>
 
             <Col md={3}>
-              <Form.Group controlId="identifiant_tva">
-                <Form.Label>Identifiant T.V.A :</Form.Label>
+              <Form.Group
+                controlId="identifiant_tva"
+                className="form-group required"
+              >
+                <Form.Label className="control-label">
+                  Identifiant T.V.A :
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="identifiant_tva"
@@ -124,8 +165,13 @@ const Inscription = () => {
             </Col>
 
             <Col md={3}>
-              <Form.Group controlId="code_categorie">
-                <Form.Label>Code catégorie :</Form.Label>
+              <Form.Group
+                controlId="code_categorie"
+                className="form-group required"
+              >
+                <Form.Label className="control-label">
+                  Code catégorie :
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="code_categorie"
@@ -146,8 +192,13 @@ const Inscription = () => {
           </Row>
           <Row className="main-user-info">
             <Col>
-              <Form.Group controlId="nom_prenom_raison">
-                <Form.Label>Nom et Prénom ou Raison sociale :</Form.Label>
+              <Form.Group
+                controlId="nom_prenom_raison"
+                className="form-group required"
+              >
+                <Form.Label className="control-label">
+                  Nom et Prénom ou Raison sociale :
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="nom_prenom_raison"
@@ -163,8 +214,10 @@ const Inscription = () => {
           </Row>
           <Row fluid className="main-user-info">
             <Col md={9}>
-              <Form.Group controlId="adresse">
-                <Form.Label>Adresse ou siège social :</Form.Label>
+              <Form.Group controlId="adresse" className="form-group required">
+                <Form.Label className="control-label">
+                  Adresse ou siège social :
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="adresse"
@@ -179,8 +232,14 @@ const Inscription = () => {
             </Col>
 
             <Col md={1}>
-              <Form.Group controlId="code_postal">
-                <Form.Label ClasseName="label"> Code postal : </Form.Label>
+              <Form.Group
+                controlId="code_postal"
+                className="form-group required"
+              >
+                <Form.Label ClasseName="label" className="control-label">
+                  {" "}
+                  Code postal :{" "}
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="code_acte"
@@ -199,8 +258,8 @@ const Inscription = () => {
           </Row>
           <Row className="main-user-info d-flex">
             <Col md={4}>
-              <Form.Group controlId="activite">
-                <Form.Label>Activité :</Form.Label>
+              <Form.Group controlId="activite" className="form-group required">
+                <Form.Label className="control-label">Activité :</Form.Label>
                 <Form.Control
                   type="text"
                   name="activite"
@@ -261,8 +320,8 @@ const Inscription = () => {
 
           <Row className="main-user-info">
             <Col md={6}>
-              <Form.Group controlId="email">
-                <Form.Label>E-mail :</Form.Label>
+              <Form.Group controlId="email" className="form-group required">
+                <Form.Label className="control-label">E-mail :</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -282,8 +341,10 @@ const Inscription = () => {
           </Row>
           <Row className="main-user-info">
             <Col md={6}>
-              <Form.Group controlId="password">
-                <Form.Label>Mot de passe :</Form.Label>
+              <Form.Group controlId="password" className="form-group required">
+                <Form.Label className="control-label">
+                  Mot de passe :
+                </Form.Label>
                 <Form.Control
                   type="password"
                   name="password"
@@ -302,8 +363,13 @@ const Inscription = () => {
           </Row>
           <Row className="main-user-info">
             <Col md={6}>
-              <Form.Group controlId="confirm_password">
-                <Form.Label>Confirmation du mot de passe :</Form.Label>
+              <Form.Group
+                controlId="confirm_password"
+                className="form-group required"
+              >
+                <Form.Label className="control-label">
+                  Confirmation du mot de passe :
+                </Form.Label>
                 <Form.Control
                   type="password"
                   name="confirm_password"

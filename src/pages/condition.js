@@ -1,3 +1,4 @@
+import icon from "../images/icon.png";
 import react from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
@@ -7,7 +8,6 @@ import { Container, Breadcrumb } from "react-bootstrap";
 const TITLE = "Conditions générales | " + Config.SITE_TITLE;
 const DESC = "Conditions générales  ";
 const CANONICAL = Config.SITE_DOMAIN + "/conditions";
-import icon from "../images/icon.png";
 
 class Conditions extends react.Component {
   render() {

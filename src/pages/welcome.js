@@ -1,7 +1,7 @@
+import icon from "../images/icon.png";
 import react from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
-import icon from "../images/icon.png";
 import { Helmet } from "react-helmet";
 import { Container, Breadcrumb, Row, Card, Col } from "react-bootstrap";
 

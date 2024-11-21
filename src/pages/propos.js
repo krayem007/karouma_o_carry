@@ -1,8 +1,8 @@
+import icon from "../images/icon.png";
 import react from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
-import icon from "../images/icon.png";
 import { Container, Breadcrumb } from "react-bootstrap";
 
 const TITLE = "À propos | " + Config.SITE_TITLE;

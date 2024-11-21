@@ -1,9 +1,9 @@
+import icon from "../images/icon.png";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Collapse, Container, Breadcrumb, Row } from "react-bootstrap";
-import icon from "../images/icon.png";
 
 const TITLE = "FAQ | " + Config.SITE_TITLE;
 const DESC = "FAQ";

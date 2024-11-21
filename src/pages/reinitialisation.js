@@ -1,7 +1,7 @@
+import icon from "../images/icon.png";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
-import icon from "../images/icon.png";
 import { Helmet } from "react-helmet";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";

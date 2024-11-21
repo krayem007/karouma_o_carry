@@ -1,17 +1,9 @@
+import icon from "../images/icon.png";
 import react from "react";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
-import icon from "../images/icon.png";
 import { Link } from "react-router-dom";
-import {
-  Breadcrumb,
-  Row,
-  Col,
-  Form,
-  Button,
-  Container,
-  Table,
-} from "react-bootstrap";
+import { Breadcrumb, Row, Button, Container, Table } from "react-bootstrap";
 const TITLE = "Gérer mes déclarations | " + Config.SITE_TITLE;
 const DESC = "Gérer mes déclarations ";
 const CANONICAL = Config.SITE_DOMAIN + "/visualiser";

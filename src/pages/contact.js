@@ -1,19 +1,18 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Config from "./config.json";
-import { Helmet } from "react-helmet";
-import emailjs from "@emailjs/browser";
 import icon from "../images/icon.png";
+import emailjs from "@emailjs/browser";
 import {
-  Container,
   Breadcrumb,
+  Container,
   Row,
-  Card,
   Col,
   Form,
   Button,
   Alert,
 } from "react-bootstrap";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import Config from "./config.json";
+import { Helmet } from "react-helmet";
 
 const TITLE = "Contact | " + Config.SITE_TITLE;
 const DESC = "Contact";
@@ -25,7 +24,7 @@ const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    subject: "",
+    objet: "",
     message: "",
   });
   const [disabled, setDisabled] = useState(false); // Disabled state for the form
@@ -33,17 +32,17 @@ const Contact = () => {
 
   // Function to handle form submission
   const onSubmit = async (data) => {
-    const { name, email, subject, message } = data;
+    const { name, email, objet, message } = data;
     try {
       // Disable form while processing submission
       setDisabled(true);
 
       // Define template params
       const templateParams = {
-        nom,
-        email,
-        objet,
-        message,
+        nom: name,
+        email: email,
+        objet: objet,
+        message: message,
       };
 
       // Use emailjs to email contact form data
@@ -162,8 +161,8 @@ const Contact = () => {
                 <Form.Label>Objet:</Form.Label>
                 <Form.Control
                   type="text"
-                  name="subject"
-                  value={formData.subject}
+                  name="objet"
+                  value={formData.objet}
                   onChange={chngFn}
                   required
                 />
