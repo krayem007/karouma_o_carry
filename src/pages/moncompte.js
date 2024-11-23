@@ -29,8 +29,6 @@ const Moncompte = () => {
     nvpassword: "",
   });
 
-  const [alert, set_Alert] = useState(null);
-
   const handleRemoveItem = () => {
     const res = window.confirm(
       "Êtes-vous sûr de vouloir supprimer définitivement votre compte ?"
