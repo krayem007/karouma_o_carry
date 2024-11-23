@@ -17,7 +17,7 @@ class Welcome extends react.Component {
           <title>{TITLE}</title>
           <link rel="canonical" href={CANONICAL} />
           <meta name="description" content={DESC} />
-          <link rel="icon" href={icon} type="image/png" />;
+          <link rel="icon" href={icon} type="image/png" />
           <meta name="theme-color" content={Config.THEME_COLOR} />
           <link
             rel="stylesheet"
@@ -76,7 +76,7 @@ class Welcome extends react.Component {
                     <i className="fa-solid fa-calculator"></i>
                   </div>
                   <Card.Title as="h3">Saisissez vos informations</Card.Title>
-                  <Card.Body>
+                  <Card.Body className="bodyconnected">
                     Renseignez vos factures et les informations de vos fiches de
                     paie
                   </Card.Body>
@@ -89,7 +89,7 @@ class Welcome extends react.Component {
                     <i className="fa-solid fa-print"></i>
                   </div>
                   <Card.Title as="h3">Imprimer vos déclarations</Card.Title>
-                  <Card.Body>
+                  <Card.Body className="bodyconnected">
                     Vérifiez vos déclarations en les visualisant, puis
                     imprimez-les
                   </Card.Body>

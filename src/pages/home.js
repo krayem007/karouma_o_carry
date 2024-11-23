@@ -92,13 +92,13 @@ class Home extends React.Component {
             )}
             {isLoggedIn ? (
               <>
-                <Col md="auto" className="container-col mb-4">
+                <Col md="auto" className="col-card mb-4">
                   <Card as={Link} to="/gerer" id="clic">
                     <div>
                       <i className="fa-solid fa-calculator"></i>
                     </div>
                     <Card.Title as="h3">Saisissez vos informations</Card.Title>
-                    <Card.Body>
+                    <Card.Body className="bodyconnected">
                       Renseignez vos factures et les informations de vos fiches
                       de paie
                     </Card.Body>
@@ -129,13 +129,13 @@ class Home extends React.Component {
             </Col>
             {isLoggedIn ? (
               <>
-                <Col md="auto" className="container-col mb-4">
+                <Col md="auto" className="col-card mb-4">
                   <Card id="clic" as={Link} to="/visualiser">
                     <div>
                       <i className="fa-solid fa-print"></i>
                     </div>
                     <Card.Title as="h3">Imprimer vos déclarations</Card.Title>
-                    <Card.Body>
+                    <Card.Body className="bodyconnected">
                       Vérifiez vos déclarations en les visualisant, puis
                       imprimez-les
                     </Card.Body>

@@ -9,8 +9,6 @@
 }
 
 /* header */
-/* Change the color of the navbar toggler icon */
-
 /* scrollbar */
 
 ::-webkit-scrollbar {
@@ -144,6 +142,38 @@ footer li {
   color: #ffffff;
 }
 
+/* Breadcrumb */
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">" !important;
+}
+
+.no-decoration a {
+  text-decoration: none !important;
+  color: #212529bf !important;
+}
+.no-decoration a:hover {
+  color: black !important;
+}
+
+.breadcrumb-item {
+  padding-top: 20px;
+}
+
+.password-forgot {
+  padding-bottom: 25px !important;
+}
+
+.forgot {
+  font-size: 14px !important;
+  text-decoration: none !important;
+  color: black !important;
+}
+
+.forgot:hover {
+  color: #1abc9c !important;
+}
+
 /* Home */
 
 div.card {
@@ -155,6 +185,7 @@ div.card {
 .carsour {
   height: 100vh;
   display: flex;
+  justify-content: center; /* Centers the content horizontally */
   align-items: center;
   background-image: url(/src/images/home-bg.jpg);
   background-size: cover;
@@ -295,6 +326,12 @@ div.card {
     padding: 0 !important;
     width: 430px !important;
   }
+  .card {
+    min-height: 268px !important;
+  }
+  div .bodyconnected {
+    text-align: center !important;
+  }
 }
 
 @media (max-width: 730px) {
@@ -319,37 +356,6 @@ div.card {
   }
 }
 
-/* Breadcrumb */
-
-.breadcrumb-item + .breadcrumb-item::before {
-  content: ">" !important;
-}
-
-.no-decoration a {
-  text-decoration: none !important;
-  color: #212529bf !important;
-}
-.no-decoration a:hover {
-  color: black !important;
-}
-
-.breadcrumb-item {
-  padding-top: 20px;
-}
-
-.password-forgot {
-  padding-bottom: 25px !important;
-}
-
-.forgot {
-  font-size: 14px !important;
-  text-decoration: none !important;
-  color: black !important;
-}
-
-.forgot:hover {
-  color: #1abc9c !important;
-}
 /* Registre */
 
 .form-title {
@@ -432,6 +438,31 @@ div.card {
   #postal_code {
     width: 45px;
   }
+
+  .custom-primary {
+    padding-right: 10px !important;
+  }
+
+  .form-group {
+    padding-bottom: 25px !important;
+  }
+
+  .custom-primary {
+    padding-right: auto !important;
+  }
+  .boutons {
+    display: flex; /* Makes the child elements align in a row */
+    align-items: center;
+    justify-content: center; /* Centers the buttons horizontally */
+    gap: 10px; /* Adds space between buttons */
+  }
+
+  .custom-secondary {
+    max-height: 33px;
+  }
+  .custom-primary {
+    min-height: 33px;
+  }
 }
 
 @media (width > 1030px) {
@@ -444,6 +475,14 @@ div.card {
   #mois {
     width: 60px !important;
   }
+  .boutons {
+    justify-content: center; /* Center buttons horizontally */
+    gap: 10px; /* Add space between buttons */
+  }
+
+  .invalid-feedback {
+    margin: 0 !important;
+  }
 }
 
 .section_title {
@@ -452,9 +491,12 @@ div.card {
 .invalid-feedback {
   margin: 0 !important;
   font-size: 12px !important;
-  width: 300px !important;
+  max-width: 300px !important;
 }
 
+#maxwidthfeed {
+  max-width: 200px !important;
+}
 .is-valid,
 .is-invalid,
 .form-control:valid,
@@ -607,6 +649,17 @@ td {
   #custome_th {
     width: 200px;
   }
+
+  .form-labelannee {
+    margin: 0 !important;
+  }
+  div .form-labelannee {
+    margin-right: 10px !important;
+  }
+
+  .textadj {
+    margin: 7px 0px !important;
+  }
 }
 
 td .form-control {
@@ -634,6 +687,10 @@ td .feedback {
   text-overflow: ellipsis !important; /* Adds '...' if text overflows */
 }
 
+.text-danger {
+  color: red;
+}
+
 /* welcome */
 
 #clic {
@@ -654,14 +711,22 @@ td .feedback {
 
 @media (max-width: 1030px) {
   .card {
+    display: flex !important;
     width: auto !important; /* Allow cards to adjust their width */
     max-width: 90% !important; /* Ensure they don’t exceed the container width */
     margin-bottom: 20px; /* Space between cards */
     max-width: 397px !important;
+    margin-right: 0 !important;
+  }
+  .card-body {
+    text-align: left !important;
+  }
+
+  #clic div .comment {
+    align-self: center !important;
+    align-content: center !important;
   }
 }
-
-/* welcome */
 
 .visualiser-page {
   display: flex;
@@ -685,7 +750,7 @@ td .feedback {
   padding: 10px 25px !important;
 }
 
-/* welcome */
+/* FAQ */
 
 .FAQ {
   padding-bottom: 12px !important;
@@ -707,7 +772,7 @@ td .feedback {
   background-color: rgb(229, 229, 229) !important;
 }
 
-/* Global Toast Style */
+/* Toast Style */
 .toast {
   position: fixed;
   top: 20px;
@@ -722,4 +787,12 @@ td .feedback {
 .toast.bg-success {
   background-color: #1abc9c !important;
   color: white;
+  font-weight: bolder;
+}
+
+/* Contact Style */
+
+.li {
+  list-style: disc inside; /* Show bullets inside the content box */
+  padding-left: 1rem; /* Adjust padding for alignment */
 }

@@ -17,7 +17,7 @@ class Propos extends react.Component {
           <title>{TITLE}</title>
           <link rel="canonical" href={CANONICAL} />
           <meta name="description" content={DESC} />
-          <link rel="icon" href={icon} type="image/png" />;
+          <link rel="icon" href={icon} type="image/png" />
           <meta name="theme-color" content={Config.THEME_COLOR} />
           <link
             rel="stylesheet"
@@ -57,15 +57,15 @@ class Propos extends react.Component {
           </div>
           <div className="pb-3">
             <h4>Notre mission</h4>
-            <li className="pb-1">
+            <li className="li pb-1">
               Simplifier les démarches fiscales grâce à une interface intuitive
               et accessible.
             </li>
-            <li className="pb-1">
+            <li className="li pb-1">
               Offrir un service professionnel adapté aux besoins des
               utilisateurs, quel que soit leur niveau en comptabilité.
             </li>
-            <li className="pb-1">
+            <li className="li pb-1">
               Garantir la sécurité et la fiabilité des données via des
               technologies modernes.
             </li>
@@ -91,17 +91,17 @@ class Propos extends react.Component {
           </div>
           <div className="pb-3">
             <h4>Pourquoi choisir Déclaration Facile ?</h4>
-            <li className="pb-1">
+            <li className="li pb-1">
               <strong>Accessibilité multilingue </strong>: Disponible en
               français et en arabe.
             </li>
-            <li className="pb-1">
+            <li className="li pb-1">
               <strong>Calculs automatisés </strong>: Simplifiez vos déclarations
               de TVA, paie et autres obligations fiscales.
             </li>
 
-            <li className="pb-3">
-              <strong> Solution tout-en-un</strong> : Gérez vos déclarations de
+            <li className="li pb-1">
+              <strong>Solution tout-en-un</strong> : Gérez vos déclarations de
               manière simple, rapide et professionnelle.
             </li>
             <p>

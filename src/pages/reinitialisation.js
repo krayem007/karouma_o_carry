@@ -41,7 +41,7 @@ const Reinitialisation = () => {
         <title>{TITLE}</title>
         <link rel="canonical" href={CANONICAL} />
         <meta name="description" content={DESC} />
-        <link rel="icon" href={icon} type="image/png" />;
+        <link rel="icon" href={icon} type="image/png" />
         <meta name="theme-color" content={Config.THEME_COLOR} />
         <link
           rel="stylesheet"

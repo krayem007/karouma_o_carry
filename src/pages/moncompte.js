@@ -61,7 +61,7 @@ const Moncompte = () => {
         <title>{TITLE}</title>
         <link rel="canonical" href={CANONICAL} />
         <meta name="description" content={DESC} />
-        <link rel="icon" href={icon} type="image/png" />;
+        <link rel="icon" href={icon} type="image/png" />
         <meta name="theme-color" content={Config.THEME_COLOR} />
         <link
           rel="stylesheet"
@@ -101,9 +101,14 @@ const Moncompte = () => {
                 className="register"
               >
                 <Row className="main-user-info">
-                  <Col md={1}>
-                    <Form.Group controlId="code_acte">
-                      <Form.Label ClasseName="label">Code acte :</Form.Label>
+                  <Col md={2}>
+                    <Form.Group
+                      controlId="code_acte"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Code acte :
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         name="code_acte"
@@ -120,8 +125,13 @@ const Moncompte = () => {
 
                 <Row className="main-user-info">
                   <Col md={3}>
-                    <Form.Group controlId="identifiant_fiscal">
-                      <Form.Label>Identifiant fiscal :</Form.Label>
+                    <Form.Group
+                      controlId="identifiant_fiscal"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Identifiant fiscal :
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         name="identifiant_fiscal"
@@ -135,8 +145,13 @@ const Moncompte = () => {
                   </Col>
 
                   <Col md={3}>
-                    <Form.Group controlId="identifiant_tva">
-                      <Form.Label>Identifiant T.V.A :</Form.Label>
+                    <Form.Group
+                      controlId="identifiant_tva"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Identifiant T.V.A :
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         name="identifiant_tva"
@@ -150,8 +165,13 @@ const Moncompte = () => {
                   </Col>
 
                   <Col md={3}>
-                    <Form.Group controlId="code_categorie">
-                      <Form.Label>Code catégorie :</Form.Label>
+                    <Form.Group
+                      controlId="code_categorie"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Code catégorie :
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         name="code_categorie"
@@ -164,7 +184,10 @@ const Moncompte = () => {
                     </Form.Group>
                   </Col>
                   <Col md={3}>
-                    <Form.Group controlId="nombre_filial">
+                    <Form.Group
+                      controlId="nombre_filial"
+                      className="form-group"
+                    >
                       <Form.Label>Nombre de filiale (2) :</Form.Label>
                       <Form.Control type="number" name="nombre_filial" />
                     </Form.Group>
@@ -172,8 +195,13 @@ const Moncompte = () => {
                 </Row>
                 <Row className="main-user-info">
                   <Col>
-                    <Form.Group controlId="nom_prenom_raison">
-                      <Form.Label>Nom et Prénom ou Raison sociale :</Form.Label>
+                    <Form.Group
+                      controlId="nom_prenom_raison"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Nom et Prénom ou Raison sociale :
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         name="nom_prenom_raison"
@@ -181,7 +209,10 @@ const Moncompte = () => {
                         onChange={chngFn}
                         required
                       />
-                      <Form.Control.Feedback type="invalid">
+                      <Form.Control.Feedback
+                        type="invalid"
+                        className="form-group"
+                      >
                         Veuillez remplir le Nom et Prénom ou Raison sociale
                       </Form.Control.Feedback>
                     </Form.Group>
@@ -189,8 +220,13 @@ const Moncompte = () => {
                 </Row>
                 <Row fluid className="main-user-info">
                   <Col md={9}>
-                    <Form.Group controlId="adresse">
-                      <Form.Label>Adresse ou siège social :</Form.Label>
+                    <Form.Group
+                      controlId="adresse"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Adresse ou siège social :
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         name="adresse"
@@ -204,15 +240,17 @@ const Moncompte = () => {
                     </Form.Group>
                   </Col>
 
-                  <Col md={1}>
-                    <Form.Group controlId="code_postal">
-                      <Form.Label ClasseName="label">
-                        {" "}
-                        Code postal :{" "}
+                  <Col md={2}>
+                    <Form.Group
+                      controlId="code_postal"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Code postal :
                       </Form.Label>
                       <Form.Control
                         type="text"
-                        name="code_acte"
+                        name="code_postal"
                         min="0000"
                         max="9999"
                         className="text-center"
@@ -222,7 +260,7 @@ const Moncompte = () => {
                         onChange={chngFn}
                         required
                       />
-                      <Form.Control.Feedback type="invalid">
+                      <Form.Control.Feedback type="invalid" id="maxwidthfeed">
                         Veuillez remplir le code postal
                       </Form.Control.Feedback>
                     </Form.Group>
@@ -230,8 +268,13 @@ const Moncompte = () => {
                 </Row>
                 <Row className="main-user-info d-flex">
                   <Col md={4}>
-                    <Form.Group controlId="activite">
-                      <Form.Label>Activité :</Form.Label>
+                    <Form.Group
+                      controlId="activite"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Activité :
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         name="activite"
@@ -248,7 +291,10 @@ const Moncompte = () => {
                   </Col>
 
                   <Col md={1}>
-                    <Form.Group controlId="cessation_jour">
+                    <Form.Group
+                      controlId="cessation_jour"
+                      className="form-group"
+                    >
                       <Form.Label>Jour :</Form.Label>
                       <Form.Control
                         type="text"
@@ -264,7 +310,10 @@ const Moncompte = () => {
                   </Col>
 
                   <Col md={1}>
-                    <Form.Group controlId="cessation_mois">
+                    <Form.Group
+                      controlId="cessation_mois"
+                      className="form-group"
+                    >
                       <Form.Label>Mois :</Form.Label>
                       <Form.Control
                         type="text"
@@ -280,7 +329,10 @@ const Moncompte = () => {
                   </Col>
 
                   <Col md={2}>
-                    <Form.Group controlId="cessation_annee">
+                    <Form.Group
+                      controlId="cessation_annee"
+                      className="form-group"
+                    >
                       <Form.Label>Année :</Form.Label>
                       <Form.Control
                         type="text"
@@ -329,8 +381,13 @@ const Moncompte = () => {
                 </Row>
                 <Row className="main-user-info">
                   <Col md={6}>
-                    <Form.Group controlId="anpassword">
-                      <Form.Label>Ancien mot de passe :</Form.Label>
+                    <Form.Group
+                      controlId="anpassword"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Ancien mot de passe :
+                      </Form.Label>
                       <Form.Control
                         type="password"
                         name="anpassword"
@@ -347,8 +404,13 @@ const Moncompte = () => {
                 </Row>
                 <Row className="main-user-info">
                   <Col md={6}>
-                    <Form.Group controlId="nvpassword">
-                      <Form.Label>Nouveau mot de passe :</Form.Label>
+                    <Form.Group
+                      controlId="nvpassword"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
+                        Nouveau mot de passe :
+                      </Form.Label>
                       <Form.Control
                         type="password"
                         name="nvpassword"
@@ -367,8 +429,11 @@ const Moncompte = () => {
                 </Row>
                 <Row className="main-user-info">
                   <Col md={6}>
-                    <Form.Group controlId="confirm_password">
-                      <Form.Label className="label">
+                    <Form.Group
+                      controlId="confirm_password"
+                      className="form-group required"
+                    >
+                      <Form.Label className="control-label">
                         Confirmation du nouveau mot de passe :
                       </Form.Label>
                       <Form.Control

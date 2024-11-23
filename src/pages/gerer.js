@@ -154,7 +154,7 @@ const Gerer = () => {
         <title>{TITLE}</title>
         <link rel="canonical" href={CANONICAL} />
         <meta name="description" content={DESC} />
-        <link rel="icon" href={icon} type="image/png" />;
+        <link rel="icon" href={icon} type="image/png" />
         <meta name="theme-color" content={Config.THEME_COLOR} />
         <link
           rel="stylesheet"
@@ -289,13 +289,26 @@ const Gerer = () => {
                                 checked={selectAllFactures}
                               />
                             </th>
-                            <th>Date</th>
-                            <th id="custome_th">Type du facture</th>
+                            <th>
+                              Date <span className="text-danger">*</span>
+                            </th>
+                            <th id="custome_th">
+                              Type du facture{" "}
+                              <span className="text-danger">*</span>
+                            </th>
                             <th>Réf facture</th>
-                            <th>Total HT</th>
-                            <th>TVA</th>
-                            <th>Timbre</th>
-                            <th>Total TTC</th>
+                            <th>
+                              Total HT <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              TVA <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              Timbre <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              Total TTC <span className="text-danger">*</span>
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -317,6 +330,7 @@ const Gerer = () => {
                               <td>
                                 <Form.Group controlId={`date-facture${index}`}>
                                   <Form.Control
+                                    className="textadj"
                                     type="date"
                                     placeholder="Date"
                                     value={facture.Date}
@@ -353,7 +367,7 @@ const Gerer = () => {
                                     required
                                     isInvalid={validated && !facture.Type}
                                   >
-                                    <option>Type du facture</option>
+                                    <option>Type du facture </option>
                                     <option>Facture d'achat</option>
                                     <option>Facture de vente</option>
                                   </Form.Select>
@@ -367,6 +381,7 @@ const Gerer = () => {
                               </td>
                               <td>
                                 <Form.Control
+                                  className="textadj"
                                   type="text"
                                   placeholder="Réf facture"
                                 />
@@ -376,6 +391,7 @@ const Gerer = () => {
                                   controlId={`TotalHT-facture${index}`}
                                 >
                                   <Form.Control
+                                    className="textadj"
                                     type="number"
                                     placeholder="Total HT"
                                     value={facture.TotalHT}
@@ -400,6 +416,7 @@ const Gerer = () => {
                               <td>
                                 <Form.Group controlId={`TVA-facture${index}`}>
                                   <Form.Control
+                                    className="textadj"
                                     type="number"
                                     placeholder="TVA"
                                     value={facture.TVA}
@@ -426,6 +443,7 @@ const Gerer = () => {
                                   controlId={`Timbre-facture-${index}`}
                                 >
                                   <Form.Control
+                                    className="textadj"
                                     type="number"
                                     placeholder="Timbre"
                                     value={facture.Timbre}
@@ -452,6 +470,7 @@ const Gerer = () => {
                                   controlId={`TotalTTC-facture${index}`}
                                 >
                                   <Form.Control
+                                    className="textadj"
                                     type="number"
                                     placeholder="Total TTC"
                                     value={facture.TotalTTC}
@@ -526,12 +545,28 @@ const Gerer = () => {
                                 checked={selectAllPaie}
                               />
                             </th>
-                            <th>Salarier</th>
-                            <th id="custome_th">Secteur d'activité</th>
-                            <th id="custome_th">Chef de famille</th>
-                            <th>Nombre d'enfants</th>
-                            <th>Salaire Brut</th>
-                            <th>Salaire Net</th>
+                            <th>
+                              Salarier <span className="text-danger">*</span>
+                            </th>
+                            <th id="custome_th">
+                              Secteur d'activité{" "}
+                              <span className="text-danger">*</span>
+                            </th>
+                            <th id="custome_th">
+                              Chef de famille{" "}
+                              <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              Nombre d'enfants{" "}
+                              <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              Salaire Brut{" "}
+                              <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              Salaire Net <span className="text-danger">*</span>
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -549,6 +584,7 @@ const Gerer = () => {
                               <td>
                                 <Form.Group controlId={`Salarier-paie${index}`}>
                                   <Form.Control
+                                    className="textadj"
                                     type="text"
                                     placeholder="Salarier"
                                     value={paie[index]?.Salarier || ""} // Access value from the specific index
@@ -634,6 +670,7 @@ const Gerer = () => {
                               <td>
                                 <Form.Group controlId={`enfants-paie-${index}`}>
                                   <Form.Control
+                                    className="textadj"
                                     type="number"
                                     placeholder="Nombre d'enfants"
                                     value={paie[index]?.enfants || ""} // Bind the value to the specific row's 'enfants' field
@@ -662,6 +699,7 @@ const Gerer = () => {
                                   controlId={`salaire-brut-paie-${index}`}
                                 >
                                   <Form.Control
+                                    className="textadj"
                                     type="number"
                                     placeholder="Salaire Brut"
                                     value={paie[index]?.salaireBrut || ""} // Bind to the 'salaireBrut' value for the specific row
@@ -690,6 +728,7 @@ const Gerer = () => {
                                   controlId={`salaire-net-paie-${index}`}
                                 >
                                   <Form.Control
+                                    className="textadj"
                                     type="number"
                                     placeholder="Salaire Net"
                                     value={paie[index]?.salaireNet || ""} // Bind to 'salaireNet' for the specific row
@@ -763,10 +802,19 @@ const Gerer = () => {
                                 checked={selectAllRetenue}
                               />
                             </th>
-                            <th>Retenue à la source sur :</th>
-                            <th>Montant HT</th>
-                            <th>TVA</th>
-                            <th>Montant TTC</th>
+                            <th>
+                              Retenue à la source sur :{" "}
+                              <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              Montant HT <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              TVA <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              Montant TTC <span className="text-danger">*</span>
+                            </th>
                           </tr>
                         </thead>
                         <tbody id="Retenue">
@@ -816,6 +864,7 @@ const Gerer = () => {
 
                               <td>
                                 <Form.Control
+                                  className="textadj"
                                   type="number"
                                   placeholder="Montant HT"
                                   value={retenue[index]?.montantHT || ""}
@@ -840,6 +889,7 @@ const Gerer = () => {
 
                               <td>
                                 <Form.Control
+                                  className="textadj"
                                   type="number"
                                   placeholder="TVA"
                                   value={retenue[index]?.tva || ""}
@@ -862,6 +912,7 @@ const Gerer = () => {
 
                               <td>
                                 <Form.Control
+                                  className="textadj"
                                   type="number"
                                   placeholder="Montant TTC"
                                   value={retenue[index]?.montantTTC || ""}

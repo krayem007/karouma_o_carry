@@ -125,8 +125,8 @@ const Contact = () => {
           <h1 className="form-title">Contact Us</h1>
           <Row className="main-user-info">
             <Col md={6}>
-              <Form.Group controlId="name" className="register">
-                <Form.Label>Nom: </Form.Label>
+              <Form.Group controlId="name" className="form-group required">
+                <Form.Label className="control-label">Nom: </Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -140,8 +140,8 @@ const Contact = () => {
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group controlId="email">
-                <Form.Label>Email:</Form.Label>
+              <Form.Group controlId="email" className="form-group required">
+                <Form.Label className="control-label">Email:</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -157,8 +157,8 @@ const Contact = () => {
           </Row>
           <Row className="main-user-info">
             <Col>
-              <Form.Group controlId="subject">
-                <Form.Label>Objet:</Form.Label>
+              <Form.Group controlId="subject" className="form-group required">
+                <Form.Label className="control-label">Objet:</Form.Label>
                 <Form.Control
                   type="text"
                   name="objet"
@@ -174,8 +174,8 @@ const Contact = () => {
           </Row>
           <Row className="main-user-info">
             <Col>
-              <Form.Group controlId="message">
-                <Form.Label>Message:</Form.Label>
+              <Form.Group controlId="message" className="form-group required">
+                <Form.Label className="control-label">Message:</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}

@@ -66,7 +66,7 @@ const Inscription = () => {
         <title>{TITLE}</title>
         <link rel="canonical" href={CANONICAL} />
         <meta name="description" content={DESC} />
-        <link rel="icon" href={icon} type="image/png" />;
+        <link rel="icon" href={icon} type="image/png" />
         <meta name="theme-color" content={Config.THEME_COLOR} />
         <link
           rel="stylesheet"
@@ -106,7 +106,7 @@ const Inscription = () => {
         >
           <div className="section_title">Informations de l'entreprise :</div>
           <Row className="main-user-info">
-            <Col md={1}>
+            <Col md={2}>
               <Form.Group controlId="code_acte" className="form-group required">
                 <Form.Label className="control-label">Code acte :</Form.Label>
                 <Form.Control
@@ -213,7 +213,7 @@ const Inscription = () => {
             </Col>
           </Row>
           <Row fluid className="main-user-info">
-            <Col md={9}>
+            <Col md={8}>
               <Form.Group controlId="adresse" className="form-group required">
                 <Form.Label className="control-label">
                   Adresse ou siège social :
@@ -231,18 +231,17 @@ const Inscription = () => {
               </Form.Group>
             </Col>
 
-            <Col md={1}>
+            <Col md={2}>
               <Form.Group
                 controlId="code_postal"
                 className="form-group required"
               >
                 <Form.Label ClasseName="label" className="control-label">
-                  {" "}
-                  Code postal :{" "}
+                  Code postal :
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  name="code_acte"
+                  name="code_postal"
                   min="0000"
                   max="9999"
                   className="text-center"
@@ -250,7 +249,7 @@ const Inscription = () => {
                   onChange={chngFn}
                   required
                 />
-                <Form.Control.Feedback type="invalid">
+                <Form.Control.Feedback type="invalid" id="maxwidthfeed">
                   Veuillez remplir le code postal
                 </Form.Control.Feedback>
               </Form.Group>
