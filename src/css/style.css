@@ -425,6 +425,12 @@ div.card {
   border: none !important;
 }
 
+.show-password-btn {
+  padding: 7px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
 @media (max-width: 1030px) {
   #anne,
   #cessation_annee {
@@ -795,4 +801,20 @@ td .feedback {
 .li {
   list-style: disc inside; /* Show bullets inside the content box */
   padding-left: 1rem; /* Adjust padding for alignment */
+}
+
+/* Réinitialisation de Mot de Passe */
+
+form .feedw {
+  max-width: 400px !important;
+}
+
+.formgroupp {
+  padding-bottom: 50px !important;
+}
+
+.toast.bg-error {
+  background-color: crimson !important;
+  color: white;
+  font-weight: bolder;
 }
