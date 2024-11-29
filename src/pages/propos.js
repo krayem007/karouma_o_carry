@@ -84,17 +84,13 @@ class Propos extends react.Component {
             <p>
               <strong>Ghassen</strong>, ingénieur en informatique, est
               spécialisé dans le développement de solutions web intuitives. Avec
-              une expertise en technologies cloud et une bonne connaissance du
-              marché français, il a conçu une plateforme performante adaptée aux
-              besoins des utilisateurs.
+              une expertise en technologies cloud, il a conçu une plateforme
+              performante adaptée aux besoins des utilisateurs.
             </p>
           </div>
           <div className="pb-3">
             <h4>Pourquoi choisir Déclaration Facile ?</h4>
-            <li className="li pb-1">
-              <strong>Accessibilité multilingue </strong>: Disponible en
-              français et en arabe.
-            </li>
+
             <li className="li pb-1">
               <strong>Calculs automatisés </strong>: Simplifiez vos déclarations
               de TVA, paie et autres obligations fiscales.

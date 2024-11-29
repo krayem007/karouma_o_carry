@@ -374,6 +374,7 @@ div.card {
 .cnssgrey {
   margin: 15px 0 !important;
   background-color: #dbdada !important; /* Light gray background */
+  cursor: not-allowed !important ;
 }
 
 .card-titlecnss {
@@ -770,6 +771,7 @@ td .feedback {
 
 .grey {
   background-color: #dbdada !important; /* Light gray background */
+  cursor: not-allowed !important;
 }
 
 .green {

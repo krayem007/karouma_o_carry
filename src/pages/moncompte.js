@@ -110,7 +110,6 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="code_acte"
-                        className="text-center"
                         onChange={chngFn}
                         required
                       />
@@ -251,7 +250,6 @@ const Moncompte = () => {
                         name="code_postal"
                         min="0000"
                         max="9999"
-                        className="text-center"
                         onInput={(e) =>
                           (e.target.value = e.target.value.slice(0, 4))
                         }
