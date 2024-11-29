@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
-const TITLE = "Home | " + Config.SITE_TITLE;
-const DESC = "Home";
+const TITLE = "Accueil | " + Config.SITE_TITLE;
+const DESC = "Accueil";
 const CANONICAL = Config.SITE_DOMAIN + "/";
 
 class Home extends React.Component {
