@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
-import { Card, Container, Row, Col } from "react-bootstrap";
+import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
 const TITLE = "Home | " + Config.SITE_TITLE;
 const DESC = "Home";
 const CANONICAL = Config.SITE_DOMAIN + "/";
@@ -62,6 +62,7 @@ class Home extends React.Component {
             </Col>
           </Row>
         </Container>
+
         <Container fluid>
           <Row>
             <Col className="comment">
@@ -161,6 +162,79 @@ class Home extends React.Component {
                 </Col>
               </>
             )}
+          </Row>
+        </Container>
+        <Container fluid>
+          <Row>
+            <Col className="comment">
+              <h2 className="text-center">Vérificateur des données CNSS :</h2>
+            </Col>
+          </Row>
+          <Row className="comment justify-content-center mt-4">
+            <Col md="auto" className="col-card mb-4">
+              <Card className="cardcnss text-center">
+                <div>
+                  <i class="fa-solid fa-check-to-slot"></i>
+                </div>
+                <Card.Title className="card-titlecnss">
+                  Outil simplifié pour la vérification CNSS et le calcul des
+                  salaires brut et net
+                </Card.Title>
+
+                <Card.Title as="h3">
+                  Saisissez les détails de votre déclaration CNSS :
+                </Card.Title>
+                <Card.Body>
+                  <Form>
+                    <Form.Group>
+                      <Form.Control
+                        type="number"
+                        placeholder="Montant trimestriel déclaré au CNSS"
+                        className="cnssfc"
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Select
+                        aria-label="Chef de famille"
+                        className="cnssfc"
+                      >
+                        <option value="">Chef de famille ou non ?</option>
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                      </Form.Select>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Control
+                        type="number"
+                        placeholder="Nombre d'enfants"
+                        className="cnssfc"
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Control
+                        type="number"
+                        placeholder="Salaire brut mensuel"
+                        className="cnssgrey"
+                        readOnly
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Control
+                        type="number"
+                        placeholder="Salaire net mensuel"
+                        className="cnssgrey"
+                        readOnly
+                      />
+                    </Form.Group>
+                    <div className="boutons">
+                      <Button variant="primary" className="green">
+                        Calculer
+                      </Button>
+                    </div>
+                  </Form>
+                </Card.Body>
+              </Card>
+            </Col>
           </Row>
         </Container>
       </>

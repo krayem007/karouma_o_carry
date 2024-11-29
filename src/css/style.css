@@ -356,6 +356,29 @@ div.card {
   }
 }
 
+.cardcnss {
+  margin-right: 20px;
+  box-shadow: 3px 3px 6px 6px #ccc;
+  padding: 10px;
+  width: 16em;
+  margin-bottom: 40px;
+  text-align: center;
+  border-radius: 10px;
+  width: 100% !important;
+}
+
+.cnssfc {
+  margin: 15px 0 !important;
+}
+
+.cnssgrey {
+  margin: 15px 0 !important;
+  background-color: #dbdada !important; /* Light gray background */
+}
+
+.card-titlecnss {
+  text-align: center !important;
+}
 /* Registre */
 
 .form-title {
@@ -817,4 +840,8 @@ form .feedw {
   background-color: crimson !important;
   color: white;
   font-weight: bolder;
+}
+
+.text {
+  color: black !important;
 }
