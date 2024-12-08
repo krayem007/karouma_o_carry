@@ -1,0 +1,329 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+html,
+body {
+  width: 210mm;
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  width: 210mm;
+  height: 297mm;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: "Times New Roman", Times, serif;
+  background-color: aliceblue;
+  border-bottom: 1px solid rgb(173, 173, 173);
+  page-break-after: always;
+}
+
+.content:last-child {
+  page-break-after: auto;
+}
+
+.inligne {
+  display: flex;
+  justify-content: space-between;
+}
+
+img {
+  width: 100px; /* Adjust as needed */
+  height: auto;
+}
+
+#img2 {
+  padding: 0;
+}
+
+#cellule {
+  width: 25px;
+  height: 25px;
+}
+
+#paddingl1 {
+  padding-left: 10px;
+}
+
+.inlignetable {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  padding-right: 150px;
+}
+
+.tasrihchahar {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.title {
+  text-align: center;
+  font-size: 30px;
+}
+
+table,
+th,
+td {
+  border: 1.5px solid #000;
+  border-collapse: collapse;
+}
+
+.pcentre {
+  display: flex;
+  padding-top: 20px;
+}
+
+.table1 {
+  float: left;
+  padding-top: 20px;
+  padding-left: 25px;
+}
+
+.table1style {
+  width: 530px;
+  height: 76px;
+  border: 1.5px;
+}
+
+.table1tr1 {
+  height: 35.0938px;
+}
+
+.table1td1 {
+  width: 100px;
+  text-align: center;
+  vertical-align: top;
+  height: 35.0938px;
+}
+
+.table2tr1 {
+  height: 30px;
+}
+
+.table2td1 {
+  width: 25px;
+  height: 25px;
+}
+.paragraphe1 {
+  text-align: right;
+  padding-top: 30px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.paragraphe2 {
+  display: flex;
+  text-align: right;
+  padding-top: 5px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.paragraphe3 {
+  display: flex;
+  padding-top: 5px;
+  padding-right: 10px;
+  gap: 40px;
+}
+
+.paragraphe4 {
+  display: flex;
+  padding-top: 5px;
+  gap: 80px;
+  padding-right: 440px;
+}
+
+.paragraphe5 {
+  display: flex;
+  text-align: right;
+  padding-top: 10px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+  font-weight: bold;
+}
+
+.table3 {
+  float: left;
+  text-align: center;
+  padding-top: 10px;
+  padding-left: 25px;
+  font-size: 13px;
+}
+
+.table3style {
+  width: 730px;
+  height: 66px;
+  border: 1.5px;
+}
+
+.table3td1 {
+  width: 100px;
+  text-align: center;
+  height: 35.0938px;
+}
+
+.table3td11 {
+  width: 150px;
+  text-align: center;
+  height: 35.0938px;
+}
+.table3tr1 {
+  height: 30px;
+}
+
+.table3tr2 {
+  height: 30px;
+}
+
+.table3td2 {
+  width: 75px;
+  height: 25px;
+}
+
+.paragraphe6 {
+  display: flex;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+  font-weight: bold;
+}
+
+.table4 {
+  float: left;
+  text-align: center;
+  padding-top: 2px;
+  padding-left: 25px;
+  font-size: 13px;
+  padding-bottom: 10px;
+}
+
+.table4style {
+  width: 730px;
+  border: 1.5px;
+}
+
+.table4td1 {
+  min-width: 45%;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td111 {
+  min-width: 30%;
+  text-align: center;
+  height: 25px;
+}
+
+.table4style .table4td1,
+.table4style .table4td11,
+.table4style .table4td111 {
+  font-weight: bold;
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+.table4tr2 .table4td2 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 10px;
+}
+
+.table4tr2 .table4td5 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.table4tr2 .table4td22 {
+  padding-left: 7px;
+  padding-right: 7px;
+}
+.table4tr2 td {
+  border-top: none;
+  border-bottom: none;
+}
+
+.table4td22 span {
+  font-size: 10px;
+  vertical-align: top;
+}
+
+.table4td33 span {
+  font-size: 10px;
+  vertical-align: top;
+}
+
+.table4td3 p {
+  padding-top: 5px;
+  padding-right: 15px;
+}
+
+.table4td4 p {
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-bottom: 5px;
+}
+
+.table4style ul {
+  list-style-position: inside;
+  padding-left: 0;
+  margin: 0;
+  padding: 0;
+}
+.table4td3 li {
+  padding-right: 30px;
+}
+
+.table4td3 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.table4td6 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 7px;
+}
+
+.table4td4 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.table4tr3 td {
+  border-top: none;
+  padding-bottom: 30px;
+}
+
+.table4tr4 td {
+  padding-top: 7px;
+  border-top: none;
+  padding-bottom: 30px;
+}
+
+.footernotes {
+  padding-right: 7px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 10px;
+}
