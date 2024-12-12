@@ -57,6 +57,10 @@ img {
   height: 20px;
 }
 
+#cellule4 {
+  width: 35px;
+  height: 20px;
+}
 #paddingl1 {
   padding-left: 10px;
 }
@@ -250,6 +254,36 @@ td {
   height: 25px;
 }
 
+.table4td19 {
+  width: 350px;
+  text-align: center;
+  height: 25px;
+  font-weight: bold;
+}
+
+.table4td15 {
+  min-width: 300px;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td17 {
+  width: 490px;
+  height: 25px;
+}
+
+.table4td18 {
+  width: 200px;
+  height: 25px;
+}
+
+.table4td14 {
+  width: 250px;
+  text-align: center;
+  height: 25px;
+  font-weight: bold;
+}
+
 .table4td111 {
   min-width: 200px;
   text-align: center;
@@ -305,6 +339,23 @@ td {
   padding-bottom: 10px;
 }
 
+.table4tr15 .table4td17 {
+  text-align: right;
+  padding-right: 7px;
+}
+
+.table4tr16 .table4td17 {
+  text-align: right;
+  padding-right: 7px;
+}
+
+.table4tr7 .table4td5 {
+  text-align: left;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 10px;
+}
+
 .table4tr6 .table4td2 {
   text-align: right;
   padding-left: 7px;
@@ -328,12 +379,13 @@ td {
   border-top: none;
   border-bottom: none;
 }
-
-.table4td22 span {
-  font-size: 10px;
-  vertical-align: top;
+.table4tr7 td {
+  border-top: none;
+  border-bottom: none;
 }
 
+.table4td22 span,
+.table4td12 span,
 .table4td33 span {
   font-size: 10px;
   vertical-align: top;
@@ -345,6 +397,12 @@ td {
 }
 
 .table4td4 p {
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-bottom: 5px;
+}
+
+.table4td16 p {
   padding-top: 5px;
   padding-right: 15px;
   padding-bottom: 5px;
@@ -380,10 +438,22 @@ td {
   padding-bottom: 7px;
 }
 
+.table4td15 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
 .table4td4 {
   text-align: right;
   padding-left: 7px;
   padding-right: 7px;
+}
+
+.table4td16 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 30px;
 }
 
 .table4tr3 td {
@@ -397,6 +467,11 @@ td {
   padding-bottom: 30px;
 }
 
+.table4tr18 td {
+  padding-top: 7px;
+  border-top: none;
+}
+
 .table4tr5 td {
   padding-top: 7px;
   border-top: none;
@@ -405,6 +480,45 @@ td {
 
 .table4tr9 td {
   padding-top: 7px;
+  border-top: none;
+}
+
+.table4tr11 td {
+  padding-top: 2px;
+}
+
+.table4tr13 td {
+  padding-top: 2px;
+  border-bottom: none;
+}
+
+.table4tr19 td {
+  padding-top: 2px;
+}
+
+.table4tr20 td {
+  padding-top: 2px;
+  border-top: none;
+}
+
+.table4tr15 td {
+  padding-top: 2px;
+  border-bottom: none;
+}
+
+.table4tr16 td {
+  padding-top: 2px;
+  border-bottom: none;
+  border-top: none;
+}
+
+.table4tr14 td {
+  padding-top: 2px;
+  border: none;
+}
+.table4tr12 td {
+  padding-top: 0px;
+  border-bottom: none;
   border-top: none;
 }
 
@@ -430,6 +544,9 @@ td {
   font-weight: bold;
 }
 
+.table4tr17 td {
+  padding-top: 2px;
+}
 .footernotes {
   padding-right: 7px;
   padding-bottom: 5px;
@@ -461,6 +578,14 @@ td {
 .right-text2 {
   margin: 0;
   padding-left: 100px;
+}
+.right-text5 {
+  margin: 0;
+  padding-left: 50px;
+}
+.right-text4 {
+  margin: 0;
+  padding-left: 117px;
 }
 
 .right-text3 {
@@ -505,6 +630,30 @@ td {
   padding-right: 15px;
 }
 
+#paddingl4 {
+  padding-right: 270px;
+}
+
+#paddingl7 {
+  padding-right: 270px;
+}
+
+#paddingl8 {
+  padding-right: 309px;
+}
+
+#paddingl5 {
+  padding-right: 390px;
+}
+
+#paddingl6 {
+  padding-right: 400px;
+}
+
+#paddingl9 {
+  padding-right: 408px;
+}
+
 .flex-container1 {
   display: flex; /* Enables flexbox for horizontal alignment */
   gap: 10px; /* Adds spacing between items */
@@ -538,4 +687,13 @@ td {
 .paragraphe5 p {
   padding-top: 10px;
   font-size: 17px;
+}
+.paragraphe11 p {
+  font-size: 17px;
+}
+
+.paragraphe11 {
+  text-align: right;
+  padding-right: 10px;
+  font-weight: bold;
 }
