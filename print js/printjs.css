@@ -118,6 +118,16 @@ td {
   height: 35.0938px;
 }
 
+.table5td1 {
+  text-align: center;
+  height: 30px;
+}
+
+.table5td2 {
+  text-align: center;
+  font-weight: bold;
+  height: 30px;
+}
 .table2tr1 {
   height: 30px;
 }
@@ -141,10 +151,39 @@ td {
   clear: both; /* Ensures the div is not floating beside the table */
 }
 
+.paragraphe19 {
+  text-align: right;
+  padding-top: 15px;
+  padding-right: 10px;
+}
+
 .paragraphe3 {
   display: flex;
   padding-top: 5px;
   padding-right: 10px;
+  gap: 40px;
+}
+
+.paragraphe22 {
+  display: flex;
+  padding-top: 5px;
+  padding-right: 25px;
+  gap: 40px;
+}
+
+.paragraphe22 p {
+  font-weight: bold;
+}
+
+.paragraphe23 {
+  padding-top: 5px;
+  padding-right: 45px;
+}
+
+.paragraphe15 {
+  display: flex;
+  padding-top: 5px;
+  padding-right: 135px;
   gap: 40px;
 }
 
@@ -155,15 +194,106 @@ td {
   padding-right: 440px;
 }
 
+.paragraphe16 {
+  display: flex;
+  padding-top: 10px;
+  padding-right: 103px;
+  gap: 35px;
+}
+
+.paragraphe17 {
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
 .paragraphe5 {
   display: flex;
   text-align: right;
-  padding-top: 10px;
   padding-right: 10px;
   clear: both; /* Ensures the div is not floating beside the table */
   font-weight: bold;
 }
 
+.paragraphe25 p {
+  font-weight: bold;
+}
+
+.paragraphe25 {
+  display: flex;
+  text-align: right;
+  padding-top: 50px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.pagination1 {
+  position: relative;
+  text-align: left;
+  padding-left: 35px;
+  left: 10px;
+}
+
+.pagination2 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 120px;
+  left: 10px;
+}
+
+.pagination3 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 180px;
+  left: 10px;
+}
+
+.pagination4 {
+  text-align: left;
+  padding-left: 35px;
+  left: 10px;
+}
+.pagination5 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 330px;
+  left: 10px;
+}
+
+.pagination6 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 230px;
+  left: 10px;
+}
+
+.pagination7 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 535px;
+  left: 10px;
+}
+
+.pagination8 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 140px;
+  left: 10px;
+}
+.paragraphe25 {
+  display: flex;
+  text-align: right;
+  padding-top: 50px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+.paragraphe25 p {
+  font-weight: bold;
+}
+
+.paragraphe25 span {
+  font-weight: 100;
+}
 .paragraphe9 {
   display: flex;
   text-align: right;
@@ -178,13 +308,34 @@ td {
   font-size: 13px;
 }
 
+.table5 {
+  float: left;
+  text-align: center;
+  padding-top: 10px;
+  padding-left: 25px;
+  font-size: 13px;
+}
+
 .table3style {
   width: 730px;
   height: 66px;
   border: 1.5px;
 }
 
+.table5style {
+  width: 730px;
+  height: 66px;
+  border: 1.5px;
+}
+
 .table3td1 {
+  width: 100px;
+  text-align: center;
+  height: 35.0938px;
+}
+
+.table5td6 {
+  font-weight: bold;
   width: 100px;
   text-align: center;
   height: 35.0938px;
@@ -217,6 +368,39 @@ td {
   font-weight: bold;
 }
 
+.paragraphe12 {
+  display: flex;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 20px;
+  clear: both; /* Ensures the div is not floating beside the table */
+  font-weight: bold;
+}
+
+.paragraphe13 {
+  display: flex;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 25px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.paragraphe24 {
+  display: flex;
+  text-align: right;
+  padding-top: 15px;
+  padding-right: 25px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.paragraphe14 {
+  display: flex;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 25px;
+  clear: both; /* Ensures the div is not floating beside the table */
+  font-weight: bold;
+}
 .table4 {
   float: left;
   text-align: center;
@@ -267,6 +451,12 @@ td {
   height: 25px;
 }
 
+.table42td15 {
+  min-width: 200px;
+  text-align: center;
+  height: 25px;
+}
+
 .table4td17 {
   width: 490px;
   height: 25px;
@@ -284,13 +474,25 @@ td {
   font-weight: bold;
 }
 
-.table4td111 {
+.table42td14 {
+  text-align: center;
+  height: 25px;
+  font-weight: bold;
+}
+
+.table42td111 {
   min-width: 200px;
   text-align: center;
   height: 25px;
 }
 
-.table4td122 {
+.table42td111 {
+  width: 100px;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td25 {
   min-width: 60px;
   text-align: center;
   height: 25px;
@@ -314,8 +516,21 @@ td {
   height: 25px;
 }
 
+.table4td99 {
+  width: 180px;
+  text-align: centre;
+  height: 25px;
+}
+
 .table4td77 {
-  width: 350px;
+  width: 400px;
+  vertical-align: top;
+  text-align: right;
+  height: 25px;
+}
+
+.table4td78 {
+  width: 250px;
   vertical-align: top;
   text-align: right;
   height: 25px;
@@ -337,6 +552,11 @@ td {
   padding-left: 7px;
   padding-right: 7px;
   padding-bottom: 10px;
+}
+
+.table42tr2 .table42td15 {
+  text-align: right;
+  padding-right: 5px;
 }
 
 .table4tr15 .table4td17 {
@@ -379,9 +599,28 @@ td {
   border-top: none;
   border-bottom: none;
 }
+
+.table42tr2 td {
+  border-top: none;
+  border-bottom: none;
+}
 .table4tr7 td {
   border-top: none;
   border-bottom: none;
+}
+
+.table5tr1 td,
+.table5tr2 td {
+  font-weight: bold;
+}
+
+.table5tr3 td {
+  border-top: none;
+  border-bottom: none;
+}
+
+.table5tr4 td {
+  border-top: none;
 }
 
 .table4td22 span,
@@ -397,6 +636,17 @@ td {
 }
 
 .table4td4 p {
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-bottom: 5px;
+}
+
+.table4td24 p {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.table4td20 p {
   padding-top: 5px;
   padding-right: 15px;
   padding-bottom: 5px;
@@ -448,6 +698,29 @@ td {
   text-align: right;
   padding-left: 7px;
   padding-right: 7px;
+}
+
+.table4td24 {
+  border-bottom: none;
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.table4td222 {
+  border-bottom: none;
+}
+
+.table4td25 {
+  border-bottom: none;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+.table4td20 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  width: 300px;
 }
 
 .table4td16 {
@@ -506,6 +779,12 @@ td {
   border-bottom: none;
 }
 
+.table42tr1 td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: bold;
+}
+
 .table4tr16 td {
   padding-top: 2px;
   border-bottom: none;
@@ -537,7 +816,6 @@ td {
 .table4tr10 td {
   text-align: center;
   padding-bottom: 10px;
-  border-bottom: none;
 }
 
 .table4td9 {
@@ -547,11 +825,55 @@ td {
 .table4tr17 td {
   padding-top: 2px;
 }
+
+.table4td13 {
+  border-top: none;
+  border-right: none;
+}
+
+.table4td21 {
+  text-align: right;
+  width: 450px;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.table4td23 {
+  font-weight: bold;
+  text-align: right;
+  width: 450px;
+  padding-right: 300px;
+}
+
 .footernotes {
   padding-right: 7px;
   padding-bottom: 5px;
   display: flex;
   font-size: 10px;
+}
+
+.footernotes3 {
+  padding-right: 80px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 10px;
+}
+.footernotes1 {
+  padding-top: 10px;
+  padding-right: 7px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 15px;
+}
+
+.footernotes2 {
+  padding-top: 300px;
+  padding-right: 7px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 15px;
 }
 
 .paragraphe7 {
@@ -593,6 +915,12 @@ td {
   padding-left: 10px;
 }
 
+.centre-text {
+  text-align: center;
+  margin: 0;
+  padding-left: 10px;
+}
+
 .left-text {
   display: flex;
   padding-left: 30px;
@@ -607,6 +935,12 @@ td {
 .left-text3 {
   display: flex;
   padding-left: 20px;
+  gap: 10px; /* Space between "نعم/لا" and tables */
+}
+
+.left-text4 {
+  display: flex;
+  padding-left: 5px;
   gap: 10px; /* Space between "نعم/لا" and tables */
 }
 
@@ -628,6 +962,11 @@ td {
 #paddingl3 {
   padding-left: 15px;
   padding-right: 15px;
+}
+
+#paddingl10 {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 #paddingl4 {
@@ -672,6 +1011,20 @@ td {
   gap: 10px; /* Adds spacing between items */
 }
 
+.flex-container4 {
+  padding-top: 10px;
+  padding-right: 5px;
+  display: flex; /* Enables flexbox for horizontal alignment */
+  gap: 50px; /* Adds spacing between items */
+}
+
+.flex-container5 {
+  padding-top: 10px;
+  padding-right: 5px;
+  display: flex; /* Enables flexbox for horizontal alignment */
+  gap: 20px; /* Adds spacing between items */
+}
+
 .paragraphe10 {
   display: flex;
   padding-top: 5px;
@@ -695,5 +1048,23 @@ td {
 .paragraphe11 {
   text-align: right;
   padding-right: 10px;
+  font-weight: bold;
+}
+
+.paragraphe20 p {
+  font-size: 20px;
+}
+.paragraphe20 {
+  text-align: center;
+  font-weight: bold;
+}
+
+.paragraphe21 p {
+  font-size: 18px;
+}
+.paragraphe21 {
+  padding-right: 100px;
+  text-align: center;
+  width: 650px;
   font-weight: bold;
 }
