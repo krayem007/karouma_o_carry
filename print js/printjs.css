@@ -27,6 +27,7 @@ body {
   background-color: aliceblue;
   border-bottom: 1px solid rgb(173, 173, 173);
   page-break-after: always;
+  direction: rtl;
 }
 
 .content:last-child {

@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulaire Déclaration TVA</title>
     <link rel="stylesheet" href="printjs.css" />
+    <script src="./behavor.js"></script>
   </head>
-  <body>
+  <body id="bodbod">
     <!------------------------------- page1 --------------------------------->
     <div class="content">
       <div class="inligne">
@@ -3284,6 +3285,7 @@
       </div>
       <div class="footernotes">( 3 ) مناب الجماعة = المعلوم X مساحة الفرع</div>
       <div class="footernotes3">رقم المعاملات الجملي .</div>
+      <button onclick="prrrint('bodbod')">print</button>
     </div>
   </body>
 </html>
