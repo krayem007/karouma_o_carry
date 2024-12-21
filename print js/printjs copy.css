@@ -7,32 +7,31 @@
 
 @page {
   size: A4;
-  margin: 10mm;
+  margin: 0;
 }
 
 html,
 body {
+  width: 210mm;
   margin: 0;
   padding: 0;
-  height: 100%;
 }
 
 .content {
-  width: 100%;
-  max-width: 210mm;
+  width: 210mm;
   height: 297mm;
   margin: auto;
   padding: 20px;
   box-sizing: border-box;
   font-family: "Times New Roman", Times, serif;
+  background-color: aliceblue;
   border-bottom: 1px solid rgb(173, 173, 173);
-  break-after: page; /* Compatible with more PDF tools */
+  page-break-after: always;
   direction: rtl;
-  text-align: right; /* Ensure text aligns properly */
 }
 
 .content:last-child {
-  break-after: auto;
+  page-break-after: auto;
 }
 
 .inligne {
@@ -50,19 +49,16 @@ img {
 }
 
 #cellule {
-  text-align: center;
   width: 25px;
   height: 25px;
 }
 
 #cellule3 {
-  text-align: center;
   width: 20px;
   height: 20px;
 }
 
 #cellule4 {
-  text-align: center;
   width: 35px;
   height: 20px;
 }
@@ -138,7 +134,6 @@ td {
 }
 
 .table2td1 {
-  text-align: center;
   width: 25px;
   height: 25px;
 }
@@ -168,10 +163,6 @@ td {
   padding-top: 5px;
   padding-right: 10px;
   gap: 40px;
-}
-
-#pwidth1 {
-  width: 34%;
 }
 
 .paragraphe22 {
@@ -960,7 +951,6 @@ td {
 }
 
 #cellule2 {
-  text-align: center;
   width: 25px;
   min-height: 10px;
 }

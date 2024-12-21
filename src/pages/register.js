@@ -185,7 +185,7 @@ const Inscription = () => {
             <Col md={3}>
               <Form.Group controlId="nombre_filial">
                 <Form.Label>Nombre de filiale (2) :</Form.Label>
-                <Form.Control type="number" name="nombre_filial" />
+                <Form.Control type="number" name="nombre_filial" min="0" />
               </Form.Group>
             </Col>
           </Row>
