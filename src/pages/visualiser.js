@@ -60,15 +60,15 @@ const Visualiser = () => {
                       required
                     />
                   </th>
-                  <th>N°</th>
                   <th>Mois</th>
                   <th>Année</th>
                   <th>Total R.S</th>
                   <th>TFP</th>
                   <th>FOPROLOS</th>
-                  <th>Total TVA déductible</th>
-                  <th>Total TVA collecté</th>
-                  <th>Solde TVA</th>
+                  <th>Droit de Consommation</th>
+                  <th>TVA</th>
+                  <th>Droit de timbre fiscal</th>
+                  <th>TCL</th>
                   <th>Total à déclarer</th>
                 </tr>
               </thead>
@@ -79,37 +79,18 @@ const Visualiser = () => {
                   </td>
                   <td>
                     <a href="/src/6396802.pdf" download>
-                      1
+                      12
                     </a>
                   </td>
-                  <td>09</td>
                   <td>2024</td>
-                  <td>1500</td>
-                  <td>250</td>
-                  <td>150</td>
-                  <td>1650</td>
+                  <td>175,772</td>
+                  <td>20,000</td>
+                  <td>10,000</td>
                   <td>-</td>
-                  <td>1650</td>
-                  <td>3550</td>
-                </tr>
-                <tr>
-                  <td>
-                    <input type="checkbox" className="declaration" />
-                  </td>
-                  <td>
-                    <a href="/src/6396802.pdf" download>
-                      2
-                    </a>
-                  </td>
-                  <td>08</td>
-                  <td>2024</td>
-                  <td>1000</td>
-                  <td>250</td>
-                  <td>150</td>
-                  <td>-</td>
-                  <td>50</td>
-                  <td>-50</td>
-                  <td>2000</td>
+                  <td>148,552</td>
+                  <td>1,000</td>
+                  <td>4,762</td>
+                  <td>360,086</td>
                 </tr>
               </tbody>
             </Table>
