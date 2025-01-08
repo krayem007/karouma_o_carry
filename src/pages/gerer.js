@@ -631,7 +631,6 @@ const Gerer = () => {
                                 <Form.Group controlId={`type-paie-${index}`}>
                                   <Form.Select
                                     aria-label="Secteur d'activité"
-                                    className="form-control"
                                     value={paie[index]?.typepaie || ""} // Ensure correct access to the row's value
                                     onChange={(e) =>
                                       chngFn1(index, {
@@ -661,7 +660,6 @@ const Gerer = () => {
                                 <Form.Group controlId={`chef-paie-${index}`}>
                                   <Form.Select
                                     aria-label="Chef de famille"
-                                    className="form-control"
                                     value={paie[index]?.chef || ""} // Access the 'chef' value of the specific row
                                     onChange={(e) =>
                                       chngFn1(index, {
