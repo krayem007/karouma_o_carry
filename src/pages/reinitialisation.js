@@ -37,7 +37,7 @@ const Reinitialisation = () => {
       set_Validated(true);
     } else {
       set_Validated(true);
-      const emailExists = true;
+      const emailExists = false; //******Gassouna Change this to true or false *******
 
       if (emailExists) {
         setAlert({

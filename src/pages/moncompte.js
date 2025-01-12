@@ -14,6 +14,7 @@ import {
   Breadcrumb,
   Tab,
   Tabs,
+  Toast,
 } from "react-bootstrap";
 
 const TITLE = "Mon Compte | " + Config.SITE_TITLE;
@@ -22,12 +23,15 @@ const CANONICAL = Config.SITE_DOMAIN + "/moncompte";
 
 const Moncompte = () => {
   const [validated, set_Validated] = useState(false);
+  const [validated1, set_Validated1] = useState(false);
   const [form_Data, set_Form_Data] = useState({
     anpassword: "",
     confirm_password: "",
     email: "",
     nvpassword: "",
   });
+  const [alert, setAlert] = useState(null);
+  let OldPasswordCheck = false; // ******Gassouna Change this to true or false *******
 
   const handleRemoveItem = () => {
     const res = window.confirm(
@@ -36,12 +40,59 @@ const Moncompte = () => {
   };
 
   const submitFn = (event) => {
+    event.preventDefault(); // Prevent default form submission
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
+    } else {
+      const PersoChange = true; // ******Gassouna Change this to true or false *******
+      if (PersoChange) {
+        setAlert({
+          message:
+            "Vos informations personnelles ont été mises à jour avec succès.",
+          type: "success",
+        });
+
+        // Clear the alert after 3 seconds
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000);
+      }
     }
     set_Validated(true);
+  };
+
+  const submitFn1 = (event) => {
+    event.preventDefault(); // Prevent default form submission
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.stopPropagation();
+    } else {
+      if (OldPasswordCheck && form_Data.nvpassword !== form_Data.anpassword) {
+        setAlert({
+          message: "Votre mot de passe a été changé avec succès.",
+          type: "success",
+        });
+
+        // Clear the alert after 3 seconds
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000);
+      }
+      if (!OldPasswordCheck) {
+        setAlert({
+          message: "L'ancien mot de passe que vous avez saisi est incorrect.",
+          type: "error",
+        });
+
+        // Clear the alert after 3 seconds
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000);
+      }
+    }
+
+    set_Validated1(true);
   };
 
   const chngFn = (event) => {
@@ -50,6 +101,7 @@ const Moncompte = () => {
       ...prevData,
       [name]: value,
     }));
+    set_Validated1(false);
     set_Validated(false);
   };
 
@@ -73,6 +125,17 @@ const Moncompte = () => {
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
       </Helmet>
+      {alert && (
+        <Toast
+          className="toast"
+          bg={alert.type === "success" ? "success" : "error"}
+          onClose={() => setAlert(null)}
+          autohide
+          delay={3000}
+        >
+          <Toast.Body>{alert.message}</Toast.Body>
+        </Toast>
+      )}
       <Container>
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
@@ -361,8 +424,8 @@ const Moncompte = () => {
             <Container>
               <Form
                 noValidate
-                validated={validated}
-                onSubmit={submitFn}
+                validated={validated1}
+                onSubmit={submitFn1}
                 className="register"
               >
                 <Row className="main-user-info">
@@ -391,13 +454,20 @@ const Moncompte = () => {
                       <Form.Control
                         type="password"
                         name="anpassword"
+                        value={form_Data.anpassword}
                         className="mail_input"
                         onChange={chngFn}
                         minLength={6}
                         required
+                        isInvalid={
+                          validated1 &&
+                          (!OldPasswordCheck || form_Data.anpassword === "")
+                        }
                       />
                       <Form.Control.Feedback type="invalid">
-                        Veuillez entrer votre ancien mot de passe.
+                        {!OldPasswordCheck && form_Data.anpassword !== ""
+                          ? "L'ancien mot de passe que vous avez saisi est incorrect."
+                          : "Veuillez entrer votre ancien mot de passe."}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -418,15 +488,30 @@ const Moncompte = () => {
                         value={form_Data.nvpassword}
                         onChange={chngFn}
                         minLength={6}
-                        isInvalid={validated && form_Data.nvpassword.length < 6}
                         required
+                        isInvalid={
+                          validated1 &&
+                          (form_Data.nvpassword === "" ||
+                            form_Data.nvpassword.length < 6 ||
+                            form_Data.nvpassword === form_Data.anpassword)
+                        }
+                        isValid={
+                          validated1 &&
+                          form_Data.nvpassword.length >= 6 &&
+                          form_Data.nvpassword !== form_Data.anpassword
+                        }
                       />
                       <Form.Control.Feedback type="invalid">
-                        Le mot de passe doit comporter plus de 6 caractères.
+                        {form_Data.nvpassword === ""
+                          ? "Veuillez entrer votre nouveau mot de passe."
+                          : form_Data.nvpassword.length < 6
+                          ? "Le mot de passe doit comporter au moins 6 caractères."
+                          : "Le nouveau mot de passe doit être différent de l'ancien."}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
+
                 <Row className="main-user-info">
                   <Col md={6}>
                     <Form.Group
@@ -446,13 +531,13 @@ const Moncompte = () => {
                         minLength={6}
                         required
                         isInvalid={
-                          validated &&
+                          validated1 &&
                           (form_Data.confirm_password === "" || // Empty
                             form_Data.confirm_password.length < 6 || // Less than 6 characters
                             form_Data.confirm_password !== form_Data.nvpassword) // Ensure it has at least 6 characters
                         }
                         isValid={
-                          validated &&
+                          validated1 &&
                           form_Data.confirm_password.length >= 6 && // At least 6 characters
                           form_Data.nvpassword === form_Data.confirm_password // Must match
                         }

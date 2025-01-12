@@ -519,7 +519,8 @@ div.card {
 .section_title {
   margin: 20px 0px !important;
 }
-.invalid-feedback {
+.invalid-feedback,
+.valid-feedback {
   margin: 0 !important;
   font-size: 12px !important;
   max-width: 300px !important;
@@ -807,8 +808,8 @@ td .feedback {
 /* Toast Style */
 .toast {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 70px;
+  right: 0;
   z-index: 9999;
   font-size: 12px;
   padding: 10px 20px;

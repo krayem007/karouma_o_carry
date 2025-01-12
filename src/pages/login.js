@@ -3,7 +3,15 @@ import React, { useState } from "react";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Col, Row, Form, Breadcrumb, Button } from "react-bootstrap";
+import {
+  Container,
+  Col,
+  Row,
+  Form,
+  Breadcrumb,
+  Button,
+  Toast,
+} from "react-bootstrap";
 
 const TITLE = "Connexion | " + Config.SITE_TITLE;
 const DESC = "Connexion ";
@@ -15,22 +23,39 @@ const Connexion = ({ setIsLoggedIn }) => {
     password: "",
     email: "",
   });
+  const [alert, setAlert] = useState(null);
 
   const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
 
   const submitFn = (event) => {
+    event.preventDefault(); // Prevent default form submission
     const form = event.currentTarget;
+
+    // Validate the form
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
-    } else {
-      event.preventDefault(); // Prevent default submission
-      // Here, add your login logic (e.g., API call)
-      // If login is successful:
-      setIsLoggedIn(true); // Update the logged-in state
-      navigate("/welcome"); // Use the navigate function
+      set_Validated(true);
+      return;
     }
-    set_Validated(true);
+
+    const AccountExists = true; // ******Gassouna Change this to true or false *******
+
+    if (AccountExists) {
+      setIsLoggedIn(true);
+      navigate("/welcome");
+    } else {
+      setAlert({
+        message: "Cette adresse e-mail n'est pas associée à un compte.",
+        type: "error",
+      });
+
+      // Clear the alert after 3 seconds
+      setTimeout(() => {
+        setAlert(null);
+      }, 3000);
+    }
+
+    set_Validated(true); // Mark the form as validated
   };
 
   const chngFn = (event) => {
@@ -62,6 +87,17 @@ const Connexion = ({ setIsLoggedIn }) => {
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
       </Helmet>
+      {alert && (
+        <Toast
+          className="toast"
+          bg={alert.type === "success" ? "success" : "error"}
+          onClose={() => setAlert(null)}
+          autohide
+          delay={3000}
+        >
+          <Toast.Body>{alert.message}</Toast.Body>
+        </Toast>
+      )}
       <Container className="register">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
