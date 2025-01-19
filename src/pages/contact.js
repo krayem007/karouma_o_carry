@@ -99,7 +99,7 @@ const Contact = () => {
         <meta name="theme-color" content={Config.THEME_COLOR} />
       </Helmet>
 
-      <Container className="register">
+      <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>

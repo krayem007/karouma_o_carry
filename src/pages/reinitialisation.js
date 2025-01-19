@@ -103,7 +103,7 @@ const Reinitialisation = () => {
           <Toast.Body>{alert.message}</Toast.Body>
         </Toast>
       )}
-      <Container className="register-page">
+      <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>

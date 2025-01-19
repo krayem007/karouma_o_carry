@@ -98,7 +98,7 @@ const Connexion = ({ setIsLoggedIn }) => {
           <Toast.Body>{alert.message}</Toast.Body>
         </Toast>
       )}
-      <Container className="register">
+      <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>
