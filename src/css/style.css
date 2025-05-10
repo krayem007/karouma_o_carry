@@ -8,6 +8,17 @@
   scroll-behavior: smooth;
 }
 
+/* Chrome, Safari, Edge, Opera hiden arrow of input type number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox hiden arrow of input type number */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 /* header */
 /* scrollbar */
 
@@ -362,7 +373,7 @@ div.card {
   box-shadow: 3px 3px 6px 6px #ccc;
   padding: 10px;
   width: 16em;
-  margin-bottom: 40px;
+  margin-bottom: 50px !important;
   text-align: center;
   border-radius: 10px;
   width: 100% !important;
@@ -764,6 +775,7 @@ td .feedback {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Full viewport height */
+  margin-bottom: 50px;
 }
 
 #clic {

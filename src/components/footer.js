@@ -98,7 +98,7 @@ class Footer extends React.Component {
             <Row>
               <Col className="footer-copyright text-center">
                 <p>
-                  Déclaration Facile © Copyright 2024. Tous droits réservés.
+                  Déclaration Facile © Copyright 2025. Tous droits réservés.
                 </p>
               </Col>
             </Row>

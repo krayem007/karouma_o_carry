@@ -887,18 +887,16 @@ const Gerer = () => {
 
                               <td>
                                 <Form.Select
-                                  aria-label="Retenue à la source"
-                                  value={retenue[index]?.source || ""}
+                                  aria-label="TVA"
+                                  value={retenue[index]?.tva || ""}
                                   onChange={(e) =>
                                     chngFn2(index, {
                                       ...retenue[index],
-                                      source: e.target.value,
+                                      tva: e.target.value,
                                     })
                                   }
                                   required
-                                  isInvalid={
-                                    validated && !retenue[index]?.source
-                                  }
+                                  isInvalid={validated && !retenue[index]?.tva}
                                 >
                                   <option value=""> Taux TVA </option>
                                   <option>7%</option>

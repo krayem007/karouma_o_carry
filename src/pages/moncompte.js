@@ -239,7 +239,7 @@ const Moncompte = () => {
                         required
                       />
                       <Form.Control.Feedback type="invalid">
-                        Veuillez remplir le Code catégorie
+                        Veuillez remplir le code catégorie
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -402,6 +402,7 @@ const Moncompte = () => {
                         name="cessation_annee"
                         min="1900"
                         max="2200"
+                        className="text-center"
                         onInput={(e) =>
                           (e.target.value = e.target.value.slice(0, 4))
                         }
