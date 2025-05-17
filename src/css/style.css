@@ -703,6 +703,17 @@ td {
   .textadj {
     margin: 7px 0px !important;
   }
+
+  .grey1 {
+    margin: 7px 0px !important;
+    background-color: #dbdada !important; /* Light gray background */
+    cursor: not-allowed !important;
+  }
+}
+
+.grey1 {
+  background-color: #dbdada !important; /* Light gray background */
+  cursor: not-allowed !important;
 }
 
 td .form-control {

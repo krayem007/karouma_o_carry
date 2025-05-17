@@ -44,6 +44,12 @@ const Gerer = () => {
   // Check if both fields are filled
   const isFormValid = annee !== "" && mois !== "" && mois !== "Mois";
 
+  const handleAddFacture = () => {
+    if (isSaisieClicked) {
+      setFactures([...factures, { Date: "", selected: false }]); // Add new facture with an empty Date
+    }
+  };
+
   const handleChangerMoisAnneeClick = () => {
     setMois(""); // Reset 'mois' to empty
     setAnnee(""); // Reset 'annee' to empty
@@ -51,25 +57,6 @@ const Gerer = () => {
     setFactures([]);
     setPaie([]);
     setRetenue([]);
-  };
-
-  const handleAddFacture = () => {
-    if (isSaisieClicked) {
-      // Adding a new facture with all necessary fields, including `inputSource`
-      setFactures([
-        ...factures,
-        {
-          Date: "",
-          Type: "",
-          TotalHT: "",
-          TotalTTC: "",
-          Timbre: "",
-          tva: "",
-          selected: false,
-          inputSource: null, // Default value, will be set when the user starts typing
-        },
-      ]);
-    }
   };
 
   const handleAddPaie = () => {
@@ -80,18 +67,7 @@ const Gerer = () => {
 
   const handleAddRetenue = () => {
     if (isSaisieClicked) {
-      // Add a new retenue with the `inputSource` initialized to null
-      setRetenue([
-        ...retenue,
-        {
-          source: "",
-          montantHT: "",
-          montantTTC: "",
-          tva: "",
-          selected: false,
-          inputSource: null, // Track which field was edited first (HT or TTC)
-        },
-      ]);
+      setRetenue([...retenue, {}]);
     }
   };
 
@@ -149,44 +125,15 @@ const Gerer = () => {
     }
 
     set_Validated(true);
-    console.log(factures);
   };
 
   // Handle changes for facture form fields
-  const chngFn = (index, updatedFacture, fieldChanged) => {
-    const newFactures = [...factures];
-    const currentFacture = { ...updatedFacture };
-
-    // Set inputSource when user changes HT or TTC manually
-    if (fieldChanged === "HT" || fieldChanged === "TTC") {
-      currentFacture.inputSource = fieldChanged;
-    }
-
-    const tvaRate = parseTVA(currentFacture.tva);
-    const timbre = parseFloat(currentFacture.Timbre);
-    const tmb = isNaN(timbre) ? 0 : timbre;
-
-    if (currentFacture.inputSource === "HT") {
-      const ht = parseFloat(currentFacture.TotalHT);
-      if (!isNaN(ht) && !isNaN(tvaRate)) {
-        currentFacture.TotalTTC = (ht * (1 + tvaRate) + tmb).toFixed(3);
-      } else {
-        currentFacture.TotalTTC = "";
-      }
-    } else if (currentFacture.inputSource === "TTC") {
-      const ttc = parseFloat(currentFacture.TotalTTC);
-      if (!isNaN(ttc) && !isNaN(tvaRate)) {
-        currentFacture.TotalHT = ((ttc - tmb) / (1 + tvaRate)).toFixed(3);
-      } else {
-        currentFacture.TotalHT = "";
-      }
-    }
-
-    newFactures[index] = currentFacture;
-    setFactures(newFactures);
+  const chngFn = (index, updatedFacture) => {
+    const updatedFactures = [...factures];
+    updatedFactures[index] = updatedFacture;
+    setFactures(updatedFactures);
     set_Validated(false);
   };
-
   // Handle changes for paie form fields
   const chngFn1 = (index, updatedPaie) => {
     const updatedPaies = [...paie];
@@ -194,47 +141,11 @@ const Gerer = () => {
     setPaie(updatedPaies);
     set_Validated(false);
   };
-  const chngFn2 = (index, updatedRetenue, fieldChanged) => {
-    const updatedRetenues = [...retenue];
-    const currentRetenue = { ...updatedRetenue };
-
-    // Set inputSource when user changes Montant HT or Montant TTC
-    if (fieldChanged === "montantHT" || fieldChanged === "montantTTC") {
-      currentRetenue.inputSource = fieldChanged; // Track whether the user started with HT or TTC
-    }
-
-    const tvaRate = parseTVA(currentRetenue.tva); // Parse the TVA rate
-    const montantHT = parseFloat(currentRetenue.montantHT);
-    const montantTTC = parseFloat(currentRetenue.montantTTC);
-
-    // If the user started with Montant HT (inputSource = "montantHT")
-    if (currentRetenue.inputSource === "montantHT") {
-      if (!isNaN(montantHT) && !isNaN(tvaRate)) {
-        // Calculate Montant TTC
-        currentRetenue.montantTTC = (montantHT * (1 + tvaRate)).toFixed(3);
-      } else {
-        currentRetenue.montantTTC = ""; // Clear Montant TTC if HT is invalid
-      }
-    }
-
-    // If the user started with Montant TTC (inputSource = "montantTTC")
-    if (currentRetenue.inputSource === "montantTTC") {
-      if (!isNaN(montantTTC) && !isNaN(tvaRate)) {
-        // Calculate Montant HT
-        currentRetenue.montantHT = (montantTTC / (1 + tvaRate)).toFixed(3);
-      } else {
-        currentRetenue.montantHT = ""; // Clear Montant HT if TTC is invalid
-      }
-    }
-
-    updatedRetenues[index] = currentRetenue;
-    setRetenue(updatedRetenues);
+  const chngFn2 = (index, updatedRetenue) => {
+    const updatedRetenues = [...retenue]; // Assuming 'retenue' is your state array
+    updatedRetenues[index] = updatedRetenue;
+    setRetenue(updatedRetenues); // Update the 'retenue' state
     set_Validated(false);
-  };
-
-  const parseTVA = (tvaString) => {
-    if (!tvaString) return 0;
-    return parseFloat(tvaString.replace("%", "")) / 100;
   };
 
   return (
@@ -485,16 +396,17 @@ const Gerer = () => {
                                   controlId={`TotalHT-facture${index}`}
                                 >
                                   <Form.Control
+                                    className="textadj"
+                                    type="number"
                                     min="0"
                                     placeholder="Total HT"
                                     value={facture.TotalHT}
-                                    step="0.001"
-                                    onChange={(e) =>
-                                      chngFn(
-                                        index,
-                                        { ...facture, TotalHT: e.target.value },
-                                        "HT"
-                                      )
+                                    onChange={
+                                      (e) =>
+                                        chngFn(index, {
+                                          ...facture,
+                                          TotalHT: e.target.value,
+                                        }) // Only updates Date
                                     }
                                     required
                                     isInvalid={
@@ -517,14 +429,10 @@ const Gerer = () => {
                                     aria-label="TVA"
                                     value={factures[index]?.tva || ""} // Ensure correct access to the row's value
                                     onChange={(e) =>
-                                      chngFn(
-                                        index,
-                                        {
-                                          ...factures[index],
-                                          tva: e.target.value,
-                                        },
-                                        "tva"
-                                      )
+                                      chngFn(index, {
+                                        ...factures[index], // Copy the existing data of the row
+                                        tva: e.target.value, // Update only the typepaie field
+                                      })
                                     }
                                     required
                                     isInvalid={
@@ -555,11 +463,10 @@ const Gerer = () => {
                                     placeholder="Timbre"
                                     value={facture.Timbre}
                                     onChange={(e) =>
-                                      chngFn(
-                                        index,
-                                        { ...facture, Timbre: e.target.value },
-                                        "Timbre"
-                                      )
+                                      chngFn(index, {
+                                        ...facture,
+                                        Timbre: e.target.value,
+                                      })
                                     }
                                     required
                                     isInvalid={
@@ -581,20 +488,17 @@ const Gerer = () => {
                                   controlId={`TotalTTC-facture${index}`}
                                 >
                                   <Form.Control
+                                    className="textadj"
                                     type="number"
                                     min="0"
                                     placeholder="Total TTC"
                                     value={facture.TotalTTC}
-                                    step="0.001"
-                                    onChange={(e) =>
-                                      chngFn(
-                                        index,
-                                        {
+                                    onChange={
+                                      (e) =>
+                                        chngFn(index, {
                                           ...facture,
                                           TotalTTC: e.target.value,
-                                        },
-                                        "TTC"
-                                      )
+                                        }) // Only updates Date
                                     }
                                     required
                                     isInvalid={
@@ -960,16 +864,11 @@ const Gerer = () => {
                                   min="0"
                                   placeholder="Montant HT"
                                   value={retenue[index]?.montantHT || ""}
-                                  step="0.001"
                                   onChange={(e) =>
-                                    chngFn2(
-                                      index,
-                                      {
-                                        ...retenue[index],
-                                        montantHT: e.target.value,
-                                      },
-                                      "montantHT"
-                                    )
+                                    chngFn2(index, {
+                                      ...retenue[index],
+                                      montantHT: e.target.value,
+                                    })
                                   }
                                   required
                                   isInvalid={
@@ -991,14 +890,10 @@ const Gerer = () => {
                                   aria-label="TVA"
                                   value={retenue[index]?.tva || ""}
                                   onChange={(e) =>
-                                    chngFn2(
-                                      index,
-                                      {
-                                        ...retenue[index],
-                                        tva: e.target.value,
-                                      },
-                                      "tva"
-                                    )
+                                    chngFn2(index, {
+                                      ...retenue[index],
+                                      tva: e.target.value,
+                                    })
                                   }
                                   required
                                   isInvalid={validated && !retenue[index]?.tva}
@@ -1023,16 +918,11 @@ const Gerer = () => {
                                   min="0"
                                   placeholder="Montant TTC"
                                   value={retenue[index]?.montantTTC || ""}
-                                  step="0.001"
                                   onChange={(e) =>
-                                    chngFn2(
-                                      index,
-                                      {
-                                        ...retenue[index],
-                                        montantTTC: e.target.value,
-                                      },
-                                      "montantTTC"
-                                    )
+                                    chngFn2(index, {
+                                      ...retenue[index],
+                                      montantTTC: e.target.value,
+                                    })
                                   }
                                   required
                                   isInvalid={
