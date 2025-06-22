@@ -552,6 +552,7 @@ const Moncompte = () => {
                         required
                         min="1900"
                         max="2200"
+                        className="text-center"
                         onInput={(e) =>
                           (e.target.value = e.target.value.slice(0, 4))
                         }

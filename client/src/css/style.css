@@ -8,6 +8,17 @@
   scroll-behavior: smooth;
 }
 
+/* Chrome, Safari, Edge, Opera hiden arrow of input type number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox hiden arrow of input type number */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 /* header */
 /* scrollbar */
 
@@ -362,7 +373,7 @@ div.card {
   box-shadow: 3px 3px 6px 6px #ccc;
   padding: 10px;
   width: 16em;
-  margin-bottom: 40px;
+  margin-bottom: 50px !important;
   text-align: center;
   border-radius: 10px;
   width: 100% !important;
@@ -519,7 +530,8 @@ div.card {
 .section_title {
   margin: 20px 0px !important;
 }
-.invalid-feedback {
+.invalid-feedback,
+.valid-feedback {
   margin: 0 !important;
   font-size: 12px !important;
   max-width: 300px !important;
@@ -692,17 +704,17 @@ td {
     margin: 7px 0px !important;
   }
 
-  .textadj1 {
+  .grey1 {
     margin: 7px 0px !important;
     background-color: #dbdada !important; /* Light gray background */
     cursor: not-allowed !important;
   }
+}
 
-  }
-
-  .textadj1 {
-    background-color: #dbdada !important; /* Light gray background */
-  }
+.grey1 {
+  background-color: #dbdada !important; /* Light gray background */
+  cursor: not-allowed !important;
+}
 
 td .form-control {
   margin-bottom: 9px !important; /* Removes space below Form.Control */
@@ -774,6 +786,7 @@ td .feedback {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Full viewport height */
+  margin-bottom: 50px;
 }
 
 #clic {
@@ -818,8 +831,8 @@ td .feedback {
 /* Toast Style */
 .toast {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 70px;
+  right: 0;
   z-index: 9999;
   font-size: 12px;
   padding: 10px 20px;

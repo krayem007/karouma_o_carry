@@ -12,6 +12,15 @@ const instance = axios.create({
 });
 
 //export default instance;
+import {
+  Container,
+  Col,
+  Row,
+  Form,
+  Breadcrumb,
+  Button,
+  Toast,
+} from "react-bootstrap";
 
 const TITLE = "Connexion | " + Config.SITE_TITLE;
 const DESC = "Connexion ";
@@ -83,6 +92,7 @@ const Connexion = ({ setIsLoggedIn }) => {
       
     }
     set_Validated(true);
+
   };
 
   const chngFn = (event) => {
@@ -114,7 +124,18 @@ const Connexion = ({ setIsLoggedIn }) => {
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
       </Helmet>
-      <Container className="register">
+      {alert && (
+        <Toast
+          className="toast"
+          bg={alert.type === "success" ? "success" : "error"}
+          onClose={() => setAlert(null)}
+          autohide
+          delay={3000}
+        >
+          <Toast.Body>{alert.message}</Toast.Body>
+        </Toast>
+      )}
+      <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>

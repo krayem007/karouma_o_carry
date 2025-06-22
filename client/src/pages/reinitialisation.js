@@ -37,7 +37,7 @@ const Reinitialisation = () => {
       set_Validated(true);
     } else {
       set_Validated(true);
-      const emailExists = true;
+      const emailExists = false; //******Gassouna Change this to true or false *******
 
       if (emailExists) {
         setAlert({
@@ -103,7 +103,7 @@ const Reinitialisation = () => {
           <Toast.Body>{alert.message}</Toast.Body>
         </Toast>
       )}
-      <Container className="register-page">
+      <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>

@@ -17,6 +17,7 @@ import {
   Toast,
 } from "react-bootstrap";
 const bcrypt = require('bcryptjs');
+
 const TITLE = "Inscription | " + Config.SITE_TITLE;
 const DESC = "Inscription ";
 const CANONICAL = Config.SITE_DOMAIN + "/inscription";
@@ -107,8 +108,8 @@ const Inscription = () => {
         >
           <Toast.Body>{alert.message}</Toast.Body>
         </Toast>
-      )}  
-      <Container className="register-page">
+      )}
+      <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>
