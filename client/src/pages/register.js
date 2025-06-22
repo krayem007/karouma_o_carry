@@ -259,7 +259,7 @@ const Inscription = () => {
                   Code postal :
                 </Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   name="code_postal"
                   min="0000"
                   max="9999"
@@ -296,7 +296,7 @@ const Inscription = () => {
               <Form.Group controlId="cessation_jour">
                 <Form.Label>Jour :</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   name="cessation_jour"
                   min="1"
                   max="31"
@@ -311,7 +311,7 @@ const Inscription = () => {
               <Form.Group controlId="cessation_mois">
                 <Form.Label>Mois :</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   name="cessation_mois"
                   min="1"
                   max="12"
@@ -326,7 +326,7 @@ const Inscription = () => {
               <Form.Group controlId="cessation_annee">
                 <Form.Label>Année :</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   name="cessation_annee"
                   min="1900"
                   max="2200"

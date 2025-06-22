@@ -3,13 +3,8 @@ import React, { useState, useEffect } from "react";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Col, Row, Form, Breadcrumb, Button } from "react-bootstrap";
 import axios from  "axios";
 
-const instance = axios.create({
-  baseURL: 'http://localhost:5000', // Base URL of the Express backend
-  withCredentials: true, // Allow sending cookies with requests
-});
 
 //export default instance;
 import {
@@ -21,6 +16,12 @@ import {
   Button,
   Toast,
 } from "react-bootstrap";
+
+const instance = axios.create({
+  baseURL: 'http://localhost:5000', // Base URL of the Express backend
+  withCredentials: true, // Allow sending cookies with requests
+});
+
 
 const TITLE = "Connexion | " + Config.SITE_TITLE;
 const DESC = "Connexion ";
@@ -124,17 +125,6 @@ const Connexion = ({ setIsLoggedIn }) => {
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
       </Helmet>
-      {alert && (
-        <Toast
-          className="toast"
-          bg={alert.type === "success" ? "success" : "error"}
-          onClose={() => setAlert(null)}
-          autohide
-          delay={3000}
-        >
-          <Toast.Body>{alert.message}</Toast.Body>
-        </Toast>
-      )}
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
