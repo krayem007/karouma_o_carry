@@ -42,7 +42,7 @@ const Gerer = () => {
     Type: "",
     Ref: "",
     TotalHT: 0,
-    tva: "",
+    tva: 0,
     Timbre: 0,
     TotalTTC: 0,
   },]);
@@ -112,10 +112,10 @@ const Gerer = () => {
           let rnewRows = [];
           for (let i = 0; i < response.data.send_data.retenue.length; i++) {
             rnewRows.push({
-              TVA : response.data.send_data.retenue[i].tva,
-              montantTTC : response.data.send_data.retenue[i].ttc,
-              montantHT  : response.data.send_data.retenue[i].ht,
               source : response.data.send_data.retenue[i].type,
+              montantHT  : response.data.send_data.retenue[i].ht,
+              tva : response.data.send_data.retenue[i].tva,
+              montantTTC : response.data.send_data.retenue[i].ttc,
               id : response.data.send_data.retenue[i].id,
               selected: false
             });
@@ -428,8 +428,7 @@ const Gerer = () => {
   };
 
   const parseTVA = (tvaString) => {
-    if (!tvaString) return 0;
-    return parseFloat(tvaString.replace("%", "")) / 100;
+    return tvaString / 100;
   };
 
   return (

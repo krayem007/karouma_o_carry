@@ -95,6 +95,7 @@ exports.post_dec = async (req, res) => {
 
     // Factures
     req.body.factures.forEach((f, i) => {
+      console.log('gggg fuck me [',i,'] id: ',f.id);
       if (f.id > 0) {
         const sql = `
           UPDATE factures 
@@ -128,6 +129,7 @@ exports.post_dec = async (req, res) => {
 
     // Paie
     req.body.paie.forEach((p, i) => {
+      console.log('gggg  shit paie[',i,'] id: ',p.id);
       if (p.id > 0) {
         const sql = `
           UPDATE paie SET secteur = ?, salarier = ?, famille = ?, num_kids = ?, brut = ?, net = ?, irpp_a = ?, irpp_m = ?, css = ?
@@ -158,12 +160,13 @@ exports.post_dec = async (req, res) => {
 
     // Retenue
     req.body.retenue.forEach((rtn, i) => {
+      console.log('gggg retune a  la hell [',i,'] id: ',rtn.id);
       if (rtn.id > 0) {
         const sql = `
           UPDATE retenue SET type = ?, ht = ?, tva = ?, ttc = ?, tva_r = ?, retenue = ?
           WHERE id = ? AND client_id = ?`;
         const vals = [
-          rtn.source, rtn.montantHT, rtn.TVA, rtn.montantTTC,
+          rtn.source, rtn.montantHT, rtn.tva, rtn.montantTTC,
           fc_tva_r(rtn), fc_retenue(rtn),
           rtn.id, client_id
         ];
@@ -172,7 +175,7 @@ exports.post_dec = async (req, res) => {
         const row = {
           type: rtn.source,
           ht: rtn.montantHT,
-          tva: rtn.TVA,
+          tva: rtn.tva,
           ttc: rtn.montantTTC,
           tva_r: fc_tva_r(rtn),
           retenue: fc_retenue(rtn),
