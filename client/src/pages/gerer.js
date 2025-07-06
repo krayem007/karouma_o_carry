@@ -718,7 +718,7 @@ const Gerer = () => {
                                 <Form.Group controlId={`tva-facture-${index}`}>
                                   <Form.Select
                                     aria-label="TVA"
-                                    value={factures[index]?.tva || ""} // Ensure correct access to the row's value
+                                    value={factures[index]?.tva ?? ""} // Ensure correct access to the row's value
                                     onChange={(e) =>
                                       chngFn(
                                         index,
@@ -929,7 +929,7 @@ const Gerer = () => {
                                     className="textadj"
                                     type="text"
                                     placeholder="Salarier"
-                                    value={paie[index]?.Salarier || ""} // Access value from the specific index
+                                    value={paie[index]?.Salarier ?? ""} // Access value from the specific index
                                     onChange={(e) =>
                                       chngFn1(index, {
                                         ...paie[index], // Copy the existing data of the row
@@ -954,7 +954,7 @@ const Gerer = () => {
                                   <Form.Select
                                     aria-label="Secteur d'activité"
                                     className="form-control"
-                                    value={paie[index]?.typepaie || ""} // Ensure correct access to the row's value
+                                    value={paie[index]?.typepaie ?? ""} // Ensure correct access to the row's value
                                     onChange={(e) =>
                                       chngFn1(index, {
                                         ...paie[index], // Copy the existing data of the row
@@ -984,7 +984,7 @@ const Gerer = () => {
                                   <Form.Select
                                     aria-label="Chef de famille"
                                     className="form-control"
-                                    value={paie[index]?.chef || ""} // Access the 'chef' value of the specific row
+                                    value={paie[index]?.chef ?? ""} // Access the 'chef' value of the specific row
                                     onChange={(e) =>
                                       chngFn1(index, {
                                         ...paie[index], // Copy the existing data of the row
@@ -1016,7 +1016,7 @@ const Gerer = () => {
                                     type="number"
                                     min="0"
                                     placeholder="Nombre d'enfants"
-                                    value={paie[index]?.enfants || ""} // Bind the value to the specific row's 'enfants' field
+                                    value={paie[index]?.enfants ?? ""} // Bind the value to the specific row's 'enfants' field
                                     onChange={(e) =>
                                       chngFn1(index, {
                                         ...paie[index], // Copy existing row data
@@ -1048,7 +1048,7 @@ const Gerer = () => {
                                     type="number"
                                     min="0"
                                     placeholder="Salaire Brut"
-                                    value={paie[index]?.salaireBrut || ""} // Bind to the 'salaireBrut' value for the specific row
+                                    value={paie[index]?.salaireBrut ?? ""} // Bind to the 'salaireBrut' value for the specific row
                                     onChange={(e) =>
                                       chngFn1(index, {
                                         ...paie[index], // Copy the existing row data
@@ -1176,7 +1176,7 @@ const Gerer = () => {
                               <td>
                                 <Form.Select
                                   aria-label="Retenue à la source"
-                                  value={retenue[index]?.source || ""}
+                                  value={retenue[index]?.source ?? ""}
                                   onChange={(e) =>
                                     chngFn2(index, {
                                       ...retenue[index],
@@ -1208,7 +1208,7 @@ const Gerer = () => {
                                   type="number"
                                   min="0"
                                   placeholder="Montant HT"
-                                  value={retenue[index]?.montantHT || ""}
+                                  value={retenue[index]?.montantHT ?? ""}
                                   step="0.001"
                                   onChange={(e) =>
                                     chngFn2(
@@ -1238,7 +1238,7 @@ const Gerer = () => {
                               <td>
                                 <Form.Select
                                   aria-label="TVA"
-                                  value={retenue[index]?.tva || ""}
+                                  value={retenue[index]?.tva ?? ""}
                                   onChange={(e) =>
                                     chngFn2(
                                       index,
@@ -1271,7 +1271,7 @@ const Gerer = () => {
                                   type="number"
                                   min="0"
                                   placeholder="Montant TTC"
-                                  value={retenue[index]?.montantTTC || ""}
+                                  value={retenue[index]?.montantTTC ?? ""}
                                   step="0.001"
                                   onChange={(e) =>
                                     chngFn2(
