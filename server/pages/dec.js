@@ -11,44 +11,147 @@ const db = mysql.createConnection({
     database: process.env.db
 });
 
-
 function fc_ttc_vente(facture) {
-  if (facture.Type == 'Facture de vente')
-    return facture.TotalTTC;
+  if (facture.Type == "Facture de vente") return facture.TotalTTC;
   return 0;
 }
 function fc_ht_vente(facture) {
-  if (facture.Type == 'Facture de vente')
-    return facture.TotalHT;
+  if (facture.Type == "Facture de vente") return facture.TotalHT;
   return 0;
 }
 function fc_ht_chat(facture) {
-  if (facture.Type == "Facture d'achat")
-    return facture.TotalHT;
+  if (facture.Type == "Facture d'achat") return facture.TotalHT;
   return 0;
 }
 function fc_tva_achat(facture) {
   if (facture.Type == "Facture d'achat")
-    return facture.TotalHT* facture.tva /100;
+    return (facture.TotalHT * facture.tva) / 100;
   return 0;
 }
+
+// const paie = { salaireBrut: 1000, chef: "Non", enfants: 3 };
+
+function calculateNetSocialAnnuel(paie) {
+  const CNSS = 0.0968;
+  console.log("1/salaire brut :",paie.salaireBrut);
+  const SB = paie.salaireBrut;
+  console.log("2/return (SB - SB * CNSS) * 12 :", (SB - SB * CNSS) * 12);
+  return (SB - SB * CNSS) * 12;
+}
+
+function FondProfessionel(paie) {
+  const netSocialAnnuel = calculateNetSocialAnnuel(paie);
+  const FPpourcentage = netSocialAnnuel * 0.1;
+  return FPpourcentage < 2000 ? FPpourcentage : 2000;
+}
+
+function NetFP(paie) {
+  const FP = FondProfessionel(paie);
+  console.log("3/fp:",FP);
+  const netSocialAnnuel = calculateNetSocialAnnuel(paie);
+  return netSocialAnnuel - FP;
+}
+
+function Abattement(paie) {
+  if (paie.chef === "Oui" && paie.enfants === 0) {
+    return 300;
+  } else if (paie.chef == "Oui" && paie.enfants == 1) {
+    return 400;
+  } else if (paie.chef == "Oui" && paie.enfants == 2) {
+    return 500;
+  } else if (paie.chef == "Oui" && paie.enfants == 3) {
+    return 600;
+  } else if (paie.chef == "Oui" && paie.enfants > 3) {
+    return 700;
+  } else if (paie.chef == "Non") {
+    return 0;
+  } else {
+    return 0;
+  }
+}
+
+function Imposable(paie) {
+  const NFP = NetFP(paie);
+  console.log("4/NFP :", NFP);
+  const ABAT = Abattement(paie);
+  console.log("5/ABAT :" , ABAT);
+  return NFP - ABAT;
+}
+
+function IRPP(paie) {
+  let irpp = 0;
+  const SalaireImposable = Imposable(paie);
+  console.log("6/mission impossible :", SalaireImposable);
+  if (SalaireImposable <= 5000) {
+    irpp = 0;
+  } else if (SalaireImposable <= 10000) {
+    irpp = (SalaireImposable - 5000) * 0.15;
+  } else if (SalaireImposable <= 20000) {
+    irpp = 5000 * 0.15 + (SalaireImposable - 10000) * 0.25;
+  } else if (SalaireImposable <= 30000) {
+    irpp = 5000 * 0.15 + 10000 * 0.25 + (SalaireImposable - 20000) * 0.3;
+  } else if (SalaireImposable <= 40000) {
+    irpp =
+      5000 * 0.15 +
+      10000 * 0.25 +
+      10000 * 0.3 +
+      (SalaireImposable - 30000) * 0.33;
+  } else if (SalaireImposable <= 50000) {
+    irpp =
+      5000 * 0.15 +
+      10000 * 0.25 +
+      10000 * 0.3 +
+      10000 * 0.33 +
+      (SalaireImposable - 40000) * 0.36;
+  } else if (SalaireImposable <= 70000) {
+    irpp =
+      5000 * 0.15 +
+      10000 * 0.25 +
+      10000 * 0.3 +
+      10000 * 0.33 +
+      10000 * 0.36 +
+      (SalaireImposable - 50000) * 0.38;
+  } else {
+    irpp =
+      5000 * 0.15 +
+      10000 * 0.25 +
+      10000 * 0.3 +
+      10000 * 0.33 +
+      10000 * 0.36 +
+      20000 * 0.38 +
+      (SalaireImposable - 70000) * 0.4;
+  }
+  console.log("7/irpp:", irpp);
+  return irpp;
+}
+
+function IRPPmensuel(paie) {
+  const IRPPannuel = IRPP(paie);
+  return IRPPannuel / 12;
+}
+
+function ContributionSocialeSolidaire(paie) {
+  const SalaireImposable = Imposable(paie);
+  return (SalaireImposable / 12) * 0.005;
+}
+
 function fc_net(paie) {
-  return 1;
+  const netSocialAnnuel = calculateNetSocialAnnuel(paie) / 12;
+  const CSS = ContributionSocialeSolidaire(paie);
+  const irpp = IRPPmensuel(paie);
+  return netSocialAnnuel - CSS - irpp;
 }
-function fc_irpp_a(paie) {
-  return 1;
-}
-function fc_irpp_m(paie) {
-  return 1;
-}
-function fc_css(paie) {
-  return 1;
-}
+
+// const result = RevenuNet(paie);
+
+// console.log("NET FP:", result);
+
 function fc_tva_r(retenue) {
-  return 1;
+  return retenue.montantTTC - retenue.montantHT;
 }
+
 function fc_retenue(retenue) {
-  return 1;
+  return retenue.montantTTC * 0.15;
 }
 
 
@@ -60,6 +163,17 @@ function dbQuery(sql, params) {
       else resolve(results);
     });
   });
+}
+
+
+function fc_irpp_a(paie) {
+  return IRPP(paie);
+}
+function fc_irpp_m(paie) {
+  return IRPPmensuel(paie);
+}
+function fc_css(paie) {
+  return ContributionSocialeSolidaire(paie);
 }
 
 exports.post_dec = async (req, res) => {

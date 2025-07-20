@@ -14,7 +14,7 @@ const db = mysql.createConnection({
 
 exports.save = (req, res) => {
     console.log(req.body);
-    const { password,
+    let { password,
             email, 
             code_acte, 
             identifiant_fiscal,
@@ -28,7 +28,11 @@ exports.save = (req, res) => {
             cessation_jour,
             cessation_mois,
             cessation_annee} = req.body;
-            
+            if (nombre_filial > 0)
+                console.log("k");
+            else
+                nombre_filial = 0;
+
     db.query('SELECT email FROM accounts WHERE email = ?', [email], async (error, results)=>{
         console.log('query error: '+ error);
         console.log('query results: '+ results);

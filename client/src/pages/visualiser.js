@@ -1,21 +1,62 @@
 import icon from "../images/icon.png";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Breadcrumb, Row, Button, Container, Table } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import axios from  "axios";
+
+const instance = axios.create({
+  baseURL: 'http://localhost:5002', // Base URL of the Express backend
+  withCredentials: true, // Allow sending cookies with requests
+});
+
+
 const TITLE = "Mes déclarations | " + Config.SITE_TITLE;
 const DESC = "Mes déclarations";
 const CANONICAL = Config.SITE_DOMAIN + "/visualiser";
+const hiddenStyle = {
+  display: 'none',
+};
+
 
 const Visualiser = () => {
   const [rows, setRows] = useState([]);
   const [selectAllRows, setSelectAllRows] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate hook
+
 
   const handleSelectAllRows = () => {
     setSelectAllRows(!selectAllRows);
     setRows(rows.map((row) => ({ ...row, selected: !selectAllRows })));
   };
+
+  useEffect(() => {
+    
+    instance.get("/welcome").then((response) => 
+      {
+        /*gg test*/console.log(response.data);
+        if (response.data.authorized == "true")
+        {
+          console.log("authorized client");
+        }
+        else
+        {
+          console.log("not authorized client");
+          navigate("/connexion");
+          //neet to logging first
+        }
+      });
+  }, []);
+
+  const print_doc = () =>{
+    instance.post("/print_doc", date).then((response) => 
+    {
+      
+    });
+  };
+
   return (
     <>
       <Helmet>
@@ -70,6 +111,7 @@ const Visualiser = () => {
                   <th>Droit de timbre fiscal</th>
                   <th>TCL</th>
                   <th>Total à déclarer</th>
+                  <th style={hiddenStyle}>id</th>
                 </tr>
               </thead>
               <tbody>
@@ -91,6 +133,7 @@ const Visualiser = () => {
                   <td>1,000</td>
                   <td>4,762</td>
                   <td>360,086</td>
+                  <td style={hiddenStyle}>0</td>
                 </tr>
               </tbody>
             </Table>
@@ -99,7 +142,7 @@ const Visualiser = () => {
         </Row>
         <Row>
           <div className="boutons">
-            <Button variant="primary" type="submit" className="custom-primary">
+            <Button variant="primary" type="submit" onClick={print_doc} className="custom-primary">
               Imprimer
             </Button>
           </div>
