@@ -26,7 +26,7 @@ exports.logging = async (req, res) => {
             if (result == true)
             {
                 results[0].password = "wild il ba3";
-                //req.session.user = id;
+                req.session.user = results[0].id;
                 req.session.email = email;
                 req.session.authorized = true;
                 console.log("logging success");

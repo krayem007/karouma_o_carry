@@ -19,6 +19,11 @@ function fc_ht_vente(facture) {
   if (facture.Type == "Facture de vente") return facture.TotalHT;
   return 0;
 }
+
+function fc_tva_vente(facture){
+  return fc_ht_vente(facture) * facture.tva/100;
+}
+
 function fc_ht_chat(facture) {
   if (facture.Type == "Facture d'achat") return facture.TotalHT;
   return 0;
@@ -33,9 +38,7 @@ function fc_tva_achat(facture) {
 
 function calculateNetSocialAnnuel(paie) {
   const CNSS = 0.0968;
-  console.log("1/salaire brut :",paie.salaireBrut);
   const SB = paie.salaireBrut;
-  console.log("2/return (SB - SB * CNSS) * 12 :", (SB - SB * CNSS) * 12);
   return (SB - SB * CNSS) * 12;
 }
 
@@ -72,16 +75,13 @@ function Abattement(paie) {
 
 function Imposable(paie) {
   const NFP = NetFP(paie);
-  console.log("4/NFP :", NFP);
   const ABAT = Abattement(paie);
-  console.log("5/ABAT :" , ABAT);
   return NFP - ABAT;
 }
 
 function IRPP(paie) {
   let irpp = 0;
   const SalaireImposable = Imposable(paie);
-  console.log("6/mission impossible :", SalaireImposable);
   if (SalaireImposable <= 5000) {
     irpp = 0;
   } else if (SalaireImposable <= 10000) {
@@ -121,7 +121,6 @@ function IRPP(paie) {
       20000 * 0.38 +
       (SalaireImposable - 70000) * 0.4;
   }
-  console.log("7/irpp:", irpp);
   return irpp;
 }
 
@@ -186,6 +185,7 @@ exports.post_dec = async (req, res) => {
 
   try {
     // 1. Get client ID
+    let dec_exsit = 0;
     const users = await dbQuery('SELECT * FROM accounts WHERE email = ?', [req.session.email]);
     if (users.length === 0) {
       return res.status(404).json({ message: 'User not found', saved: false });
@@ -198,26 +198,35 @@ exports.post_dec = async (req, res) => {
     let dec_id;
 
     if (decls.length === 0) {
+      dec_exsit = 0;
       const r = await dbQuery('INSERT INTO declarations SET ?', { date, client_id });
       dec_id = r.insertId;
     } else {
+      dec_exsit = 1;
       dec_id = decls[0].id;
     }
 
     // 3. Prepare all operations
     const ops = [];
-
+    let smm_tva_p1 = 0;
+    let smm_droite_t = 0;
+    let smm_tcl = 0;
+    
     // Factures
     req.body.factures.forEach((f, i) => {
+      smm_tva_p1 = smm_tva_p1 + parseFloat(fc_tva_vente(f)) - parseFloat(fc_tva_achat(f));
+      smm_droite_t = smm_droite_t + parseFloat(f.Timbre);
+      console.log('smm_tva_p1 : ',smm_tva_p1);
+      smm_tcl = smm_tcl + (fc_ttc_vente(f)/500);
       console.log('gggg fuck me [',i,'] id: ',f.id);
       if (f.id > 0) {
         const sql = `
           UPDATE factures 
-            SET date = ?, type = ?, ref = ?, ht = ?, tva = ?, timber = ?, ttc = ?, ttc_vente = ?, ht_vente = ?, ht_chat = ?, tva_achat = ?
+            SET date = ?, type = ?, ref = ?, ht = ?, tva = ?, timber = ?, ttc = ?, ttc_vente = ?, ht_vente = ?, tva_vente = ?, ht_chat = ?, tva_achat = ?
           WHERE id = ? AND client_id = ?`;
         const vals = [
           f.Date, f.Type, f.Ref, f.TotalHT, f.tva, f.Timbre, f.TotalTTC,
-          fc_ttc_vente(f), fc_ht_vente(f), fc_ht_chat(f), fc_tva_achat(f),
+          fc_ttc_vente(f), fc_ht_vente(f), fc_tva_vente(f), fc_ht_chat(f), fc_tva_achat(f),
           f.id, client_id
         ];
         ops.push(dbQuery(sql, vals));
@@ -232,6 +241,7 @@ exports.post_dec = async (req, res) => {
           ttc: f.TotalTTC,
           ttc_vente: fc_ttc_vente(f),
           ht_vente: fc_ht_vente(f),
+          tva_vente: fc_tva_vente(f),
           ht_chat: fc_ht_chat(f),
           tva_achat: fc_tva_achat(f),
           decla_id: dec_id,
@@ -240,9 +250,18 @@ exports.post_dec = async (req, res) => {
         ops.push(dbQuery('INSERT INTO factures SET ?', row));
       }
     });
-
+    let smm_tfp =0;
+    let smm_foprolos = 0;
+    let smm_tfp_part1 = 0;
+    const smm_droit_c = 0;
     // Paie
     req.body.paie.forEach((p, i) => {
+      if ("Type 1"== p.typepaie)
+        smm_tfp_part1 = p.salaireBrut/100;
+      else
+        smm_tfp_part1 = p.salaireBrut/50;
+      smm_tfp = smm_tfp + smm_tfp_part1;
+      smm_foprolos = smm_foprolos + p.salaireBrut/100;
       console.log('gggg  shit paie[',i,'] id: ',p.id);
       if (p.id > 0) {
         const sql = `
@@ -271,10 +290,14 @@ exports.post_dec = async (req, res) => {
         ops.push(dbQuery('INSERT INTO paie SET ?', row));
       }
     });
-
+    let smm_ttrs = 0;
+    let smm_tva_p2 = 0;
     // Retenue
     req.body.retenue.forEach((rtn, i) => {
+      smm_tva_p2 = smm_tva_p2 - parseFloat(fc_tva_r(rtn));
+      console.log('smm_tva_p2 : ',smm_tva_p2);
       console.log('gggg retune a  la hell [',i,'] id: ',rtn.id);
+      smm_ttrs = smm_ttrs + fc_retenue(rtn);
       if (rtn.id > 0) {
         const sql = `
           UPDATE retenue SET type = ?, ht = ?, tva = ?, ttc = ?, tva_r = ?, retenue = ?
@@ -299,7 +322,42 @@ exports.post_dec = async (req, res) => {
         ops.push(dbQuery('INSERT INTO retenue SET ?', row));
       }
     });
+    let smm_tva = smm_tva_p1 + smm_tva_p2;
+    if (smm_tva < 0)
+      smm_tva = 0;
+    const smm_tt_dec = smm_tva + smm_tfp + smm_tcl + smm_ttrs + smm_foprolos + smm_droite_t + smm_droit_c;
 
+    const row = {
+      date: date,
+      ttrs: smm_ttrs,
+      tfp: smm_tfp,
+      foprolos: smm_foprolos,
+      droit: smm_droit_c,
+      tva: smm_tva,
+      dtf: smm_droite_t,
+      tcl: smm_tcl,
+      ttdec : smm_tt_dec,
+      dec_id :dec_id,
+      client_id : client_id
+    };
+
+    const vals = [
+      smm_ttrs,
+      smm_tfp,
+      smm_foprolos,
+      smm_droit_c,
+      smm_tva,
+      smm_droite_t,
+      smm_tcl,
+      smm_tt_dec,
+      dec_id,
+      client_id
+    ];
+    if ( dec_exsit == 0)
+      ops.push(dbQuery('INSERT INTO summary SET ?', row));
+    else
+      ops.push(dbQuery(`UPDATE summary SET ttrs = ?, tfp = ?, foprolos = ?, droit = ?, tva = ?, dtf = ?, tcl = ?, ttdec = ?
+          WHERE dec_id = ? AND client_id = ?`, vals ));
     // Deletes
     req.body.deleteFactureIds.forEach(id => {
       ops.push(dbQuery('DELETE FROM factures WHERE id = ? AND client_id = ?', [id, client_id]));

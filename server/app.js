@@ -52,6 +52,8 @@ app.post("/spiderPUSS", require('./pages/my_account').change_password)
 app.post("/delete_account", require('./pages/my_account').delete_account)
 app.post("/dec", require('./pages/dec').post_dec)
 app.post("/get_dec", require('./pages/dec').get_dec)
+app.get("/summary", require('./pages/summary').welcome)
+app.post("/print_doc", require('./pages/summary').print_doc)
 
 const port = 5002;
 app.listen(port, ()=> {console.log("server started on port 5002")})

@@ -3,7 +3,14 @@ import React, { useState, useEffect } from "react";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Row, Button, Container, Table } from "react-bootstrap";
+import {
+  Breadcrumb,
+  Row,
+  Button,
+  Container,
+  Table,
+  Form,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from  "axios";
 
@@ -32,30 +39,117 @@ const Visualiser = () => {
     setRows(rows.map((row) => ({ ...row, selected: !selectAllRows })));
   };
 
-  useEffect(() => {
-    
-    instance.get("/welcome").then((response) => 
-      {
-        /*gg test*/console.log(response.data);
-        if (response.data.authorized == "true")
-        {
-          console.log("authorized client");
-        }
-        else
-        {
-          console.log("not authorized client");
-          navigate("/connexion");
-          //neet to logging first
-        }
+  const getSelectedDates = () => {
+    return rows
+      .filter((row) => row.selected) // keep only selected rows
+      .map((row) => {
+        // Ensure month has two digits (e.g., 3 -> 03)
+        const month = row.mois.toString().padStart(2, "0");
+        return `${row.Anne}-${month}-00`;
       });
+  };
+
+  useEffect(() => {
+    instance.get("/summary").then((response) => 
+    {
+      /*gg test*/console.log("summary : ",response.data);
+      if (response.data.authorized == "true")
+      {
+        console.log("authorized client");
+        setRows([]);
+        let fnewRows = [];
+        let [year, month]= ["0000","00"];
+        for (let i = 0; i < response.data.summary.length; i++) {
+          [year, month] = response.data.summary[i].date.split('-');
+          fnewRows.push({
+            mois: month,
+            Anne: year,
+            totalRS: response.data.summary[i].ttrs,
+            tfp: response.data.summary[i].tfp,
+            foprolos: response.data.summary[i].foprolos,
+            droitConsommation: response.data.summary[i].droit,
+            tva: response.data.summary[i].tva,
+            droitTimbreFiscal: response.data.summary[i].dtf,
+            tcl: response.data.summary[i].tcl,
+            totalDeclarer: response.data.summary[i].ttdec,
+            selected: false,
+          });
+        }
+        setRows((prev) => [...prev, ...fnewRows]);
+      }
+      else
+      {
+        console.log("not authorized client");
+        navigate("/connexion");
+        //neet to logging first
+      }
+    });
   }, []);
 
-  const print_doc = () =>{
-    instance.post("/print_doc", date).then((response) => 
-    {
-      
+  
+  /*
+const print_doc = () => {
+  const selectedDates = getSelectedDates();
+  console.log("decla selected : ", selectedDates);
+  
+  instance.post("/print_doc", selectedDates, { responseType: "arraybuffer" })
+    .then((response) => {
+      // Convert the ArrayBuffer into a Blob of type PDF
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+      // Create object URL for the Blob
+      const url = window.URL.createObjectURL(pdfBlob);
+
+      // Create a temporary link and click it to download
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "mypage.pdf");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Revoke object URL after download
+      window.URL.revokeObjectURL(url);
+
+      console.log("✅ PDF downloaded:", pdfBlob.size, "bytes");
+    })
+    .catch((err) => {
+      console.error("❌ Failed to download PDF:", err);
     });
-  };
+};
+*/
+
+const print_doc = async () => {
+  const selectedDates = getSelectedDates();
+  console.log("🗓️ Selected dates:", selectedDates);
+
+  for (const date of selectedDates) {
+    try {
+      console.log("📤 Sending request for:", date);
+
+      const response = await instance.post("/print_doc", [date], {
+        responseType: "arraybuffer",
+      });
+
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(pdfBlob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `déclarations_${date}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      console.log("✅ PDF downloaded for:", date);
+    } catch (err) {
+      console.error("❌ Failed to download PDF for:", date, err);
+    }
+  }
+
+  console.log("🎉 All PDFs processed!");
+};
+
 
   return (
     <>
@@ -115,29 +209,113 @@ const Visualiser = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <input type="checkbox" className="declaration" />
-                  </td>
-                  <td>
-                    <a href="/src/6396802.pdf" download>
-                      12
-                    </a>
-                  </td>
-                  <td>2024</td>
-                  <td>175,772</td>
-                  <td>20,000</td>
-                  <td>10,000</td>
-                  <td>-</td>
-                  <td>148,552</td>
-                  <td>1,000</td>
-                  <td>4,762</td>
-                  <td>360,086</td>
-                  <td style={hiddenStyle}>0</td>
-                </tr>
+                {rows.map((row, index) => (
+                  <tr key={index}>
+                    <td className="checkbox">
+                      <input
+                        type="checkbox"
+                        checked={row.selected || false}
+                        onChange={() => {
+                          const updated = [...rows];
+                          updated[index].selected = !updated[index].selected;
+                          setRows(updated);
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control
+                          className="textadj1"
+                          type="text"
+                          value={row.mois}
+                          onChange={() =>
+                            handleSelectAllRows(setRows, rows, index)
+                          }
+                        />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control
+                          className="textadj1"
+                          type="text"
+                          value={row.Anne}
+                          onChange={() =>
+                            handleSelectAllRows(setRows, rows, index)
+                          }
+                        />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control
+                          className="textadj1"
+                          value={row.totalRS}
+                          onChange={() =>
+                            handleSelectAllRows(setRows, rows, index)
+                          }
+                        />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control value={row.tfp} className="textadj1" />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control
+                          value={row.foprolos}
+                          className="textadj1"
+                        />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control
+                          value={row.droitConsommation}
+                          className="textadj1"
+                        />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control value={row.tva} className="textadj1" />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control
+                          value={row.droitTimbreFiscal}
+                          className="textadj1"
+                        />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control value={row.tcl} className="textadj1" />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
+                        <Form.Control
+                          value={row.totalDeclarer}
+                          className="textadj1"
+                        />
+                      </Form.Group>
+                    </td>
+                    <td style={hiddenStyle}>
+                      <Form.Group>
+                        <Form.Control
+                          value={row.id}
+                          className="textadj1"
+                        />
+                      </Form.Group>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
-            {/* Button Section */}
           </Container>
         </Row>
         <Row>
@@ -146,6 +324,7 @@ const Visualiser = () => {
               Imprimer
             </Button>
           </div>
+
         </Row>
       </Container>
     </>

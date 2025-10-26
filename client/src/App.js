@@ -67,6 +67,7 @@ function App() {
           <Route path="/gerer" element={<Gerer />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/visualiser" element={<Visualiser />} />
+          <Route path="/test_print" element={<handleDownload />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/propos" element={<Propos />} />
