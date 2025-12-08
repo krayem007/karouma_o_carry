@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulaire Déclaration TVA</title>
     <link rel="stylesheet" href="printjs.css" />
-    <script src="./behavor.js"></script>
   </head>
   <body id="bodbod">
     <!------------------------------- page1 --------------------------------->
@@ -29,8 +28,8 @@
             <p id="paddingl1">الشهر</p>
             <table>
               <tr>
-                <td id="cellule">8</td>
-                <td id="cellule">0</td>
+                <td id="cellule">{{month1}}</td>
+                <td id="cellule">{{month0}}</td>
               </tr>
             </table>
           </div>
@@ -40,10 +39,10 @@
             <p id="paddingl1">السنة</p>
 
             <tr>
-              <td id="cellule">8</td>
-              <td id="cellule">8</td>
-              <td id="cellule">8</td>
-              <td id="cellule">8</td>
+              <td id="cellule">{{year3}}</td>
+              <td id="cellule">{{year2}}</td>
+              <td id="cellule">{{year1}}</td>
+              <td id="cellule">{{year0}}</td>
             </tr>
           </table>
         </div>
@@ -74,18 +73,18 @@
       <div class="paragraphe1">
         <p>
           الاسم واللقب أوالاسم الاجتماعي:
-          7 
+          {{raison_sociale}}....................................................................................................................................
         </p>
       </div>
       <div class="paragraphe2">
         <p>
           العنوان أو المقر
-          االجتمــــــــــاعي: 7 
+         الجتمــــــــــاعي:{{address}}..............................................................................................................................................................
         </p>
       </div>
       <div class="paragraphe3">
         <p>
-          .............................................................................................................................................
+          {{code_postal}}................................................................................................................
           الترقيم البريدي
         </p>
 
@@ -3285,7 +3284,6 @@
       </div>
       <div class="footernotes">( 3 ) مناب الجماعة = المعلوم X مساحة الفرع</div>
       <div class="footernotes3">رقم المعاملات الجملي .</div>
-      <button onclick="prrrint('bodbod')">print</button>
     </div>
   </body>
 </html>
