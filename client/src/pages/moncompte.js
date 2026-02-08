@@ -266,7 +266,7 @@ const Moncompte = () => {
           <Toast.Body>{alert.message}</Toast.Body>
         </Toast>
       )}
-      <Container>
+      <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>

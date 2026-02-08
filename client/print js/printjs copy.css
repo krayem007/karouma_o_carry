@@ -1,0 +1,1071 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+html,
+body {
+  width: 210mm;
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  width: 210mm;
+  height: 297mm;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: "Times New Roman", Times, serif;
+  background-color: aliceblue;
+  border-bottom: 1px solid rgb(173, 173, 173);
+  page-break-after: always;
+  direction: rtl;
+}
+
+.content:last-child {
+  page-break-after: auto;
+}
+
+.inligne {
+  display: flex;
+  justify-content: space-between;
+}
+
+img {
+  width: 100px; /* Adjust as needed */
+  height: auto;
+}
+
+#img2 {
+  padding: 0;
+}
+
+#cellule {
+  width: 25px;
+  height: 25px;
+}
+
+#cellule3 {
+  width: 20px;
+  height: 20px;
+}
+
+#cellule4 {
+  width: 35px;
+  height: 20px;
+}
+#paddingl1 {
+  padding-left: 10px;
+}
+
+.inlignetable {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  padding-right: 150px;
+}
+
+.tasrihchahar {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.title {
+  text-align: center;
+  font-size: 30px;
+}
+
+table,
+th,
+td {
+  border: 1.5px solid #000;
+  border-collapse: collapse;
+}
+
+.pcentre {
+  display: flex;
+  padding-top: 20px;
+}
+
+.table1 {
+  float: left;
+  padding-top: 20px;
+  padding-left: 25px;
+}
+
+.table1style {
+  width: 530px;
+  height: 76px;
+  border: 1.5px;
+}
+
+.table1tr1 {
+  height: 35.0938px;
+}
+
+.table1td1 {
+  width: 100px;
+  text-align: center;
+  vertical-align: top;
+  height: 35.0938px;
+}
+
+.table5td1 {
+  text-align: center;
+  height: 30px;
+}
+
+.table5td2 {
+  text-align: center;
+  font-weight: bold;
+  height: 30px;
+}
+.table2tr1 {
+  height: 30px;
+}
+
+.table2td1 {
+  width: 25px;
+  height: 25px;
+}
+.paragraphe1 {
+  text-align: right;
+  padding-top: 30px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.paragraphe2 {
+  display: flex;
+  text-align: right;
+  padding-top: 5px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.paragraphe19 {
+  text-align: right;
+  padding-top: 15px;
+  padding-right: 10px;
+}
+
+.paragraphe3 {
+  display: flex;
+  padding-top: 5px;
+  padding-right: 10px;
+  gap: 40px;
+}
+
+.paragraphe22 {
+  display: flex;
+  padding-top: 5px;
+  padding-right: 25px;
+  gap: 40px;
+}
+
+.paragraphe22 p {
+  font-weight: bold;
+}
+
+.paragraphe23 {
+  padding-top: 5px;
+  padding-right: 45px;
+}
+
+.paragraphe15 {
+  display: flex;
+  padding-top: 5px;
+  padding-right: 135px;
+  gap: 40px;
+}
+
+.paragraphe4 {
+  display: flex;
+  padding-top: 5px;
+  gap: 80px;
+  padding-right: 440px;
+}
+
+.paragraphe16 {
+  display: flex;
+  padding-top: 10px;
+  padding-right: 103px;
+  gap: 35px;
+}
+
+.paragraphe17 {
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.paragraphe5 {
+  display: flex;
+  text-align: right;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+  font-weight: bold;
+}
+
+.paragraphe25 p {
+  font-weight: bold;
+}
+
+.paragraphe25 {
+  display: flex;
+  text-align: right;
+  padding-top: 50px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.pagination1 {
+  position: relative;
+  text-align: left;
+  padding-left: 35px;
+  left: 10px;
+}
+
+.pagination2 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 120px;
+  left: 10px;
+}
+
+.pagination3 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 180px;
+  left: 10px;
+}
+
+.pagination4 {
+  text-align: left;
+  padding-left: 35px;
+  left: 10px;
+}
+.pagination5 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 330px;
+  left: 10px;
+}
+
+.pagination6 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 230px;
+  left: 10px;
+}
+
+.pagination7 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 535px;
+  left: 10px;
+}
+
+.pagination8 {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 140px;
+  left: 10px;
+}
+.paragraphe25 {
+  display: flex;
+  text-align: right;
+  padding-top: 50px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+.paragraphe25 p {
+  font-weight: bold;
+}
+
+.paragraphe25 span {
+  font-weight: 100;
+}
+.paragraphe9 {
+  display: flex;
+  text-align: right;
+  padding-right: 5px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+.table3 {
+  float: left;
+  text-align: center;
+  padding-top: 10px;
+  padding-left: 25px;
+  font-size: 13px;
+}
+
+.table5 {
+  float: left;
+  text-align: center;
+  padding-top: 10px;
+  padding-left: 25px;
+  font-size: 13px;
+}
+
+.table3style {
+  width: 730px;
+  height: 66px;
+  border: 1.5px;
+}
+
+.table5style {
+  width: 730px;
+  height: 66px;
+  border: 1.5px;
+}
+
+.table3td1 {
+  width: 100px;
+  text-align: center;
+  height: 35.0938px;
+}
+
+.table5td6 {
+  font-weight: bold;
+  width: 100px;
+  text-align: center;
+  height: 35.0938px;
+}
+
+.table3td11 {
+  width: 150px;
+  text-align: center;
+  height: 35.0938px;
+}
+.table3tr1 {
+  height: 30px;
+}
+
+.table3tr2 {
+  height: 30px;
+}
+
+.table3td2 {
+  width: 75px;
+  height: 25px;
+}
+
+.paragraphe6 {
+  display: flex;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 10px;
+  clear: both; /* Ensures the div is not floating beside the table */
+  font-weight: bold;
+}
+
+.paragraphe12 {
+  display: flex;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 20px;
+  clear: both; /* Ensures the div is not floating beside the table */
+  font-weight: bold;
+}
+
+.paragraphe13 {
+  display: flex;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 25px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.paragraphe24 {
+  display: flex;
+  text-align: right;
+  padding-top: 15px;
+  padding-right: 25px;
+  clear: both; /* Ensures the div is not floating beside the table */
+}
+
+.paragraphe14 {
+  display: flex;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 25px;
+  clear: both; /* Ensures the div is not floating beside the table */
+  font-weight: bold;
+}
+.table4 {
+  float: left;
+  text-align: center;
+  padding-top: 2px;
+  padding-left: 25px;
+  font-size: 13px;
+  padding-bottom: 10px;
+}
+.table41 {
+  float: left;
+  text-align: center;
+  padding-top: 30px;
+  padding-left: 25px;
+  font-size: 13px;
+  padding-bottom: 10px;
+}
+
+.table42 {
+  float: left;
+  text-align: center;
+  padding-top: 10px;
+  padding-left: 25px;
+  font-size: 13px;
+  padding-bottom: 10px;
+}
+
+.table4style {
+  width: 730px;
+  border: 1.5px;
+}
+
+.table4td1 {
+  min-width: 300px;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td19 {
+  width: 350px;
+  text-align: center;
+  height: 25px;
+  font-weight: bold;
+}
+
+.table4td15 {
+  min-width: 300px;
+  text-align: center;
+  height: 25px;
+}
+
+.table42td15 {
+  min-width: 200px;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td17 {
+  width: 490px;
+  height: 25px;
+}
+
+.table4td18 {
+  width: 200px;
+  height: 25px;
+}
+
+.table4td14 {
+  width: 250px;
+  text-align: center;
+  height: 25px;
+  font-weight: bold;
+}
+
+.table42td14 {
+  text-align: center;
+  height: 25px;
+  font-weight: bold;
+}
+
+.table42td111 {
+  min-width: 200px;
+  text-align: center;
+  height: 25px;
+}
+
+.table42td111 {
+  width: 100px;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td25 {
+  min-width: 60px;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td1222 {
+  min-width: 10px;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td12 {
+  min-width: 100px;
+  text-align: center;
+  height: 25px;
+}
+
+.table4td7 {
+  width: 350px;
+  text-align: right;
+  height: 25px;
+}
+
+.table4td99 {
+  width: 180px;
+  text-align: centre;
+  height: 25px;
+}
+
+.table4td77 {
+  width: 400px;
+  vertical-align: top;
+  text-align: right;
+  height: 25px;
+}
+
+.table4td78 {
+  width: 250px;
+  vertical-align: top;
+  text-align: right;
+  height: 25px;
+}
+
+.table4style .table4td1,
+.table4style .table4td11,
+.table4style .table4td111,
+.table4style .table4td122,
+.table4style .table4td12,
+.table4style .table4td1222 {
+  font-weight: bold;
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+.table4tr2 .table4td2 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 10px;
+}
+
+.table42tr2 .table42td15 {
+  text-align: right;
+  padding-right: 5px;
+}
+
+.table4tr15 .table4td17 {
+  text-align: right;
+  padding-right: 7px;
+}
+
+.table4tr16 .table4td17 {
+  text-align: right;
+  padding-right: 7px;
+}
+
+.table4tr7 .table4td5 {
+  text-align: left;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 10px;
+}
+
+.table4tr6 .table4td2 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 10px;
+}
+
+.table4tr2 .table4td5 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.table4tr2 .table4td22 {
+  padding-left: 7px;
+  padding-right: 7px;
+}
+.table4tr2 td {
+  border-top: none;
+  border-bottom: none;
+}
+
+.table42tr2 td {
+  border-top: none;
+  border-bottom: none;
+}
+.table4tr7 td {
+  border-top: none;
+  border-bottom: none;
+}
+
+.table5tr1 td,
+.table5tr2 td {
+  font-weight: bold;
+}
+
+.table5tr3 td {
+  border-top: none;
+  border-bottom: none;
+}
+
+.table5tr4 td {
+  border-top: none;
+}
+
+.table4td22 span,
+.table4td12 span,
+.table4td33 span {
+  font-size: 10px;
+  vertical-align: top;
+}
+
+.table4td3 p {
+  padding-top: 5px;
+  padding-right: 15px;
+}
+
+.table4td4 p {
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-bottom: 5px;
+}
+
+.table4td24 p {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.table4td20 p {
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-bottom: 5px;
+}
+
+.table4td16 p {
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-bottom: 5px;
+}
+
+.table4style ul {
+  list-style-position: inside;
+  padding-left: 0;
+  margin: 0;
+  padding: 0;
+}
+.table4td3 li {
+  padding-right: 30px;
+}
+
+.table4td3 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.table4td8 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 7px;
+}
+
+.table4td6 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 7px;
+}
+
+.table4td15 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.table4td4 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.table4td24 {
+  border-bottom: none;
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.table4td222 {
+  border-bottom: none;
+}
+
+.table4td25 {
+  border-bottom: none;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+.table4td20 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 7px;
+  width: 300px;
+}
+
+.table4td16 {
+  text-align: right;
+  padding-left: 7px;
+  padding-right: 30px;
+}
+
+.table4tr3 td {
+  border-top: none;
+  padding-bottom: 30px;
+}
+
+.table4tr4 td {
+  padding-top: 7px;
+  border-top: none;
+  padding-bottom: 30px;
+}
+
+.table4tr18 td {
+  padding-top: 7px;
+  border-top: none;
+}
+
+.table4tr5 td {
+  padding-top: 7px;
+  border-top: none;
+  padding-bottom: 15px;
+}
+
+.table4tr9 td {
+  padding-top: 7px;
+  border-top: none;
+}
+
+.table4tr11 td {
+  padding-top: 2px;
+}
+
+.table4tr13 td {
+  padding-top: 2px;
+  border-bottom: none;
+}
+
+.table4tr19 td {
+  padding-top: 2px;
+}
+
+.table4tr20 td {
+  padding-top: 2px;
+  border-top: none;
+}
+
+.table4tr15 td {
+  padding-top: 2px;
+  border-bottom: none;
+}
+
+.table42tr1 td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: bold;
+}
+
+.table4tr16 td {
+  padding-top: 2px;
+  border-bottom: none;
+  border-top: none;
+}
+
+.table4tr14 td {
+  padding-top: 2px;
+  border: none;
+}
+.table4tr12 td {
+  padding-top: 0px;
+  border-bottom: none;
+  border-top: none;
+}
+
+.table4tr6 td {
+  border-top: none;
+  padding-bottom: 15px;
+}
+
+.table4tr8 td {
+  text-align: center;
+  border-top: none;
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+
+.table4tr10 td {
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.table4td9 {
+  font-weight: bold;
+}
+
+.table4tr17 td {
+  padding-top: 2px;
+}
+
+.table4td13 {
+  border-top: none;
+  border-right: none;
+}
+
+.table4td21 {
+  text-align: right;
+  width: 450px;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.table4td23 {
+  font-weight: bold;
+  text-align: right;
+  width: 450px;
+  padding-right: 300px;
+}
+
+.footernotes {
+  padding-right: 7px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 10px;
+}
+
+.footernotes3 {
+  padding-right: 80px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 10px;
+}
+.footernotes1 {
+  padding-top: 10px;
+  padding-right: 7px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 15px;
+}
+
+.footernotes2 {
+  padding-top: 300px;
+  padding-right: 7px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 15px;
+}
+
+.paragraphe7 {
+  display: flex;
+  justify-content: space-between; /* Ensures space between the items */
+  align-items: center; /* Align items vertically */
+  font-size: 13px;
+  padding-top: 7px;
+  padding-right: 15px;
+}
+
+.paragraphe8 {
+  display: flex;
+  justify-content: space-between; /* Ensures space between the items */
+  align-items: center; /* Align items vertically */
+  font-size: 13px;
+  padding-top: 7px;
+  padding-right: 15px;
+}
+
+.right-text {
+  margin: 0;
+}
+.right-text2 {
+  margin: 0;
+  padding-left: 100px;
+}
+.right-text5 {
+  margin: 0;
+  padding-left: 50px;
+}
+.right-text4 {
+  margin: 0;
+  padding-left: 117px;
+}
+
+.right-text3 {
+  margin: 0;
+  padding-left: 10px;
+}
+
+.centre-text {
+  text-align: center;
+  margin: 0;
+  padding-left: 10px;
+}
+
+.left-text {
+  display: flex;
+  padding-left: 30px;
+  gap: 10px; /* Space between "نعم/لا" and tables */
+}
+
+.left-text2 {
+  display: flex;
+  padding-left: 70px;
+  gap: 2px; /* Space between "نعم/لا" and tables */
+}
+.left-text3 {
+  display: flex;
+  padding-left: 20px;
+  gap: 10px; /* Space between "نعم/لا" and tables */
+}
+
+.left-text4 {
+  display: flex;
+  padding-left: 5px;
+  gap: 10px; /* Space between "نعم/لا" and tables */
+}
+
+.centre {
+  display: flex;
+  gap: 5px;
+}
+
+#cellule2 {
+  width: 25px;
+  min-height: 10px;
+}
+
+#paddingl2 {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+#paddingl3 {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+#paddingl10 {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#paddingl4 {
+  padding-right: 270px;
+}
+
+#paddingl7 {
+  padding-right: 270px;
+}
+
+#paddingl8 {
+  padding-right: 309px;
+}
+
+#paddingl5 {
+  padding-right: 390px;
+}
+
+#paddingl6 {
+  padding-right: 400px;
+}
+
+#paddingl9 {
+  padding-right: 408px;
+}
+
+.flex-container1 {
+  display: flex; /* Enables flexbox for horizontal alignment */
+  gap: 10px; /* Adds spacing between items */
+}
+
+.flex-container2 {
+  padding-right: 5px;
+  display: flex; /* Enables flexbox for horizontal alignment */
+  gap: 10px; /* Adds spacing between items */
+}
+
+.flex-container3 {
+  padding-top: 4px;
+  padding-right: 5px;
+  display: flex; /* Enables flexbox for horizontal alignment */
+  gap: 10px; /* Adds spacing between items */
+}
+
+.flex-container4 {
+  padding-top: 10px;
+  padding-right: 5px;
+  display: flex; /* Enables flexbox for horizontal alignment */
+  gap: 50px; /* Adds spacing between items */
+}
+
+.flex-container5 {
+  padding-top: 10px;
+  padding-right: 5px;
+  display: flex; /* Enables flexbox for horizontal alignment */
+  gap: 20px; /* Adds spacing between items */
+}
+
+.paragraphe10 {
+  display: flex;
+  padding-top: 5px;
+}
+
+.paragraphe10 {
+  display: flex;
+  text-align: left;
+  gap: 35px;
+  padding-right: 160px;
+}
+
+.paragraphe5 p {
+  padding-top: 10px;
+  font-size: 17px;
+}
+.paragraphe11 p {
+  font-size: 17px;
+}
+
+.paragraphe11 {
+  text-align: right;
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.paragraphe20 p {
+  font-size: 20px;
+}
+.paragraphe20 {
+  text-align: center;
+  font-weight: bold;
+}
+
+.paragraphe21 p {
+  font-size: 18px;
+}
+.paragraphe21 {
+  padding-right: 100px;
+  text-align: center;
+  width: 650px;
+  font-weight: bold;
+}

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulaire Déclaration TVA</title>
     <link rel="stylesheet" href="printjs.css" />
+    <script src="./behavor.js"></script>
   </head>
   <body id="bodbod">
     <!------------------------------- page1 --------------------------------->
@@ -20,7 +21,7 @@
             <p id="paddingl1">رمز التصريح(1)</p>
             <table>
               <tr>
-                <td id="cellule">{{code_acte}}</td>
+                <td id="cellule"></td>
               </tr>
             </table>
           </div>
@@ -28,8 +29,8 @@
             <p id="paddingl1">الشهر</p>
             <table>
               <tr>
-                <td id="cellule">{{month1}}</td>
-                <td id="cellule">{{month0}}</td>
+                <td id="cellule"></td>
+                <td id="cellule"></td>
               </tr>
             </table>
           </div>
@@ -39,10 +40,10 @@
             <p id="paddingl1">السنة</p>
 
             <tr>
-              <td id="cellule">{{year3}}</td>
-              <td id="cellule">{{year2}}</td>
-              <td id="cellule">{{year1}}</td>
-              <td id="cellule">{{year0}}</td>
+              <td id="cellule"></td>
+              <td id="cellule"></td>
+              <td id="cellule"></td>
+              <td id="cellule"></td>
             </tr>
           </table>
         </div>
@@ -52,20 +53,20 @@
           <tbody>
             <tr class="table1tr1">
               <td class="table1td1" colspan="8">المعرف الجبائي</td>
-              <td class="table1td1">رمز الاداء على القيمة المضافة</td>
+              <td class="table1td1">رمز االاداء على القيمة المضافة</td>
               <td class="table1td1">رمز الصنف</td>
             </tr>
             <tr class="table2tr1">
-              <td class="table2td1">{{identifiant_fiscal_chars.[0]}}</td>
-              <td class="table2td1">{{identifiant_fiscal_chars.[1]}}</td>
-              <td class="table2td1">{{identifiant_fiscal_chars.[2]}}</td>
-              <td class="table2td1">{{identifiant_fiscal_chars.[3]}}</td>
-              <td class="table2td1">{{identifiant_fiscal_chars.[4]}}</td>
-              <td class="table2td1">{{identifiant_fiscal_chars.[5]}}</td>
-              <td class="table2td1">{{identifiant_fiscal_chars.[6]}}</td>
-              <td class="table2td1">{{identifiant_fiscal_chars.[7]}}</td>
-              <td class="table2td1">{{identifiant_tva}}</td>
-              <td class="table2td1">{{code_categorie}}</td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
+              <td class="table2td1"></td>
             </tr>
           </tbody>
         </table>
@@ -73,13 +74,13 @@
       <div class="paragraphe1">
         <p>
           الاسم واللقب أوالاسم الاجتماعي:
-          {{raison_sociale}}....................................................................................................................................
+          >................................................................................................................................................................
         </p>
       </div>
       <div class="paragraphe2">
         <p>
           العنوان أو المقر
-         الجتمــــــــــاعي:{{address}}..............................................................................................................................................................
+          االجتمــــــــــاعي:..............................................................................................................................................................
         </p>
       </div>
       <div class="paragraphe3">
@@ -90,38 +91,38 @@
 
         <table id="table3">
           <tr>
-            <td id="cellule">{{code_postal_chars.[3]}}</td>
-            <td id="cellule">{{code_postal_chars.[2]}}</td>
-            <td id="cellule">{{code_postal_chars.[1}}</td>
-            <td id="cellule">{{code_postal_chars.[0]}}</td>
+            <td id="cellule"></td>
+            <td id="cellule"></td>
+            <td id="cellule"></td>
+            <td id="cellule"></td>
           </tr>
         </table>
       </div>
       <div class="paragraphe3">
         <p id="pwidth1">
           النشـــــاط:
-          <span>{{activite}}</span>
+          <span>.......................................................</span>
         </p>
         <p>تاريخ توقيف النشاط</p>
 
         <table>
           <tr>
-            <td id="cellule">{{day1_act}}</td>
-            <td id="cellule">{{day0_act}}</td>
+            <td id="cellule"></td>
+            <td id="cellule"></td>
           </tr>
         </table>
         <table>
           <tr>
-            <td id="cellule">{{month1_act}}</td>
-            <td id="cellule">{{month0_act}}</td>
+            <td id="cellule"></td>
+            <td id="cellule"></td>
           </tr>
         </table>
         <table id="table3">
           <tr>
-            <td id="cellule">{{year3_act}}</td>
-            <td id="cellule">{{year2_act}}</td>
-            <td id="cellule">{{year1_act}}</td>
-            <td id="cellule">{{year0_act}}</td>
+            <td id="cellule"></td>
+            <td id="cellule"></td>
+            <td id="cellule"></td>
+            <td id="cellule"></td>
           </tr>
         </table>
       </div>
@@ -161,14 +162,14 @@
               <td class="table3td2">معلوم الاجازة</td>
             </tr>
             <tr class="table3tr2">
-              <td>{{X_retenue}}</td>
-              <td>{{X_tfp}}</td>
-              <td>{{X_foprolos}}</td>
-              <td>{{X_dc}}</td>
-              <td>{{X_tva}}</td>
               <td></td>
-              <td>{{X_dtf}}</td>
-              <td>{{X_tcl}}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
               <td></td>
               <td></td>
             </tr>
@@ -192,9 +193,9 @@
                 1-المرتبات والاجور والجرايات والايرادات العمرية التي تحمّلت خصما
                 من المورد طبقا للقانون العام
               </td>
-              <td class="table4td22">{{fr tot_irpp_a}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
-              <td class="table4td22">{{fr tot_irpp_m}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td2">
@@ -215,7 +216,7 @@
               </td>
               <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
-              <td class="table4td22">{{fr total_css}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td3">
@@ -506,9 +507,9 @@
                 14- التأجيرات المدفوعة للأجراء وغير الاجراء مقابل عمل وقتي أو
                 ظرفي خارج نشاطهم الاصلي
               </td>
-              <td class="table4td22">{{fr tot_ttc_retenue}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">15%</td>
-              <td class="table4td22">{{fr tot_ttc_retenue_15}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td2">
@@ -865,7 +866,7 @@
               <td class="table4td3">المجموع</td>
               <td class="table4td33"></td>
               <td class="table4td33"></td>
-              <td class="table4td33">{{fr mouwared}}</td>
+              <td class="table4td33">.........................</td>
             </tr>
           </tbody>
         </table>
@@ -906,18 +907,18 @@
               <td class="table4td4">
                 <p>* الصناعات المعملية</p>
               </td>
-              <td class="table4td22">{{fr total_brut_type1}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">1%</td>
-              <td class="table4td22">{{fr total_brut_type1_1}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td3">
                 <p>* الأنشطة الأخرى</p>
               </td>
-              <td class="table4td22">{{fr total_brut_type2}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">2%</td>
-              <td class="table4td22">{{fr total_brut_type2_2}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
             </tr>
             <tr class="table4tr2">
@@ -967,8 +968,8 @@
               <td class="table4td9" colspan="3">
                 المجمـــــــــــــــــــــــــــــــــوع
               </td>
-              <td class="table4td33">{{fr total_brut_type_tot}}</td>
-              <td class="table4td33">0,000</td>
+              <td class="table4td33">.........................</td>
+              <td class="table4td33">.........................</td>
             </tr>
             <tr class="table4tr9">
               <td class="table4td8" colspan="5">
@@ -979,10 +980,10 @@
                   <div class="centre">
                     <table>
                       <tr>
-                        <td id="cellule2">{{total_brut_type_PR}}</td>
+                        <td id="cellule2"></td>
                       </tr>
                     </table>
-                    <p id="paddingl2">{{fr total_brut_type_tot}}</p>
+                    <p id="paddingl2">.........................</p>
                   </div>
                 </div>
               </td>
@@ -1105,11 +1106,11 @@
             </tr>
             <tr class="table4tr4">
               <td class="table4td33">
-                {{total_brut_tot}}
+                ................................................
               </td>
               <td class="table4td33">1%</td>
               <td class="table4td33">
-                {{fr total_brut_tot_1}}
+                ................................................
               </td>
             </tr>
           </tbody>
@@ -1139,9 +1140,9 @@
                   والأداءعلى القيمة المضافة
                 </p>
               </td>
-              <td class="table4td22">{{fr tot_ht_vente}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">.........</td>
-              <td class="table4td22">{{fr total_mtdc}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
             </tr>
             <tr class="table4tr2">
@@ -1174,8 +1175,8 @@
               <td class="table4td9" colspan="3">
                 المجمـــــــــــــــــــــــــــــــــوع
               </td>
-              <td class="table4td33">{{fr total_mtdc}}</td>
-              <td class="table4td33">0,000</td>
+              <td class="table4td33">.........................</td>
+              <td class="table4td33">.........................</td>
             </tr>
           </tbody>
         </table>
@@ -1192,10 +1193,10 @@
                   <div class="centre">
                     <table>
                       <tr>
-                        <td id="cellule2">{{mtdc_PR}}</td>
+                        <td id="cellule2"></td>
                       </tr>
                     </table>
-                    <p id="paddingl4"></p>
+                    <p id="paddingl4">.........................</p>
                   </div>
                 </div>
               </td>
@@ -1205,7 +1206,7 @@
                 <div class="flex-container1">
                   <p class="right-text2">الفائض من الشهر السابق</p>
                   <div class="centre">
-                    <p id="paddingl5">0,000</p>
+                    <p id="paddingl5">.........................</p>
                   </div>
                 </div>
               </td>
@@ -1215,7 +1216,7 @@
                 <div class="flex-container1">
                   <p class="right-text2">المبالغ المسترجعة (1)</p>
                   <div class="centre">
-                    <p id="paddingl6">0,000</p>
+                    <p id="paddingl6">.........................</p>
                   </div>
                 </div>
               </td>
@@ -1229,10 +1230,10 @@
                   <div class="centre">
                     <table>
                       <tr>
-                        <td id="cellule2">{{mtdc_PR}}</td>
+                        <td id="cellule2"></td>
                       </tr>
                     </table>
-                    <p id="paddingl7">{{fr total_mtdc}}</p>
+                    <p id="paddingl7">.........................</p>
                   </div>
                 </div>
               </td>
@@ -1260,21 +1261,21 @@
                   والأداءعلى القيمة المضافة
                 </p>
               </td>
-              <td class="table4td22">{{fr total_ht_vente_7}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">7%</td>
-              <td class="table4td22">{{fr total_ht_vente_7_t}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
             </tr>
             <tr class="table4tr7">
-              <td class="table4td22">{{fr total_ht_vente_13}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">13%</td>
-              <td class="table4td22">{{fr total_ht_vente_13_t}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
             </tr>
             <tr class="table4tr7">
-              <td class="table4td22">{{fr total_ht_vente_19}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">19%</td>
-              <td class="table4td22">{{fr total_ht_vente_19_t}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
             </tr>
             <tr class="table4tr7">
@@ -1341,19 +1342,19 @@
               <td class="table4td16">
                 <p>* محلية</p>
               </td>
-              <td class="table4td22">{{fr total_ht_equip_achat_loc}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
               <td class="table4td22"></td>
-              <td class="table4td22">{{fr total_tva_equip_achat_loc}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td16">
                 <p>* موردة</p>
               </td>
-              <td class="table4td22">{{fr total_ht_equip_achat_impor}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
               <td class="table4td22"></td>
-              <td class="table4td22">{{fr total_tva_equip_achat_impor}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td4">
@@ -1368,19 +1369,19 @@
               <td class="table4td16">
                 <p>* محلية</p>
               </td>
-              <td class="table4td22">{{fr total_ht_retenue_achat}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
               <td class="table4td22"></td>
-              <td class="table4td22">{{fr total_tva_retenue_achat}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td16">
                 <p>* موردة</p>
               </td>
-              <td class="table4td22">{{fr total_ht_autre_achat_impor}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22"></td>
               <td class="table4td22"></td>
-              <td class="table4td22">{{fr total_tva_autre_achat_impor}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td15">
@@ -1490,8 +1491,8 @@
               <td class="table4td9" colspan="3">
                 المجمـــــــــــــــــــــــــــــــــوع
               </td>
-              <td class="table4td33">{{fr tot_ht_vente_t}}</td>
-              <td class="table4td33">{{fr tot_tva_achat}}</td>
+              <td class="table4td33">.........................</td>
+              <td class="table4td33">.........................</td>
             </tr>
           </tbody>
         </table>
@@ -1511,10 +1512,10 @@
                   <div class="centre">
                     <table>
                       <tr>
-                        <td id="cellule4">{{total_tva_PR}}</td>
+                        <td id="cellule4"></td>
                       </tr>
                     </table>
-                    <p id="paddingl8">{{fr total_tva}}</p>
+                    <p id="paddingl8">.........................</p>
                   </div>
                 </div>
               </td>
@@ -1524,8 +1525,7 @@
                 <div class="flex-container1">
                   <p class="right-text2">الفائض من الشهر السابق</p>
                   <div class="centre">
-                    <p id="paddingl5">{{fr reporttva}}
-</p>
+                    <p id="paddingl5">.........................</p>
                   </div>
                 </div>
               </td>
@@ -1607,10 +1607,10 @@
                   <div class="centre">
                     <table>
                       <tr>
-                        <td id="cellule4">{{total_tva_fin_PR}}</td>
+                        <td id="cellule4"></td>
                       </tr>
                     </table>
-                    <p id="paddingl8">{{fr total_tva_fin}}</p>
+                    <p id="paddingl8">.........................</p>
                   </div>
                 </div>
               </td>
@@ -1764,9 +1764,9 @@
               <td class="table4td4">
                 <p>- المعلوم المهني</p>
               </td>
-              <td class="table4td22">{{ fr total_ht_fodec }}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">1%</td>
-              <td class="table4td22">{{fr total_fodec }}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr2">
               <td class="table4td4">
@@ -2092,7 +2092,7 @@
               <td class="table4td9" colspan="3">
                 المجمـــــــــــــــــــــــــــــــــوع
               </td>
-              <td class="table4td33">{{fr total_fodec }}</td>
+              <td class="table4td33">.........................</td>
             </tr>
           </tbody>
         </table>
@@ -2132,13 +2132,13 @@
             </tr>
             <tr class="table4tr18">
               <td class="table4td33">
-                {{nombre_filiale}}
+                ................................................
               </td>
               <td class="table4td33">
-                {{number_of_timber}}
+                ................................................
               </td>
               <td class="table4td33">
-                {{fr total_timber}}
+                ................................................
               </td>
             </tr>
           </tbody>
@@ -2327,9 +2327,9 @@
               <td class="table4td20">
                 <p>رقم المعاملات المحلي الخام المحقق</p>
               </td>
-              <td class="table4td22">{{fr tot_ttc_vente}}</td>
+              <td class="table4td22">.........................</td>
               <td class="table4td22">0.2%</td>
-              <td class="table4td22">{{fr tot_ttc_vente_02}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
             <tr class="table4tr1">
               <td class="table4td20">
@@ -2349,7 +2349,7 @@
                   المهنية (I)
                 </p>
               </td>
-              <td class="table4td22">{{fr tot_ttc_vente_02}}</td>
+              <td class="table4td22">.........................</td>
             </tr>
           </tbody>
         </table>
@@ -2393,7 +2393,7 @@
                 <p>- المعلوم المستوجب سنويا (II)</p>
               </td>
               <td class="table4td222">
-                {{fr tot_ttc_vente_02}}
+                .............................................
               </td>
             </tr>
             <tr class="table4tr2">
@@ -2408,7 +2408,7 @@
             <tr class="table4tr6">
               <td class="table4td2">- الباقي المستوجب (III) - (II)</td>
               <td class="table4td22">
-                {{fr tot_ttc_vente_02}}
+                .............................................
               </td>
             </tr>
           </tbody>
@@ -2537,7 +2537,7 @@
               <td class="table42td15">
                 <p>- الخصوم من المورد</p>
               </td>
-              <td class="table4td22">{{fr mouwared}}</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2547,7 +2547,7 @@
               <td class="table42td15">
                 <p>- الأداء على التكوين المهني</p>
               </td>
-              <td class="table4td22">{{fr total_brut_type_tot}}</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2558,7 +2558,7 @@
               <td class="table42td15">
                 <p>- المساهمة في صندوق النهوض بالمسكن لفائدة الأجراء</p>
               </td>
-              <td class="table4td22">{{fr total_brut_tot_1}}</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2569,7 +2569,7 @@
               <td class="table42td15">
                 <p>- المعلوم على الاستهلاك</p>
               </td>
-              <td class="table4td22">{{fr total_mtdc}}</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2579,7 +2579,7 @@
               <td class="table42td15">
                 <p>- الأداء على القيمة المضافة</p>
               </td>
-              <td class="table4td22">{{fr total_tva_sum}}</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2589,7 +2589,7 @@
               <td class="table42td15">
                 <p>- معاليم أخرى على رقم المعاملات</p>
               </td>
-              <td class="table4td22">{{fr total_fodec }}</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2600,7 +2600,7 @@
               <td class="table42td15">
                 <p>- معاليم الطابع الجبائي</p>
               </td>
-              <td class="table4td22">{{fr total_timber}}</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2622,7 +2622,7 @@
                   <li>المعلوم على النزل</li>
                 </ul>
               </td>
-              <td class="table4td22">0,000</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2637,7 +2637,7 @@
                   </li>
                 </ul>
               </td>
-              <td class="table4td22">{{fr tot_ttc_vente_02}}</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2649,7 +2649,7 @@
                   <li>معلوم الاجازة</li>
                 </ul>
               </td>
-              <td class="table4td22">0,000</td>
+              <td class="table4td22">....................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">........................</td>
               <td class="table4td22">....................</td>
@@ -2657,7 +2657,7 @@
             </tr>
             <tr class="table4tr11">
               <td class="table4td9">المجموع</td>
-              <td class="table4td33">{{fr declaration}}</td>
+              <td class="table4td33">.........................</td>
               <td class="table4td33">.........................</td>
               <td class="table4td33">.........................</td>
               <td class="table4td33">.........................</td>
@@ -2771,7 +2771,7 @@
                 </div>
                 <div class="paragraphe17">
                   <p>
-                   في {{gen_date}}      
+                    ............................ في ............................
                   </p>
                 </div>
                 <div class="paragraphe17">
@@ -3285,6 +3285,7 @@
       </div>
       <div class="footernotes">( 3 ) مناب الجماعة = المعلوم X مساحة الفرع</div>
       <div class="footernotes3">رقم المعاملات الجملي .</div>
+      <button onclick="prrrint('bodbod')">print</button>
     </div>
   </body>
 </html>

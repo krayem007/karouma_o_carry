@@ -497,6 +497,7 @@ div.card {
     align-items: center;
     justify-content: center; /* Centers the buttons horizontally */
     gap: 10px; /* Adds space between buttons */
+    padding-top: 50px;
   }
 
   .custom-secondary {
@@ -505,6 +506,7 @@ div.card {
   .custom-primary {
     min-height: 33px;
   }
+
 }
 
 @media (width > 1030px) {
@@ -567,6 +569,11 @@ div.card {
   font-size: 13px !important;
 }
 
+.Reporttva::placeholder {
+  color: black !important;
+  font-size: 13px !important;
+}
+
 input.form-control::placeholder {
   color: black !important;
   font-size: 13px !important;
@@ -581,6 +588,10 @@ input.form-control {
   color: black !important;
   font-size: 13px !important;
 }
+.Reporttva {
+  color: black !important;
+  font-size: 13px !important;
+}
 .form-select {
   color: black !important;
   font-size: 13px !important;
@@ -590,6 +601,9 @@ input.form-control {
 
 .form-selectmois {
   width: 75px !important;
+}
+.Retard {
+  width: 220px !important;
 }
 .row-gt {
   padding-bottom: 20px;
@@ -644,6 +658,12 @@ th {
   text-align: center;
   margin-right: 15px;
 }
+
+.Reporttva {
+  width: 220px !important;
+  height: 37.5px ;
+  align-content: center;
+}
 .accordion-body {
   background-color: rgb(229, 229, 229);
 }
@@ -674,6 +694,13 @@ td {
   width: 150px;
 }
 
+.thmt{
+  width: 250px;
+}
+
+.thautre{
+  width: 150px;
+}
 /* Custom scrollbar for Firefox */
 .table-container {
   scrollbar-color: crimson #f1f1f1; /* Thumb color and track color */
@@ -708,6 +735,20 @@ td {
     margin: 7px 0px !important;
     background-color: #dbdada !important; /* Light gray background */
     cursor: not-allowed !important;
+  }
+
+   .row-gt > .form-labelannee,
+  .row-gt > .form-selectmois {
+    display: flex !important;
+    align-items: center !important; /* centre verticalement le contenu */
+  }
+
+  /* Uniformiser hauteur et padding */
+  .form-labelannee input,
+  .form-selectmois {
+    height: 38px !important; /* même hauteur que bouton */
+    padding: 0 10px;          /* padding interne uniforme */
+    box-sizing: border-box;   /* inclure padding et border */
   }
 }
 

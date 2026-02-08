@@ -1,5 +1,5 @@
 import icon from "../images/icon.png";
-import React, { useState,  useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
@@ -16,10 +16,10 @@ import {
   Toast,
 } from "react-bootstrap";
 
-import axios from  "axios";
+import axios from "axios";
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5002', // Base URL of the Express backend
+  baseURL: "http://localhost:5002", // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
@@ -28,7 +28,7 @@ const DESC = "Gérer mes déclarations ";
 const CANONICAL = Config.SITE_DOMAIN + "/gerer";
 
 const hiddenStyle = {
-  display: 'none',
+  display: "none",
 };
 
 const Gerer = () => {
@@ -37,30 +37,44 @@ const Gerer = () => {
   const [deletePaieIds, setDeletePaieIds] = useState([]);
   const [deleteRetenueIds, setDeleteRetenueIds] = useState([]);
 
-  const [factures, setFactures] = useState([  {
-    Date: "",
-    Type: "",
-    Ref: "",
-    TotalHT: 0,
-    tva: 0,
-    Timbre: 0,
-    TotalTTC: 0,
-  },]);
+  const [factures, setFactures] = useState([]);
   const [paie, setPaie] = useState([]);
   const [retenue, setRetenue] = useState([]);
   const [selectAllFactures, setSelectAllFactures] = useState(false);
   const [selectAllPaie, setSelectAllPaie] = useState(false);
   const [selectAllRetenue, setSelectAllRetenue] = useState(false);
   const [isSaisieClicked, setIsSaisieClicked] = useState(false);
+  const accordionKeys = ["0", "1", "2"]; // all your accordion items
+  // Open only accordions that have data initially
+  const getOpenedAccordions = () => {
+    const keys = [];
+    if (factures.length > 0) keys.push("0");
+    if (paie.length > 0) keys.push("1");
+    if (retenue.length > 0) keys.push("2");
+    return keys;
+  };
+  const [activeAccordion, setActiveAccordion] = useState(getOpenedAccordions);
   const [validated, set_Validated] = useState(false);
   const [alert, setAlert] = useState({ message: "", type: "" });
   const navigate = useNavigate(); // Initialize navigate hook
+  // Toggle a single accordion
+  const toggleAccordionItem = (key) => {
+    setActiveAccordion((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
+    );
+  };
+
+  // Toggle all accordions
+  const toggleAllAccordions = () => {
+    setActiveAccordion((prev) =>
+      prev.length === accordionKeys.length ? [] : [...accordionKeys],
+    );
+  };
 
   const handleSaisie = (e) => {
     e.preventDefault(); // Prevent default form submission
     setIsSaisieClicked(true); // Mark "Saisie" as clicked
-    //gg code fore button saisie
-    const date  = {annee, mois };
+    const date = { annee, mois };
     console.log("deleted factures id before reset : ", deleteFactureIds);
     console.log("deleted Paie id before reset : ", deletePaieIds);
     console.log("deleted etenue id before reset : ", deleteRetenueIds);
@@ -70,74 +84,76 @@ const Gerer = () => {
     setDeleteFactureIds([]);
     setDeletePaieIds([]);
     setDeleteRetenueIds([]);
-    instance.post("/get_dec", date).then((response) => 
-      {
-        console.log(" decla found : ", response.data);
-        if (response.data.dec == true)
-        {
-          //handleAddFacture(true, response.data.send_data.factures);
-          let fnewRows = [];
-          //add factures
-          for (let i = 0; i < response.data.send_data.factures.length; i++) {
-            fnewRows.push({
-              Date : response.data.send_data.factures[i].date.substring(0, 10),
-              Type : response.data.send_data.factures[i].type,
-              Ref  : response.data.send_data.factures[i].ref,
-              TotalHT : response.data.send_data.factures[i].ht,
-              tva  : response.data.send_data.factures[i].tva,
-              Timbre : response.data.send_data.factures[i].timber,
-              TotalTTC : response.data.send_data.factures[i].ttc,
-              id : response.data.send_data.factures[i].id,
-              selected: false
-            });
-          }
-          setFactures((prev) => [...prev, ...fnewRows]);
-
-          //add paie 
-          let pnewRows = [];
-          for (let i = 0; i < response.data.send_data.paie.length; i++) {
-            pnewRows.push({
-              Salarier : response.data.send_data.paie[i].salarier,
-              typepaie : response.data.send_data.paie[i].secteur,
-              chef  : response.data.send_data.paie[i].famille,
-              enfants : response.data.send_data.paie[i].num_kids,
-              salaireBrut  : response.data.send_data.paie[i].brut,
-              id : response.data.send_data.paie[i].id,
-              selected: false
-            });
-          }
-          setPaie((prev) => [...prev, ...pnewRows]);
-
-          //add retenue 
-          let rnewRows = [];
-          for (let i = 0; i < response.data.send_data.retenue.length; i++) {
-            rnewRows.push({
-              source : response.data.send_data.retenue[i].type,
-              montantHT  : response.data.send_data.retenue[i].ht,
-              tva : response.data.send_data.retenue[i].tva,
-              montantTTC : response.data.send_data.retenue[i].ttc,
-              id : response.data.send_data.retenue[i].id,
-              selected: false
-            });
-          }
-          setRetenue((prev) => [...prev, ...rnewRows]);
-        }
-        else if (response.data.not_found != true)
-        {
-          setAlert({
-            message: response.data.message,
-            type: "error",
+    instance.post("/get_dec", date).then((response) => {
+      console.log(" decla found : ", response.data);
+      if (response.data.dec == true) {
+        setReportTVA(response.data.send_data.reporttva);
+        //handleAddFacture(true, response.data.send_data.factures);
+        let fnewRows = [];
+        //add factures
+        for (let i = 0; i < response.data.send_data.factures.length; i++) {
+          fnewRows.push({
+            Date: response.data.send_data.factures[i].date.substring(0, 10),
+            Type: response.data.send_data.factures[i].type,
+            TypeAV: response.data.send_data.factures[i].type_achat_vente,
+            Ref: response.data.send_data.factures[i].ref,
+            TotalHT: response.data.send_data.factures[i].ht,
+            tva: response.data.send_data.factures[i].tva,
+            Timbre: response.data.send_data.factures[i].timber,
+            FODEC: response.data.send_data.factures[i].fodec,
+            MTFODEC: response.data.send_data.factures[i].mtfodec,
+            TauxDC: response.data.send_data.factures[i].tauxdc,
+            MTDC: response.data.send_data.factures[i].mtdc,
+            TotalTTC: response.data.send_data.factures[i].ttc,
+            id: response.data.send_data.factures[i].id,
+            selected: false,
           });
-  
-          // Clear the alert after 3 seconds
-          setTimeout(() => {
-            setAlert(null);
-          }, 3000);
         }
-      });
+        setFactures((prev) => [...prev, ...fnewRows]);
+
+        //add paie
+        let pnewRows = [];
+        for (let i = 0; i < response.data.send_data.paie.length; i++) {
+          pnewRows.push({
+            Salarier: response.data.send_data.paie[i].salarier,
+            typepaie: response.data.send_data.paie[i].secteur,
+            chef: response.data.send_data.paie[i].famille,
+            enfants: response.data.send_data.paie[i].num_kids,
+            salaireBrut: response.data.send_data.paie[i].brut,
+            id: response.data.send_data.paie[i].id,
+            selected: false,
+          });
+        }
+        setPaie((prev) => [...prev, ...pnewRows]);
+
+        //add retenue
+        let rnewRows = [];
+        for (let i = 0; i < response.data.send_data.retenue.length; i++) {
+          rnewRows.push({
+            source: response.data.send_data.retenue[i].type,
+            montantHT: response.data.send_data.retenue[i].ht,
+            tva: response.data.send_data.retenue[i].tva,
+            montantTTC: response.data.send_data.retenue[i].ttc,
+            id: response.data.send_data.retenue[i].id,
+            selected: false,
+          });
+        }
+        setRetenue((prev) => [...prev, ...rnewRows]);
+      } else if (response.data.not_found != true) {
+        setAlert({
+          message: response.data.message,
+          type: "error",
+        });
+
+        // Clear the alert after 3 seconds
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000);
+      }
+    });
   };
 
-  const save_decla = () =>{
+  const save_decla = () => {
     console.log("facture data : ", factures);
     console.log("paie data : ", paie);
     console.log("retenue data : ", retenue);
@@ -149,34 +165,29 @@ const Gerer = () => {
       {
 
       });*/
-    
   };
 
   // State to manage année and mois
   const [annee, setAnnee] = useState("");
   const [mois, setMois] = useState("");
+  const [ReportTVA, setReportTVA] = useState("");
+  const [retard, setRetard] = useState("");
 
   // Check if both fields are filled
   const isFormValid = annee !== "" && mois !== "" && mois !== "Mois";
 
-
   useEffect(() => {
-    
-    instance.get("/welcome").then((response) => 
-      {
-        /*gg test*/console.log(response.data);
-        if (response.data.authorized == "true")
-        {
-          console.log("authorized client");
-        }
-        else
-        {
-          console.log("not authorized client");
-          navigate("/connexion");
-          //neet to logging first
-        }
-      });
-    }, []);
+    instance.get("/welcome").then((response) => {
+      /*gg test*/ console.log(response.data);
+      if (response.data.authorized == "true") {
+        console.log("authorized client");
+      } else {
+        console.log("not authorized client");
+        navigate("/connexion");
+        //neet to logging first
+      }
+    });
+  }, []);
 
   const handleChangerMoisAnneeClick = () => {
     setMois(""); // Reset 'mois' to empty
@@ -230,60 +241,51 @@ const Gerer = () => {
 
   const handleCollectSelectedFactureIds = () => {
     const selectedIds = factures
-      .filter(facture => facture.selected)
-      .map(facture => facture.id);
+      .filter((facture) => facture.selected)
+      .map((facture) => facture.id);
     // Append to existing deleteFactureIds, avoiding duplicates
-    setDeleteFactureIds(prev => [
-      ...new Set([...prev, ...selectedIds])
-    ]);
+    setDeleteFactureIds((prev) => [...new Set([...prev, ...selectedIds])]);
   };
-  
+
   const handleCollectSelectedpaiIds = () => {
     const selectedIds = paie
-      .filter(paie => paie.selected)
-      .map(paie => paie.id);
-    setDeletePaieIds(prev => [
-      ...new Set([...prev, ...selectedIds])
-    ]);
+      .filter((paie) => paie.selected)
+      .map((paie) => paie.id);
+    setDeletePaieIds((prev) => [...new Set([...prev, ...selectedIds])]);
   };
 
   const handleCollectSelectedRetenueIds = () => {
     const selectedIds = retenue
-      .filter(retenue => retenue.selected)
-      .map(retenue => retenue.id);
-    setDeleteRetenueIds(prev => [
-      ...new Set([...prev, ...selectedIds])
-    ]);
+      .filter((retenue) => retenue.selected)
+      .map((retenue) => retenue.id);
+    setDeleteRetenueIds((prev) => [...new Set([...prev, ...selectedIds])]);
   };
 
   // Handlers for removing selected rows
-  const handleRemoveFacture = () =>
-    {
-      console.log("deleted factures id old : ", deleteFactureIds);
-      handleCollectSelectedFactureIds ();
-      console.log("deleted factures id new : ", deleteFactureIds);
-      setFactures(factures.filter((_, index) => !factures[index].selected));
-    }
-  const handleRemovePaie = () =>
-  {
+  const handleRemoveFacture = () => {
+    console.log("deleted factures id old : ", deleteFactureIds);
+    handleCollectSelectedFactureIds();
+    console.log("deleted factures id new : ", deleteFactureIds);
+    setFactures(factures.filter((_, index) => !factures[index].selected));
+  };
+  const handleRemovePaie = () => {
     console.log("deleted Paie id old : ", deletePaieIds);
     handleCollectSelectedpaiIds();
     console.log("deleted Paie id old : ", deletePaieIds);
     setPaie(paie.filter((_, index) => !paie[index].selected));
-  }
-  const handleRemoveRetenue = () =>
-  {
+  };
+  const handleRemoveRetenue = () => {
     console.log("deleted etenue id old : ", deleteRetenueIds);
     handleCollectSelectedRetenueIds();
     console.log("deleted etenue id old : ", deleteRetenueIds);
     setRetenue(retenue.filter((_, index) => !retenue[index].selected));
-  }
+  };
 
   // Handlers for selecting all checkboxes
   const handleSelectAllFactures = () => {
     setSelectAllFactures(!selectAllFactures);
     setFactures(
-      factures.map((facture) => ({ ...facture, selected: !selectAllFactures }))
+      factures.map((facture) => ({ ...facture, selected: !selectAllFactures })),
     );
   };
 
@@ -311,73 +313,147 @@ const Gerer = () => {
     if (form.checkValidity() === false) {
       event.stopPropagation();
     } else {
-      const data = {annee, mois, factures, paie, retenue, deleteFactureIds, deletePaieIds, deleteRetenueIds};
+      const data = {
+        annee,
+        mois,
+        ReportTVA,
+        factures,
+        paie,
+        retenue,
+        deleteFactureIds,
+        deletePaieIds,
+        deleteRetenueIds,
+      };
       console.log("data data : ", data);
-      instance.post("/dec", data).then((response) => 
-        {
-            if (response.data.saved == true)
-            {
-              setAlert({
-                message:
-                  "Vous avez saisi vos données. Vous pouvez maintenant imprimer votre déclaration.",
-                type: "success",
-              });
-              console.log("Alert shown, waiting to navigate");
-        
-              setTimeout(() => {
-                navigate("/visualiser");
-              }, 3000);
-            }else{
-              setAlert({
-                message: response.data.message,
-                type: "error",
-              });
-      
-              // Clear the alert after 3 seconds
-              setTimeout(() => {
-                setAlert(null);
-              }, 3000);
-            }
-        });
+      instance.post("/dec", data).then((response) => {
+        if (response.data.saved == true) {
+          setAlert({
+            message:
+              "Vous avez saisi vos données. Vous pouvez maintenant imprimer votre déclaration.",
+            type: "success",
+          });
+          console.log("Alert shown, waiting to navigate");
+
+          setTimeout(() => {
+            navigate("/visualiser");
+          }, 3000);
+        } else {
+          setAlert({
+            message: response.data.message,
+            type: "error",
+          });
+
+          // Clear the alert after 3 seconds
+          setTimeout(() => {
+            setAlert(null);
+          }, 3000);
+        }
+      });
     }
 
     set_Validated(true);
   };
 
-
-
-  // Handle changes for facture form fields
   const chngFn = (index, updatedFacture, fieldChanged) => {
     const newFactures = [...factures];
     const currentFacture = { ...updatedFacture };
 
-    // Set inputSource when user changes HT or TTC manually
-    if (fieldChanged === "HT" || fieldChanged === "TTC") {
-      currentFacture.inputSource = fieldChanged;
+    if (
+      (fieldChanged === "TTC" && !currentFacture.TotalTTC) ||
+      (fieldChanged === "HT" && !currentFacture.TotalHT)
+    ) {
+      currentFacture.TotalHT = "";
+      currentFacture.TotalTTC = "";
+      currentFacture.MTDC = "";
+      currentFacture.TauxDC = "";
+      currentFacture.Timbre = "";
+      currentFacture.MTFODEC = "";
+      currentFacture.FODEC = "";
+      currentFacture.inputSource = null;
+      currentFacture.dcSource = null;
+
+      newFactures[index] = currentFacture;
+      setFactures([...newFactures]);
+      set_Validated(false);
+      return;
     }
 
-    const tvaRate = parseTVA(currentFacture.tva);
-    const timbre = parseFloat(currentFacture.Timbre);
-    const tmb = isNaN(timbre) ? 0 : timbre;
+    if (fieldChanged === "HT" && currentFacture.TotalHT !== "") {
+      currentFacture.inputSource = "HT";
+    }
+    if (fieldChanged === "TTC" && currentFacture.TotalTTC !== "") {
+      currentFacture.inputSource = "TTC";
+    }
+    if (fieldChanged === "TauxDC" && currentFacture.TauxDC !== "") {
+      currentFacture.dcSource = "TauxDC";
+    }
+    if (fieldChanged === "MTDC" && currentFacture.MTDC !== "") {
+      currentFacture.dcSource = "MTDC";
+    }
 
-    if (currentFacture.inputSource === "HT") {
-      const ht = parseFloat(currentFacture.TotalHT);
-      if (!isNaN(ht) && !isNaN(tvaRate)) {
-        currentFacture.TotalTTC = (ht * (1 + tvaRate) + tmb).toFixed(3);
-      } else {
-        currentFacture.TotalTTC = "";
+    if (!currentFacture.inputSource) {
+      newFactures[index] = currentFacture;
+      setFactures([...newFactures]);
+      set_Validated(false);
+      return;
+    }
+
+    const master = currentFacture.inputSource;
+    const tvaRate = parseTVA(currentFacture.tva) || 0;
+    const timbre = parseFloat(currentFacture.Timbre) || 0;
+    const isFodec = currentFacture.FODEC === "Oui";
+    const fodecRate = isFodec ? 0.01 : 0;
+
+    let tdcRate =
+      parseFloat(currentFacture.TauxDC) > 0
+        ? parseFloat(currentFacture.TauxDC) / 100
+        : 0;
+
+    let mtdc = parseFloat(currentFacture.MTDC) || 0;
+
+    const recalc = (htBase) => {
+      // DC
+      if (currentFacture.dcSource === "TauxDC") {
+        mtdc = htBase * tdcRate;
+        currentFacture.MTDC = mtdc.toFixed(3);
+      } else if (currentFacture.dcSource === "MTDC") {
+        tdcRate = htBase !== 0 ? mtdc / htBase : 0;
+        currentFacture.TauxDC = (tdcRate * 100).toFixed(3);
       }
-    } else if (currentFacture.inputSource === "TTC") {
+
+      // FODEC
+      const fodecAmount = isFodec ? htBase * fodecRate : 0;
+      currentFacture.MTFODEC = isFodec ? fodecAmount.toFixed(3) : "";
+
+      // TVA SUR (HT + DC + FODEC)
+      const tvaBase = htBase + mtdc + fodecAmount;
+      const tvaAmount = tvaBase * tvaRate;
+
+      return { dc: mtdc, fodec: fodecAmount, tva: tvaAmount };
+    };
+
+    if (master === "TTC" && currentFacture.TotalTTC !== "") {
       const ttc = parseFloat(currentFacture.TotalTTC);
-      if (!isNaN(ttc) && !isNaN(tvaRate)) {
-        currentFacture.TotalHT = ((ttc - tmb) / (1 + tvaRate)).toFixed(3);
-      } else {
-        currentFacture.TotalHT = "";
-      }
+
+      const coef =
+        1 + tdcRate + fodecRate + tvaRate * (1 + tdcRate + fodecRate);
+
+      const htBase = coef > 0 ? (ttc - timbre) / coef : 0;
+
+      recalc(htBase);
+      currentFacture.TotalHT = htBase.toFixed(3);
+    }
+
+    if (master === "HT" && currentFacture.TotalHT !== "") {
+      const ht = parseFloat(currentFacture.TotalHT);
+
+      const { dc, fodec, tva } = recalc(ht);
+
+      currentFacture.TotalTTC = (ht + dc + fodec + tva + timbre).toFixed(3);
     }
 
     newFactures[index] = currentFacture;
-    setFactures(newFactures);
+    setFactures([...newFactures]);
     set_Validated(false);
   };
 
@@ -431,6 +507,16 @@ const Gerer = () => {
     return tvaString / 100;
   };
 
+  useEffect(() => {
+    const openedByData = getOpenedAccordions();
+
+    setActiveAccordion((prev) => {
+      // merge previous opened accordions with new ones
+      const merged = new Set([...prev, ...openedByData]);
+      return Array.from(merged);
+    });
+  }, [factures.length, paie.length, retenue.length]);
+
   return (
     <>
       <Helmet>
@@ -473,8 +559,8 @@ const Gerer = () => {
         </Breadcrumb>
         <h1 className="form-title"> Gérer mes déclarations </h1>
         <form noValidate onSubmit={submitFn} validated={validated}>
-          <Row className="row-gt align-items-center justify-content-start">
-            <Col md="auto" className="form-labelannee">
+          <Row className="row-gt align-items-center justify-content-start g-2">
+            <Col xs={6} sm={3} md="auto" className="form-labelannee">
               <Form.Group className="form-labelannee">
                 <Form.Control
                   type="text"
@@ -489,7 +575,7 @@ const Gerer = () => {
                 />
               </Form.Group>
             </Col>
-            <Col md="auto">
+            <Col xs={6} sm={3} md="auto">
               <Form.Select
                 aria-label="Default select example"
                 className="form-selectmois"
@@ -505,12 +591,12 @@ const Gerer = () => {
                 ))}
               </Form.Select>
             </Col>
-            <Col md="auto">
+            <Col xs={6} sm={3} md="auto">
               <div className="boutong">
                 <Button
                   variant="primary"
                   type="submit"
-                  className="custom-primaryg"
+                  className="custom-primaryg w-100"
                   onClick={handleSaisie}
                   disabled={!isFormValid}
                 >
@@ -518,12 +604,12 @@ const Gerer = () => {
                 </Button>
               </div>
             </Col>
-            <Col md="auto">
+            <Col xs={6} sm={3} md="auto">
               <div className="boutong">
                 <Button
                   variant="primary"
                   type="reset"
-                  className="custom-primaryg"
+                  className="custom-primaryg w-100"
                   onClick={handleChangerMoisAnneeClick}
                   disabled={!isSaisieClicked}
                 >
@@ -531,12 +617,25 @@ const Gerer = () => {
                 </Button>
               </div>
             </Col>
+            <Col xs={12} md="auto" className="mt-2 mt-md-0 ms-md-auto">
+              <div className="boutond">
+                <Button
+                  variant="primary"
+                  type="button"
+                  className="custom-primaryg"
+                  onClick={toggleAllAccordions}
+                >
+                  Developper ou reduire toutes les tables{" "}
+                </Button>
+              </div>
+            </Col>
           </Row>
-
           <Row className="row-accor">
-            <Accordion alwaysOpen>
+            <Accordion alwaysOpen activeKey={activeAccordion}>
               <Accordion.Item eventKey="0">
-                <Accordion.Header>Saisir mes factures</Accordion.Header>
+                <Accordion.Header onClick={() => toggleAccordionItem("0")}>
+                  Saisir mes factures
+                </Accordion.Header>
                 <Accordion.Body>
                   <Row className="add-del">
                     <Col md="auto">
@@ -572,251 +671,413 @@ const Gerer = () => {
                                 checked={selectAllFactures}
                               />
                             </th>
-                            <th>
+                            <th className="thautre">
                               Date <span className="text-danger">*</span>
                             </th>
                             <th id="custome_th">
-                              Type du facture{" "}
+                              Type du facture
                               <span className="text-danger">*</span>
                             </th>
-                            <th>Réf facture</th>
-                            <th>
+                            <th className="thmt">
+                              Type d'achat ou de vente
+                              <span className="text-danger">*</span>
+                            </th>
+                            <th className="thautre">Réf facture</th>
+                            <th className="thmt">
                               Total HT <span className="text-danger">*</span>
                             </th>
-                            <th>
+                            <th className="thautre">
                               TVA <span className="text-danger">*</span>
                             </th>
-                            <th>
+                            <th className="thautre">
                               Timbre <span className="text-danger">*</span>
                             </th>
-                            <th>
+                            <th className="thmt">FODEC</th>
+                            <th className="thmt">Montant FODEC</th>
+                            <th className="thmt">Taux Droit de consommation</th>
+                            <th className="thmt">
+                              Montant Droit de consommation
+                            </th>
+                            <th className="thmt">
                               Total TTC <span className="text-danger">*</span>
                             </th>
                             <th style={hiddenStyle}>id</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {factures.map((facture, index) => (
-                            <tr key={index}>
-                              <td>
-                                <input
-                                  type="checkbox"
-                                  checked={facture.selected || false}
-                                  onChange={() =>
-                                    handleCheckboxChange(
-                                      setFactures,
-                                      factures,
-                                      index
-                                    )
-                                  }
-                                />
+                          {factures.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={15}
+                                className="text-start text-muted py-3 ps-5"
+                              >
+                                La table des factures est vide
                               </td>
-                              <td>
-                                <Form.Group controlId={`date-facture${index}`}>
+                            </tr>
+                          ) : (
+                            factures.map((facture, index) => (
+                              <tr key={index}>
+                                <td>
+                                  <input
+                                    type="checkbox"
+                                    checked={facture.selected || false}
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        setFactures,
+                                        factures,
+                                        index,
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`date-facture${index}`}
+                                  >
+                                    <Form.Control
+                                      className="textadj"
+                                      type="date"
+                                      placeholder="Date"
+                                      value={facture.Date}
+                                      onChange={
+                                        (e) =>
+                                          chngFn(index, {
+                                            ...facture,
+                                            Date: e.target.value,
+                                          }) // Only updates Date
+                                      }
+                                      required
+                                      isInvalid={validated && !facture.Date}
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir la date de la facture
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`type-facture-${index}`}
+                                  >
+                                    <Form.Select
+                                      aria-label="Type de facture"
+                                      value={factures[index]?.Type || ""}
+                                      onChange={(e) =>
+                                        chngFn(index, {
+                                          ...factures[index],
+                                          Type: e.target.value,
+                                        })
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated && !factures[index]?.Type
+                                      }
+                                    >
+                                      <option value="">Type du facture </option>
+                                      <option value="Facture d'achat">
+                                        Facture d'achat
+                                      </option>
+                                      <option value="Facture de vente">
+                                        Facture de vente
+                                      </option>
+                                    </Form.Select>
+                                    <Form.Control.Feedback
+                                      type="invalid"
+                                      className="feedback"
+                                    >
+                                      Veuillez sélectionner le type du facture
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group controlId={`TypeAV-${index}`}>
+                                    <Form.Select
+                                      aria-label="Type d'achat ou de vente"
+                                      value={factures[index]?.TypeAV || ""}
+                                      onChange={(e) =>
+                                        chngFn(index, {
+                                          ...factures[index],
+                                          TypeAV: e.target.value,
+                                        })
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated && !factures[index]?.TypeAV
+                                      }
+                                    >
+                                      <option value="">
+                                        Type d'achat ou de vente
+                                      </option>
+                                      <option value="Achat d’équipement local">
+                                        Equipement local
+                                      </option>
+                                      <option value="Achat d’équipement importé">
+                                        Equipement importé
+                                      </option>
+                                      <option value="Autres achats locaux">
+                                        Autres achats et ventes locaux
+                                      </option>
+                                      <option value="Autres achats importés">
+                                        Autres achats et ventes importés
+                                      </option>
+                                    </Form.Select>
+                                    <Form.Control.Feedback
+                                      type="invalid"
+                                      className="feedback"
+                                    >
+                                      Veuillez sélectionner type d'achat ou de
+                                      vente
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td>
                                   <Form.Control
                                     className="textadj"
-                                    type="date"
-                                    placeholder="Date"
-                                    value={facture.Date}
-                                    onChange={
-                                      (e) =>
-                                        chngFn(index, {
-                                          ...facture,
-                                          Date: e.target.value,
-                                        }) // Only updates Date
-                                    }
-                                    required
-                                    isInvalid={validated && !facture.Date}
-                                  />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
-                                  >
-                                    Veuillez remplir la date de la facture
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
-                              <td>
-                                <Form.Group controlId={`type-facture-${index}`}>
-                                  <Form.Select
-                                    aria-label="Type de facture"
-                                    value={factures[index]?.Type || ""}
+                                    type="text"
+                                    placeholder="Réf facture"
+                                    value={facture.Ref}
                                     onChange={(e) =>
                                       chngFn(index, {
                                         ...factures[index],
-                                        Type: e.target.value,
+                                        Ref: e.target.value,
                                       })
                                     }
-                                    required
-                                    isInvalid={
-                                      validated && !factures[index]?.Type
-                                    }
-                                  >
-                                    <option value="">Type du facture </option>
-                                    <option value="Facture d'achat">
-                                      Facture d'achat
-                                    </option>
-                                    <option value="Facture de vente">
-                                      Facture de vente
-                                    </option>
-                                  </Form.Select>
-                                  <Form.Control.Feedback
-                                    type="invalid"
-                                    className="feedback"
-                                  >
-                                    Veuillez sélectionner le type du facture.
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
-                              <td>
-                                <Form.Control
-                                  className="textadj"
-                                  type="text"
-                                  placeholder="Réf facture"
-                                  value={facture.Ref}
-                                  onChange={(e) =>
-                                    chngFn(index, {
-                                      ...factures[index],
-                                      Ref: e.target.value,
-                                    })
-                                  }
-                                  isInvalid={validated && !facture.Ref}
-                                />
-                              </td>
-                              <td>
-                                <Form.Group
-                                  controlId={`TotalHT-facture${index}`}
-                                >
-                                  <Form.Control
-                                    min="0"
-                                    placeholder="Total HT"
-                                    value={facture.TotalHT}
-                                    step="0.001"
-                                    onChange={(e) =>
-                                      chngFn(
-                                        index,
-                                        { ...facture, TotalHT: e.target.value },
-                                        "HT"
-                                      )
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated &&
-                                      (factures[index]?.TotalHT == null ||
-                                        factures[index].TotalHT <= 0)
-                                    }
                                   />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`TotalHT-facture${index}`}
                                   >
-                                    Veuillez remplir le Total HT
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
-                              <td>
-                                <Form.Group controlId={`tva-facture-${index}`}>
-                                  <Form.Select
-                                    aria-label="TVA"
-                                    value={factures[index]?.tva ?? ""} // Ensure correct access to the row's value
-                                    onChange={(e) =>
-                                      chngFn(
-                                        index,
-                                        {
+                                    <Form.Control
+                                      min="0"
+                                      placeholder="Total HT"
+                                      value={facture.TotalHT}
+                                      step="0.001"
+                                      onChange={(e) =>
+                                        chngFn(
+                                          index,
+                                          {
+                                            ...facture,
+                                            TotalHT: e.target.value,
+                                          },
+                                          "HT",
+                                        )
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated &&
+                                        (factures[index]?.TotalHT == null ||
+                                          factures[index].TotalHT <= 0)
+                                      }
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir le Total HT
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`tva-facture-${index}`}
+                                  >
+                                    <Form.Select
+                                      aria-label="TVA"
+                                      value={factures[index]?.tva ?? ""} // Ensure correct access to the row's value
+                                      onChange={(e) =>
+                                        chngFn(
+                                          index,
+                                          {
+                                            ...factures[index],
+                                            tva: e.target.value,
+                                          },
+                                          "tva",
+                                        )
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated && !factures[index]?.tva
+                                      }
+                                    >
+                                      <option value=""> Taux TVA </option>
+                                      <option value="7">7%</option>
+                                      <option value="13">13%</option>
+                                      <option value="19">19%</option>
+                                    </Form.Select>
+                                    <Form.Control.Feedback
+                                      type="invalid"
+                                      className="feedback"
+                                    >
+                                      Veuillez sélectionner le TVA.
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`Timbre-facture-${index}`}
+                                  >
+                                    <Form.Control
+                                      className="textadj"
+                                      type="number"
+                                      min="0"
+                                      placeholder="Timbre"
+                                      value={facture.Timbre}
+                                      onChange={(e) =>
+                                        chngFn(
+                                          index,
+                                          {
+                                            ...facture,
+                                            Timbre: e.target.value,
+                                          },
+                                          "Timbre",
+                                        )
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated &&
+                                        (!factures[index]?.Timbre ||
+                                          factures[index].Timbre < 0)
+                                      }
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir le montant du Timbre
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`FODEC-facture-${index}`}
+                                  >
+                                    <Form.Select
+                                      aria-label="FODEC"
+                                      value={factures[index]?.FODEC || ""}
+                                      onChange={(e) =>
+                                        chngFn(index, {
                                           ...factures[index],
-                                          tva: e.target.value,
-                                        },
-                                        "tva"
-                                      )
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated && !factures[index]?.tva
-                                    }
+                                          FODEC: e.target.value,
+                                        })
+                                      }
+                                    >
+                                      <option value="">
+                                        Soumise au FODEC ?{" "}
+                                      </option>
+                                      <option value="Oui">Oui</option>
+                                      <option value="Non">Non</option>
+                                    </Form.Select>
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`MTFODEC-facture${index}`}
                                   >
-                                    <option value=""> Taux TVA </option>
-                                    <option value="7">7%</option>
-                                    <option value="13">13%</option>
-                                    <option value="19">19%</option>
-                                  </Form.Select>
-                                  <Form.Control.Feedback
-                                    type="invalid"
-                                    className="feedback"
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      placeholder="Montant FODEC"
+                                      value={facture.MTFODEC}
+                                      step="0.001"
+                                      onChange={(e) =>
+                                        chngFn(
+                                          index,
+                                          {
+                                            ...facture,
+                                            MTFODEC: e.target.value,
+                                          },
+                                          "MTFODEC",
+                                        )
+                                      }
+                                      readOnly
+                                    />
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`TauxDC-facture${index}`}
                                   >
-                                    Veuillez sélectionner le TVA.
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
-                              <td>
-                                <Form.Group
-                                  controlId={`Timbre-facture-${index}`}
-                                >
-                                  <Form.Control
-                                    className="textadj"
-                                    type="number"
-                                    min="0"
-                                    placeholder="Timbre"
-                                    value={facture.Timbre}
-                                    onChange={(e) =>
-                                      chngFn(
-                                        index,
-                                        { ...facture, Timbre: e.target.value },
-                                        "Timbre"
-                                      )
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated &&
-                                      (!factures[index]?.Timbre ||
-                                        factures[index].Timbre < 0)
-                                    }
-                                  />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
+                                    <Form.Control
+                                      min="0"
+                                      placeholder="Taux DC en %"
+                                      value={facture.TauxDC}
+                                      onChange={(e) =>
+                                        chngFn(
+                                          index,
+                                          {
+                                            ...facture,
+                                            TauxDC: e.target.value,
+                                          },
+                                          "TauxDC",
+                                        )
+                                      }
+                                    />
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`MTDC-facture${index}`}
                                   >
-                                    Veuillez remplir le montant du Timbre
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
-                              <td>
-                                <Form.Group
-                                  controlId={`TotalTTC-facture${index}`}
-                                >
-                                  <Form.Control
-                                    type="number"
-                                    min="0"
-                                    placeholder="Total TTC"
-                                    value={facture.TotalTTC}
-                                    step="0.001"
-                                    onChange={(e) =>
-                                      chngFn(
-                                        index,
-                                        {
-                                          ...facture,
-                                          TotalTTC: e.target.value,
-                                        },
-                                        "TTC"
-                                      )
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated &&
-                                      (factures[index]?.TotalTTC == null ||
-                                        factures[index].TotalTTC <= 0)
-                                    }
-                                  />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      placeholder="Montant DC"
+                                      value={facture.MTDC}
+                                      step="0.001"
+                                      onChange={(e) =>
+                                        chngFn(
+                                          index,
+                                          {
+                                            ...facture,
+                                            MTDC: e.target.value,
+                                          },
+                                          "MTDC",
+                                        )
+                                      }
+                                    />
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`TotalTTC-facture${index}`}
                                   >
-                                    Veuillez remplir le Total TTC
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      placeholder="Total TTC"
+                                      value={facture.TotalTTC}
+                                      step="0.001"
+                                      onChange={(e) =>
+                                        chngFn(
+                                          index,
+                                          {
+                                            ...facture,
+                                            TotalTTC: e.target.value,
+                                          },
+                                          "TTC",
+                                        )
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated &&
+                                        (factures[index]?.TotalTTC == null ||
+                                          factures[index].TotalTTC <= 0)
+                                      }
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir le Total TTC
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
 
-                              <td style={hiddenStyle}>
-                                <Form.Group 
+                                <td style={hiddenStyle}>
+                                  <Form.Group
                                     className="textadj"
                                     type="number"
                                     min="0"
@@ -832,12 +1093,11 @@ const Gerer = () => {
                                         }) // Only updates Date
                                     }
                                     required
-                                  >
-                                </Form.Group>
-                              </td>
-
-                            </tr>
-                          ))}
+                                  ></Form.Group>
+                                </td>
+                              </tr>
+                            ))
+                          )}
                         </tbody>
                       </Table>
                     </div>
@@ -847,9 +1107,11 @@ const Gerer = () => {
             </Accordion>
           </Row>
           <Row className="row-accor">
-            <Accordion alwaysOpen>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Saisir mes Paie</Accordion.Header>
+            <Accordion alwaysOpen activeKey={activeAccordion}>
+              <Accordion.Item eventKey="1">
+                <Accordion.Header onClick={() => toggleAccordionItem("1")}>
+                  Saisir mes Paie
+                </Accordion.Header>
                 <Accordion.Body>
                   <Row className="add-del">
                     <Col md="auto">
@@ -912,166 +1174,184 @@ const Gerer = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {paie.map((row, index) => (
-                            <tr key={index}>
-                              <td>
-                                <input
-                                  type="checkbox"
-                                  checked={row.selected || false}
-                                  onChange={() =>
-                                    handleCheckboxChange(setPaie, paie, index)
-                                  }
-                                />
+                          {paie.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={6}
+                                className="text-start text-muted py-3 ps-5"
+                              >
+                                La table des paies est vide
                               </td>
-                              <td>
-                                <Form.Group controlId={`Salarier-paie${index}`}>
-                                  <Form.Control
-                                    className="textadj"
-                                    type="text"
-                                    placeholder="Salarier"
-                                    value={paie[index]?.Salarier ?? ""} // Access value from the specific index
-                                    onChange={(e) =>
-                                      chngFn1(index, {
-                                        ...paie[index], // Copy the existing data of the row
-                                        Salarier: e.target.value, // Update only the Salarier field
-                                      })
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated && !paie[index]?.Salarier
+                            </tr>
+                          ) : (
+                            paie.map((row, index) => (
+                              <tr key={index}>
+                                <td>
+                                  <input
+                                    type="checkbox"
+                                    checked={row.selected || false}
+                                    onChange={() =>
+                                      handleCheckboxChange(setPaie, paie, index)
                                     }
                                   />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`Salarier-paie${index}`}
                                   >
-                                    Veuillez remplir le nom du salarier
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
-                              <td>
-                                <Form.Group controlId={`type-paie-${index}`}>
-                                  <Form.Select
-                                    aria-label="Secteur d'activité"
-                                    className="form-control"
-                                    value={paie[index]?.typepaie ?? ""} // Ensure correct access to the row's value
-                                    onChange={(e) =>
-                                      chngFn1(index, {
-                                        ...paie[index], // Copy the existing data of the row
-                                        typepaie: e.target.value, // Update only the typepaie field
-                                      })
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated && !paie[index]?.typepaie
-                                    } // Check the specific row's typepaie field for validation
-                                  >
-                                    <option value="">Secteur d'activité</option>
-                                    <option value="Type 1">Industriel</option>
-                                    <option value="Type 2">Autre</option>
-                                  </Form.Select>
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
-                                  >
-                                    Veuillez sélectionner le type d'activité
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
+                                    <Form.Control
+                                      className="textadj"
+                                      type="text"
+                                      placeholder="Salarier"
+                                      value={paie[index]?.Salarier ?? ""} // Access value from the specific index
+                                      onChange={(e) =>
+                                        chngFn1(index, {
+                                          ...paie[index], // Copy the existing data of the row
+                                          Salarier: e.target.value, // Update only the Salarier field
+                                        })
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated && !paie[index]?.Salarier
+                                      }
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir le nom du salarier
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group controlId={`type-paie-${index}`}>
+                                    <Form.Select
+                                      aria-label="Secteur d'activité"
+                                      className="form-control"
+                                      value={paie[index]?.typepaie ?? ""} // Ensure correct access to the row's value
+                                      onChange={(e) =>
+                                        chngFn1(index, {
+                                          ...paie[index], // Copy the existing data of the row
+                                          typepaie: e.target.value, // Update only the typepaie field
+                                        })
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated && !paie[index]?.typepaie
+                                      } // Check the specific row's typepaie field for validation
+                                    >
+                                      <option value="">
+                                        Secteur d'activité
+                                      </option>
+                                      <option value="Type 1">Industriel</option>
+                                      <option value="Type 2">Autre</option>
+                                    </Form.Select>
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez sélectionner le type d'activité
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
 
-                              <td>
-                                <Form.Group controlId={`chef-paie-${index}`}>
-                                  <Form.Select
-                                    aria-label="Chef de famille"
-                                    className="form-control"
-                                    value={paie[index]?.chef ?? ""} // Access the 'chef' value of the specific row
-                                    onChange={(e) =>
-                                      chngFn1(index, {
-                                        ...paie[index], // Copy the existing data of the row
-                                        chef: e.target.value, // Update the chef field
-                                      })
-                                    }
-                                    required
-                                    isInvalid={validated && !paie[index]?.chef} // Check the specific row's chef field for validation
+                                <td>
+                                  <Form.Group controlId={`chef-paie-${index}`}>
+                                    <Form.Select
+                                      aria-label="Chef de famille"
+                                      className="form-control"
+                                      value={paie[index]?.chef ?? ""} // Access the 'chef' value of the specific row
+                                      onChange={(e) =>
+                                        chngFn1(index, {
+                                          ...paie[index], // Copy the existing data of the row
+                                          chef: e.target.value, // Update the chef field
+                                        })
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated && !paie[index]?.chef
+                                      } // Check the specific row's chef field for validation
+                                    >
+                                      <option value="">
+                                        Chef de famille ou non ?
+                                      </option>
+                                      <option value="Oui">Oui</option>
+                                      <option value="Non">Non</option>
+                                    </Form.Select>
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez sélectionner si le salarié est
+                                      chef de famille
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td>
+                                  <Form.Group
+                                    controlId={`enfants-paie-${index}`}
                                   >
-                                    <option value="">
-                                      Chef de famille ou non ?
-                                    </option>
-                                    <option value="Oui">Oui</option>
-                                    <option value="Non">Non</option>
-                                  </Form.Select>
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
-                                  >
-                                    Veuillez sélectionner si le salarié est chef
-                                    de famille
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
-                              <td>
-                                <Form.Group controlId={`enfants-paie-${index}`}>
-                                  <Form.Control
-                                    className="textadj"
-                                    type="number"
-                                    min="0"
-                                    placeholder="Nombre d'enfants"
-                                    value={paie[index]?.enfants ?? ""} // Bind the value to the specific row's 'enfants' field
-                                    onChange={(e) =>
-                                      chngFn1(index, {
-                                        ...paie[index], // Copy existing row data
-                                        enfants: e.target.value, // Update the 'enfants' field
-                                      })
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated &&
-                                      (!paie[index]?.enfants ||
-                                        paie[index].enfants < 0)
-                                    } // Check if 'enfants' is empty for validation
-                                  />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
-                                  >
-                                    Veuillez remplir le nombre d'enfants
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
+                                    <Form.Control
+                                      className="textadj"
+                                      type="number"
+                                      min="0"
+                                      placeholder="Nombre d'enfants"
+                                      value={paie[index]?.enfants ?? ""} // Bind the value to the specific row's 'enfants' field
+                                      onChange={(e) =>
+                                        chngFn1(index, {
+                                          ...paie[index], // Copy existing row data
+                                          enfants: e.target.value, // Update the 'enfants' field
+                                        })
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated &&
+                                        (!paie[index]?.enfants ||
+                                          paie[index].enfants < 0)
+                                      } // Check if 'enfants' is empty for validation
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir le nombre d'enfants
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
 
-                              <td>
-                                <Form.Group
-                                  controlId={`salaire-brut-paie-${index}`}
-                                >
-                                  <Form.Control
-                                    className="textadj"
-                                    type="number"
-                                    min="0"
-                                    placeholder="Salaire Brut"
-                                    value={paie[index]?.salaireBrut ?? ""} // Bind to the 'salaireBrut' value for the specific row
-                                    onChange={(e) =>
-                                      chngFn1(index, {
-                                        ...paie[index], // Copy the existing row data
-                                        salaireBrut: e.target.value, // Update the 'salaireBrut' field
-                                      })
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated &&
-                                      (paie[index]?.salaireBrut == null ||
-                                        paie[index].salaireBrut <= 0)
-                                    } // Validation: Show feedback if empty
-                                  />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
+                                <td>
+                                  <Form.Group
+                                    controlId={`salaire-brut-paie-${index}`}
                                   >
-                                    Veuillez remplir le salaire Brut
-                                  </Form.Control.Feedback>
-                                </Form.Group>
-                              </td>
-                              <td style={hiddenStyle}>
-                                <Form.Group
+                                    <Form.Control
+                                      className="textadj"
+                                      type="number"
+                                      min="0"
+                                      placeholder="Salaire Brut"
+                                      value={paie[index]?.salaireBrut ?? ""} // Bind to the 'salaireBrut' value for the specific row
+                                      onChange={(e) =>
+                                        chngFn1(index, {
+                                          ...paie[index], // Copy the existing row data
+                                          salaireBrut: e.target.value, // Update the 'salaireBrut' field
+                                        })
+                                      }
+                                      required
+                                      isInvalid={
+                                        validated &&
+                                        (paie[index]?.salaireBrut == null ||
+                                          paie[index].salaireBrut <= 0)
+                                      } // Validation: Show feedback if empty
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir le salaire Brut
+                                    </Form.Control.Feedback>
+                                  </Form.Group>
+                                </td>
+                                <td style={hiddenStyle}>
+                                  <Form.Group
                                     className="textadj"
                                     type="number"
                                     min="0"
@@ -1087,11 +1367,11 @@ const Gerer = () => {
                                         }) // Only updates Date
                                     }
                                     required
-                                  >
-                                </Form.Group>
-                              </td>
-                            </tr>
-                          ))}
+                                  ></Form.Group>
+                                </td>
+                              </tr>
+                            ))
+                          )}
                         </tbody>
                       </Table>
                     </div>
@@ -1101,10 +1381,10 @@ const Gerer = () => {
             </Accordion>
           </Row>
           <Row className="row-accor">
-            <Accordion alwaysOpen>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>
-                  Saisier mes informations de retenue à la source
+            <Accordion alwaysOpen activeKey={activeAccordion}>
+              <Accordion.Item eventKey="2">
+                <Accordion.Header onClick={() => toggleAccordionItem("2")}>
+                  Saisir mes informations de retenue à la source
                 </Accordion.Header>
                 <Accordion.Body>
                   <Row className="add-del">
@@ -1158,147 +1438,160 @@ const Gerer = () => {
                           </tr>
                         </thead>
                         <tbody id="Retenue">
-                          {retenue.map((row, index) => (
-                            <tr key={index}>
-                              <td>
-                                <input
-                                  type="checkbox"
-                                  checked={row.selected || false}
-                                  onChange={() =>
-                                    handleCheckboxChange(
-                                      setRetenue,
-                                      retenue,
-                                      index
-                                    )
-                                  }
-                                />
+                          {retenue.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={5}
+                                className="text-start text-muted py-3 ps-5"
+                              >
+                                La table des retenues à la source est vide
                               </td>
-                              <td>
-                                <Form.Select
-                                  aria-label="Retenue à la source"
-                                  value={retenue[index]?.source ?? ""}
-                                  onChange={(e) =>
-                                    chngFn2(index, {
-                                      ...retenue[index],
-                                      source: e.target.value,
-                                    })
-                                  }
-                                  required
-                                  isInvalid={
-                                    validated && !retenue[index]?.source
-                                  }
-                                >
-                                  <option value="">
-                                    Retenue à la source sur :
-                                  </option>
-                                  <option value="Type 1">Loyer</option>
-                                  <option value="Type 2">Honoraires</option>
-                                </Form.Select>
-                                <Form.Control.Feedback
-                                  className="feedback"
-                                  type="invalid"
-                                >
-                                  Veuillez sélectionner la source de la retenue
-                                </Form.Control.Feedback>
-                              </td>
-
-                              <td>
-                                <Form.Control
-                                  className="textadj"
-                                  type="number"
-                                  min="0"
-                                  placeholder="Montant HT"
-                                  value={retenue[index]?.montantHT ?? ""}
-                                  step="0.001"
-                                  onChange={(e) =>
-                                    chngFn2(
-                                      index,
-                                      {
+                            </tr>
+                          ) : (
+                            retenue.map((row, index) => (
+                              <tr key={index}>
+                                <td>
+                                  <input
+                                    type="checkbox"
+                                    checked={row.selected || false}
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        setRetenue,
+                                        retenue,
+                                        index,
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <Form.Select
+                                    aria-label="Retenue à la source"
+                                    value={retenue[index]?.source ?? ""}
+                                    onChange={(e) =>
+                                      chngFn2(index, {
                                         ...retenue[index],
-                                        montantHT: e.target.value,
-                                      },
-                                      "montantHT"
-                                    )
-                                  }
-                                  required
-                                  isInvalid={
-                                    validated &&
-                                    (retenue[index]?.montantHT == null ||
-                                      retenue[index].montantHT <= 0)
-                                  }
-                                />
-                                <Form.Control.Feedback
-                                  className="feedback"
-                                  type="invalid"
-                                >
-                                  Veuillez remplir le montant HT
-                                </Form.Control.Feedback>
-                              </td>
+                                        source: e.target.value,
+                                      })
+                                    }
+                                    required
+                                    isInvalid={
+                                      validated && !retenue[index]?.source
+                                    }
+                                  >
+                                    <option value="">
+                                      Retenue à la source sur :
+                                    </option>
+                                    <option value="Type 1">Loyer</option>
+                                    <option value="Type 2">Honoraires</option>
+                                  </Form.Select>
+                                  <Form.Control.Feedback
+                                    className="feedback"
+                                    type="invalid"
+                                  >
+                                    Veuillez sélectionner la source de la
+                                    retenue
+                                  </Form.Control.Feedback>
+                                </td>
 
-                              <td>
-                                <Form.Select
-                                  aria-label="TVA"
-                                  value={retenue[index]?.tva ?? ""}
-                                  onChange={(e) =>
-                                    chngFn2(
-                                      index,
-                                      {
-                                        ...retenue[index],
-                                        tva: e.target.value,
-                                      },
-                                      "tva"
-                                    )
-                                  }
-                                  required
-                                  isInvalid={validated && !retenue[index]?.tva}
-                                >
-                                  <option value=""> Taux TVA </option>
-                                  <option value="7" >7%</option>
-                                  <option value="13" >13%</option>
-                                  <option value="19" >19%</option>
-                                </Form.Select>
-                                <Form.Control.Feedback
-                                  className="feedback"
-                                  type="invalid"
-                                >
-                                  Veuillez sélectionner le TVA.
-                                </Form.Control.Feedback>
-                              </td>
+                                <td>
+                                  <Form.Control
+                                    className="textadj"
+                                    type="number"
+                                    min="0"
+                                    placeholder="Montant HT"
+                                    value={retenue[index]?.montantHT ?? ""}
+                                    step="0.001"
+                                    onChange={(e) =>
+                                      chngFn2(
+                                        index,
+                                        {
+                                          ...retenue[index],
+                                          montantHT: e.target.value,
+                                        },
+                                        "montantHT",
+                                      )
+                                    }
+                                    required
+                                    isInvalid={
+                                      validated &&
+                                      (retenue[index]?.montantHT == null ||
+                                        retenue[index].montantHT <= 0)
+                                    }
+                                  />
+                                  <Form.Control.Feedback
+                                    className="feedback"
+                                    type="invalid"
+                                  >
+                                    Veuillez remplir le montant HT
+                                  </Form.Control.Feedback>
+                                </td>
 
-                              <td>
-                                <Form.Control
-                                  className="textadj"
-                                  type="number"
-                                  min="0"
-                                  placeholder="Montant TTC"
-                                  value={retenue[index]?.montantTTC ?? ""}
-                                  step="0.001"
-                                  onChange={(e) =>
-                                    chngFn2(
-                                      index,
-                                      {
-                                        ...retenue[index],
-                                        montantTTC: e.target.value,
-                                      },
-                                      "montantTTC"
-                                    )
-                                  }
-                                  required
-                                  isInvalid={
-                                    validated &&
-                                    (retenue[index]?.montantTTC == null ||
-                                      retenue[index].montantTTC <= 0)
-                                  }
-                                />
-                                <Form.Control.Feedback
-                                  className="feedback"
-                                  type="invalid"
-                                >
-                                  Veuillez remplir le montant TTC
-                                </Form.Control.Feedback>
-                              </td>
-                              <td style={hiddenStyle}>
-                                <Form.Group
+                                <td>
+                                  <Form.Select
+                                    aria-label="TVA"
+                                    value={retenue[index]?.tva ?? ""}
+                                    onChange={(e) =>
+                                      chngFn2(
+                                        index,
+                                        {
+                                          ...retenue[index],
+                                          tva: e.target.value,
+                                        },
+                                        "tva",
+                                      )
+                                    }
+                                    required
+                                    isInvalid={
+                                      validated && !retenue[index]?.tva
+                                    }
+                                  >
+                                    <option value=""> Taux TVA </option>
+                                    <option value="7">7%</option>
+                                    <option value="13">13%</option>
+                                    <option value="19">19%</option>
+                                  </Form.Select>
+                                  <Form.Control.Feedback
+                                    className="feedback"
+                                    type="invalid"
+                                  >
+                                    Veuillez sélectionner le TVA.
+                                  </Form.Control.Feedback>
+                                </td>
+
+                                <td>
+                                  <Form.Control
+                                    className="textadj"
+                                    type="number"
+                                    min="0"
+                                    placeholder="Montant TTC"
+                                    value={retenue[index]?.montantTTC ?? ""}
+                                    step="0.001"
+                                    onChange={(e) =>
+                                      chngFn2(
+                                        index,
+                                        {
+                                          ...retenue[index],
+                                          montantTTC: e.target.value,
+                                        },
+                                        "montantTTC",
+                                      )
+                                    }
+                                    required
+                                    isInvalid={
+                                      validated &&
+                                      (retenue[index]?.montantTTC == null ||
+                                        retenue[index].montantTTC <= 0)
+                                    }
+                                  />
+                                  <Form.Control.Feedback
+                                    className="feedback"
+                                    type="invalid"
+                                  >
+                                    Veuillez remplir le montant TTC
+                                  </Form.Control.Feedback>
+                                </td>
+                                <td style={hiddenStyle}>
+                                  <Form.Group
                                     className="textadj"
                                     type="number"
                                     min="0"
@@ -1314,11 +1607,18 @@ const Gerer = () => {
                                         }) // Only updates Date
                                     }
                                     required
-                                  >
-                                </Form.Group>
-                              </td>
-                            </tr>
-                          ))}
+                                  ></Form.Group>
+                                </td>
+                                {/* ID caché */}
+                                <td style={{ display: "none" }}>
+                                  <Form.Control
+                                    type="hidden"
+                                    value={row.id ?? -1}
+                                  />
+                                </td>
+                              </tr>
+                            ))
+                          )}
                         </tbody>
                       </Table>
                     </div>
@@ -1327,6 +1627,42 @@ const Gerer = () => {
               </Accordion.Item>
             </Accordion>
           </Row>
+          <Row className="d-flex flex-column flex-md-row justify-content-center align-items-center">
+            <Col xs="auto" md="auto" className="mb-2 mb-md-0">
+              <Form.Group className="Reporttva">
+                <Form.Control
+                  type="number"
+                  name="Reporttva"
+                  value={ReportTVA}
+                  step="0.001"
+                  readOnly={!isSaisieClicked}
+                  className="reporttva"
+                  onChange={(e) => setReportTVA(e.target.value)}
+                  placeholder="Report de TVA du mois précédent "
+                />
+              </Form.Group>
+            </Col>
+            {/*
+             <Col xs="auto" md="auto">
+              <Form.Select
+                className="Retard"
+                value={retard}
+                onChange={(e) => setRetard(e.target.value)}
+                isInvalid={validated && !retard}
+                required
+                disabled={!isSaisieClicked}
+              >
+                <option value="">Déclaration en retard ?</option>
+                <option value="Oui">Oui</option>
+                <option value="Non">Non</option>
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                Veuillez indiquer si la déclaration est en retard ou non
+              </Form.Control.Feedback>
+            </Col>
+            */}
+          </Row>
+
           <div className="boutons">
             <Button
               variant="primary"

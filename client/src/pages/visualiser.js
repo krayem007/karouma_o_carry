@@ -12,27 +12,24 @@ import {
   Form,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import axios from  "axios";
+import axios from "axios";
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5002', // Base URL of the Express backend
+  baseURL: "http://localhost:5002", // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
-
 
 const TITLE = "Mes déclarations | " + Config.SITE_TITLE;
 const DESC = "Mes déclarations";
 const CANONICAL = Config.SITE_DOMAIN + "/visualiser";
 const hiddenStyle = {
-  display: 'none',
+  display: "none",
 };
-
 
 const Visualiser = () => {
   const [rows, setRows] = useState([]);
   const [selectAllRows, setSelectAllRows] = useState(false);
   const navigate = useNavigate(); // Initialize navigate hook
-
 
   const handleSelectAllRows = () => {
     setSelectAllRows(!selectAllRows);
@@ -50,17 +47,15 @@ const Visualiser = () => {
   };
 
   useEffect(() => {
-    instance.get("/summary").then((response) => 
-    {
-      /*gg test*/console.log("summary : ",response.data);
-      if (response.data.authorized == "true")
-      {
+    instance.get("/summary").then((response) => {
+      /*gg test*/ console.log("summary : ", response.data);
+      if (response.data.authorized == "true") {
         console.log("authorized client");
         setRows([]);
         let fnewRows = [];
-        let [year, month]= ["0000","00"];
+        let [year, month] = ["0000", "00"];
         for (let i = 0; i < response.data.summary.length; i++) {
-          [year, month] = response.data.summary[i].date.split('-');
+          [year, month] = response.data.summary[i].date.split("-");
           fnewRows.push({
             mois: month,
             Anne: year,
@@ -68,6 +63,7 @@ const Visualiser = () => {
             tfp: response.data.summary[i].tfp,
             foprolos: response.data.summary[i].foprolos,
             droitConsommation: response.data.summary[i].droit,
+            fodec: response.data.summary[i].fodec,
             tva: response.data.summary[i].tva,
             droitTimbreFiscal: response.data.summary[i].dtf,
             tcl: response.data.summary[i].tcl,
@@ -76,9 +72,7 @@ const Visualiser = () => {
           });
         }
         setRows((prev) => [...prev, ...fnewRows]);
-      }
-      else
-      {
+      } else {
         console.log("not authorized client");
         navigate("/connexion");
         //neet to logging first
@@ -86,7 +80,6 @@ const Visualiser = () => {
     });
   }, []);
 
-  
   /*
 const print_doc = () => {
   const selectedDates = getSelectedDates();
@@ -118,38 +111,37 @@ const print_doc = () => {
 };
 */
 
-const print_doc = async () => {
-  const selectedDates = getSelectedDates();
-  console.log("🗓️ Selected dates:", selectedDates);
+  const print_doc = async () => {
+    const selectedDates = getSelectedDates();
+    console.log("🗓️ Selected dates:", selectedDates);
 
-  for (const date of selectedDates) {
-    try {
-      console.log("📤 Sending request for:", date);
+    for (const date of selectedDates) {
+      try {
+        console.log("📤 Sending request for:", date);
 
-      const response = await instance.post("/print_doc", [date], {
-        responseType: "arraybuffer",
-      });
+        const response = await instance.post("/print_doc", [date], {
+          responseType: "arraybuffer",
+        });
 
-      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(pdfBlob);
+        const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+        const url = window.URL.createObjectURL(pdfBlob);
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `déclarations_${date}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `déclarations_${date}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
 
-      console.log("✅ PDF downloaded for:", date);
-    } catch (err) {
-      console.error("❌ Failed to download PDF for:", date, err);
+        console.log("✅ PDF downloaded for:", date);
+      } catch (err) {
+        console.error("❌ Failed to download PDF for:", date, err);
+      }
     }
-  }
 
-  console.log("🎉 All PDFs processed!");
-};
-
+    console.log("🎉 All PDFs processed!");
+  };
 
   return (
     <>
@@ -201,6 +193,7 @@ const print_doc = async () => {
                   <th>TFP</th>
                   <th>FOPROLOS</th>
                   <th>Droit de Consommation</th>
+                  <th>FODEC</th>
                   <th>TVA</th>
                   <th>Droit de timbre fiscal</th>
                   <th>TCL</th>
@@ -280,6 +273,11 @@ const print_doc = async () => {
                     </td>
                     <td>
                       <Form.Group>
+                        <Form.Control value={row.fodec} className="textadj1" />
+                      </Form.Group>
+                    </td>
+                    <td>
+                      <Form.Group>
                         <Form.Control value={row.tva} className="textadj1" />
                       </Form.Group>
                     </td>
@@ -306,10 +304,7 @@ const print_doc = async () => {
                     </td>
                     <td style={hiddenStyle}>
                       <Form.Group>
-                        <Form.Control
-                          value={row.id}
-                          className="textadj1"
-                        />
+                        <Form.Control value={row.id} className="textadj1" />
                       </Form.Group>
                     </td>
                   </tr>
@@ -320,11 +315,15 @@ const print_doc = async () => {
         </Row>
         <Row>
           <div className="boutons">
-            <Button variant="primary" type="submit" onClick={print_doc} className="custom-primary">
+            <Button
+              variant="primary"
+              type="submit"
+              onClick={print_doc}
+              className="custom-primary"
+            >
               Imprimer
             </Button>
           </div>
-
         </Row>
       </Container>
     </>
