@@ -90,6 +90,7 @@ const Gerer = () => {
     setDeleteFactureIds([]);
     setDeletePaieIds([]);
     setDeleteRetenueIds([]);
+    setReportTVA("");
     instance.post("/get_dec", date).then((response) => {
       console.log(" decla found : ", response.data);
       if (response.data.dec == true) {
@@ -1777,10 +1778,16 @@ const Gerer = () => {
                   type="number"
                   name="Reporttva"
                   value={ReportTVA}
+                  min="0"
                   step="0.001"
                   readOnly={!isSaisieClicked}
                   className="reporttva"
-                  onChange={(e) => setReportTVA(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "" || parseFloat(val) >= 0) {
+                      setReportTVA(val);
+                    }
+                  }}
                   placeholder="Report de TVA du mois précédent "
                 />
               </Form.Group>

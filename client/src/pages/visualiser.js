@@ -71,6 +71,12 @@ const Visualiser = () => {
             selected: false,
           });
         }
+        // Sort by year descending, then month descending
+        fnewRows.sort((a, b) => {
+          const yearDiff = Number(b.Anne) - Number(a.Anne);
+          if (yearDiff !== 0) return yearDiff;
+          return Number(b.mois) - Number(a.mois);
+        });
         setRows((prev) => [...prev, ...fnewRows]);
       } else {
         console.log("not authorized client");

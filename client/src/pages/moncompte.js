@@ -17,7 +17,7 @@ import {
   Toast,
 } from "react-bootstrap";
 
-import axios from  "axios";
+import axios from "axios";
 
 const instance = axios.create({
   baseURL: 'http://localhost:5002', // Base URL of the Express backend
@@ -31,20 +31,21 @@ const CANONICAL = Config.SITE_DOMAIN + "/moncompte";
 
 const Moncompte = () => {
   const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
-  const data = { 
-    email : localStorage.getItem("email"),
-    code_acte : localStorage.getItem("code_acte"),
-    identifiant_fiscal : localStorage.getItem("identifiant_fiscal"),
-    identifiant_tva : localStorage.getItem("identifiant_tva"),
-    code_categorie : localStorage.getItem("code_categorie"),
-    nombre_filial : localStorage.getItem("nombre_filial"),
-    nom_prenom_raison : localStorage.getItem("nom_prenom_raison"),
-    adresse : localStorage.getItem("adresse"),
-    code_postal : localStorage.getItem("code_postal"),
-    activite : localStorage.getItem("activite"),
-    cessation_jour : localStorage.getItem("cessation_jour"),
-    cessation_mois : localStorage.getItem("cessation_mois"),
-    cessation_annee : localStorage.getItem("cessation_annee")};
+  const data = {
+    email: localStorage.getItem("email"),
+    code_acte: localStorage.getItem("code_acte"),
+    identifiant_fiscal: localStorage.getItem("identifiant_fiscal"),
+    identifiant_tva: localStorage.getItem("identifiant_tva"),
+    code_categorie: localStorage.getItem("code_categorie"),
+    nombre_filial: localStorage.getItem("nombre_filial"),
+    nom_prenom_raison: localStorage.getItem("nom_prenom_raison"),
+    adresse: localStorage.getItem("adresse"),
+    code_postal: localStorage.getItem("code_postal"),
+    activite: localStorage.getItem("activite"),
+    cessation_jour: localStorage.getItem("cessation_jour"),
+    cessation_mois: localStorage.getItem("cessation_mois"),
+    cessation_annee: localStorage.getItem("cessation_annee")
+  };
   console.log("data : ", data);
   const [validated, set_Validated] = useState(false);
   const [validated1, set_Validated1] = useState(false);
@@ -53,40 +54,37 @@ const Moncompte = () => {
     confirm_password: "",
     email: data.email,
     nvpassword: "",
-    code_acte: data.code_acte, 
+    code_acte: data.code_acte,
     identifiant_fiscal: data.identifiant_fiscal,
     identifiant_tva: data.identifiant_tva,
     code_categorie: data.code_categorie,
     nombre_filial: data.nombre_filial,
-    nom_prenom_raison:data.nom_prenom_raison,
-    adresse:data.adresse,
-    code_postal:data.code_postal,
+    nom_prenom_raison: data.nom_prenom_raison,
+    adresse: data.adresse,
+    code_postal: data.code_postal,
     activite: data.activite,
-    cessation_annee :data.cessation_annee,
-    cessation_mois :data.cessation_mois,
-    cessation_jour : data.cessation_jour,
+    cessation_annee: data.cessation_annee,
+    cessation_mois: data.cessation_mois,
+    cessation_jour: data.cessation_jour,
   });
 
   console.log("form_data: ", form_Data)
 
   useEffect(() => {
-    
-    instance.get("/welcome").then((response) => 
-      {
+
+    instance.get("/welcome").then((response) => {
         /*gg test*/console.log(response.data);
-        if (response.data.authorized == "true")
-        {
-          console.log("authorized client");
-        }
-        else
-        {
-          console.log("not authorized client");
-          navigate("/connexion");
-          //neet to logging first
-        }
-      });
-    }, []);
-  
+      if (response.data.authorized == "true") {
+        console.log("authorized client");
+      }
+      else {
+        console.log("not authorized client");
+        navigate("/connexion");
+        //neet to logging first
+      }
+    });
+  }, []);
+
   const [alert, setAlert] = useState(null);
   let OldPasswordCheck = true; // ******Gassouna Change this to true or false *******
 
@@ -94,36 +92,33 @@ const Moncompte = () => {
     //const res = window.confirm(
     //  "Êtes-vous sûr de vouloir supprimer définitivement votre compte ?"
     //);
-    const data_del = {email: form_Data.email, password: form_Data.anpassword};
-    instance.post("/delete_account", data_del).then((response) => 
-      {
-        if(response.data.del == true )
-          {
-            setAlert({
-              message: "Votre compte a été supprimé avec succès.",
-              type: "success",
-            });
-    
-            // Clear the alert after 3 seconds
-            setTimeout(() => {
-              setAlert(null);
-              instance.post("/logout").then((response) => 
-              {console.log(response.data);});
-              navigate("/");
-            }, 3000);
-          }
-          else{
-            setAlert({
-              message: response.data.message,
-              type: "error",
-            });
-    
-            // Clear the alert after 3 seconds
-            setTimeout(() => {
-              setAlert(null);
-            }, 3000);
-          }
-      });
+    const data_del = { email: form_Data.email, password: form_Data.anpassword };
+    instance.post("/delete_account", data_del).then((response) => {
+      if (response.data.del == true) {
+        setAlert({
+          message: "Votre compte a été supprimé avec succès.",
+          type: "success",
+        });
+
+        // Clear the alert after 3 seconds
+        setTimeout(() => {
+          setAlert(null);
+          instance.post("/logout").then((response) => { console.log(response.data); });
+          navigate("/");
+        }, 3000);
+      }
+      else {
+        setAlert({
+          message: response.data.message,
+          type: "error",
+        });
+
+        // Clear the alert after 3 seconds
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000);
+      }
+    });
   };
 
   const submitFn = (event) => {
@@ -133,47 +128,46 @@ const Moncompte = () => {
       event.stopPropagation();
     } else {
       const changed_data = {
-        code_acte : form_Data.code_acte, 
-        identifiant_fiscal : form_Data.identifiant_fiscal,
-        identifiant_tva : form_Data.identifiant_tva,
-        code_categorie : form_Data.code_categorie,
-        nombre_filiale : form_Data.nombre_filial,
-        raison_sociale : form_Data.nom_prenom_raison,
-        address : form_Data.adresse,
-        code_postal : form_Data.code_postal,
-        activite : form_Data.activite,
-        activite_date : form_Data.cessation_annee.toString()+'-'+ form_Data.cessation_mois.toString()+'-'+ form_Data.cessation_jour.toString(),
-        email : localStorage.getItem("email")};
+        code_acte: form_Data.code_acte,
+        identifiant_fiscal: form_Data.identifiant_fiscal,
+        identifiant_tva: form_Data.identifiant_tva,
+        code_categorie: form_Data.code_categorie,
+        nombre_filiale: form_Data.nombre_filial,
+        raison_sociale: form_Data.nom_prenom_raison,
+        address: form_Data.adresse,
+        code_postal: form_Data.code_postal,
+        activite: form_Data.activite,
+        activite_date: form_Data.cessation_annee.toString() + '-' + form_Data.cessation_mois.toString() + '-' + form_Data.cessation_jour.toString(),
+        email: localStorage.getItem("email")
+      };
       console.log("changed data : ", changed_data)
-      instance.post("/my_account_data", changed_data).then((response) => 
-        {
-          if(response.data.update == true )
-            {
-              console.log("before setting the local storage : ", changed_data); 
-              localStorage.setItem("code_acte", changed_data.code_acte);
-              localStorage.setItem("identifiant_fiscal", changed_data.identifiant_fiscal);
-              localStorage.setItem("identifiant_tva", changed_data.identifiant_tva);
-              localStorage.setItem("code_categorie", changed_data.code_categorie);
-              localStorage.setItem("nombre_filial", changed_data.nombre_filiale);
-              localStorage.setItem("nom_prenom_raison", changed_data.raison_sociale);
-              localStorage.setItem("adresse", changed_data.address);
-              localStorage.setItem("code_postal", changed_data.code_postal);
-              localStorage.setItem("activite", changed_data.activite);
-              localStorage.setItem("cessation_jour", form_Data.cessation_jour);
-              localStorage.setItem("cessation_mois", form_Data.cessation_mois);
-              localStorage.setItem("cessation_annee", form_Data.cessation_annee);
-              setAlert({
-                message:
-                  "Vos informations personnelles ont été mises à jour avec succès.",
-                type: "success",
-              });
-      
-              // Clear the alert after 3 seconds
-              setTimeout(() => {
-                setAlert(null);
-              }, 3000);
-            }
-        });
+      instance.post("/my_account_data", changed_data).then((response) => {
+        if (response.data.update == true) {
+          console.log("before setting the local storage : ", changed_data);
+          localStorage.setItem("code_acte", changed_data.code_acte);
+          localStorage.setItem("identifiant_fiscal", changed_data.identifiant_fiscal);
+          localStorage.setItem("identifiant_tva", changed_data.identifiant_tva);
+          localStorage.setItem("code_categorie", changed_data.code_categorie);
+          localStorage.setItem("nombre_filial", changed_data.nombre_filiale);
+          localStorage.setItem("nom_prenom_raison", changed_data.raison_sociale);
+          localStorage.setItem("adresse", changed_data.address);
+          localStorage.setItem("code_postal", changed_data.code_postal);
+          localStorage.setItem("activite", changed_data.activite);
+          localStorage.setItem("cessation_jour", form_Data.cessation_jour);
+          localStorage.setItem("cessation_mois", form_Data.cessation_mois);
+          localStorage.setItem("cessation_annee", form_Data.cessation_annee);
+          setAlert({
+            message:
+              "Vos informations personnelles ont été mises à jour avec succès.",
+            type: "success",
+          });
+
+          // Clear the alert after 3 seconds
+          setTimeout(() => {
+            setAlert(null);
+          }, 3000);
+        }
+      });
     }
     set_Validated(true);
   };
@@ -185,28 +179,28 @@ const Moncompte = () => {
       event.stopPropagation();
     } else {
       if (OldPasswordCheck && form_Data.nvpassword !== form_Data.anpassword) {
-        const psspssdata = {email: form_Data.email, 
-                            oldPassword: form_Data.anpassword, 
-                            newPassword: await bcrypt.hash(form_Data.nvpassword, 8)};
-        instance.post("/spiderPUSS", psspssdata).then((response) => 
-          {
-            if(response.data.pssdate == true )
-              {
-                setAlert({
-                  message: "Votre mot de passe a été changé avec succès.",
-                  type: "success",
-                });
-        
-                // Clear the alert after 3 seconds
-                setTimeout(() => {
-                  setAlert(null);
-                }, 3000);
-                OldPasswordCheck = true;
-              }
-              else{
-                OldPasswordCheck = false;
-              }
-          });
+        const psspssdata = {
+          email: form_Data.email,
+          oldPassword: form_Data.anpassword,
+          newPassword: await bcrypt.hash(form_Data.nvpassword, 8)
+        };
+        instance.post("/spiderPUSS", psspssdata).then((response) => {
+          if (response.data.pssdate == true) {
+            setAlert({
+              message: "Votre mot de passe a été changé avec succès.",
+              type: "success",
+            });
+
+            // Clear the alert after 3 seconds
+            setTimeout(() => {
+              setAlert(null);
+            }, 3000);
+            OldPasswordCheck = true;
+          }
+          else {
+            OldPasswordCheck = false;
+          }
+        });
 
       }
       if (!OldPasswordCheck) {
@@ -303,7 +297,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="code_acte"
-                        defaultValue = {data.code_acte}
+                        defaultValue={data.code_acte}
                         onChange={chngFn}
                         required
                       />
@@ -326,7 +320,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="identifiant_fiscal"
-                        defaultValue = {data.identifiant_fiscal}
+                        defaultValue={data.identifiant_fiscal}
                         onChange={chngFn}
                         required
                       />
@@ -347,7 +341,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="identifiant_tva"
-                        defaultValue = {data.identifiant_tva}
+                        defaultValue={data.identifiant_tva}
                         onChange={chngFn}
                         required
                       />
@@ -368,7 +362,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="code_categorie"
-                        defaultValue = {data.code_categorie}
+                        defaultValue={data.code_categorie}
                         onChange={chngFn}
                         required
                       />
@@ -387,7 +381,7 @@ const Moncompte = () => {
                         type="number"
                         name="nombre_filial"
                         onChange={chngFn}
-                        defaultValue = {data.nombre_filial}
+                        defaultValue={data.nombre_filial}
                         required
                         min="0"
                       />
@@ -406,7 +400,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="nom_prenom_raison"
-                        defaultValue = {data.nom_prenom_raison}
+                        defaultValue={data.nom_prenom_raison}
                         className="long1"
                         onChange={chngFn}
                         required
@@ -432,7 +426,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="adresse"
-                        defaultValue = {data.adresse}
+                        defaultValue={data.adresse}
                         className="long2"
                         onChange={chngFn}
                         required
@@ -454,7 +448,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="code_postal"
-                        defaultValue = {data.code_postal}
+                        defaultValue={data.code_postal}
                         min="0000"
                         max="9999"
                         onInput={(e) =>
@@ -481,7 +475,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="activite"
-                        defaultValue = {data.activite}
+                        defaultValue={data.activite}
                         onChange={chngFn}
                         required
                       />
@@ -503,7 +497,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="cessation_jour"
-                        defaultValue = {data.cessation_jour}
+                        defaultValue={data.cessation_jour}
                         onChange={chngFn}
                         required
                         min="1"
@@ -525,7 +519,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="cessation_mois"
-                        defaultValue = {data.cessation_mois}
+                        defaultValue={data.cessation_mois}
                         onChange={chngFn}
                         required
                         min="1"
@@ -547,7 +541,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="text"
                         name="cessation_annee"
-                        defaultValue = {data.cessation_annee}
+                        defaultValue={data.cessation_annee}
                         onChange={chngFn}
                         required
                         min="1900"
@@ -586,7 +580,7 @@ const Moncompte = () => {
                       <Form.Control
                         type="email"
                         name="email"
-                        defaultValue = {data.email}
+                        defaultValue={data.email}
                         className="grey"
                         required
                         readOnly
@@ -657,8 +651,8 @@ const Moncompte = () => {
                         {form_Data.nvpassword === ""
                           ? "Veuillez entrer votre nouveau mot de passe."
                           : form_Data.nvpassword.length < 6
-                          ? "Le mot de passe doit comporter au moins 6 caractères."
-                          : "Le nouveau mot de passe doit être différent de l'ancien."}
+                            ? "Le mot de passe doit comporter au moins 6 caractères."
+                            : "Le nouveau mot de passe doit être différent de l'ancien."}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -698,14 +692,14 @@ const Moncompte = () => {
                         {form_Data.confirm_password === ""
                           ? "Veuillez confirmer votre mot de passe."
                           : form_Data.confirm_password.length < 6
-                          ? "Le mot de passe doit comporter au moins 6 caractères."
-                          : "Les mots de passe ne correspondent pas."}
+                            ? "Le mot de passe doit comporter au moins 6 caractères."
+                            : "Les mots de passe ne correspondent pas."}
                       </Form.Control.Feedback>
 
                       {/* Feedback for valid case */}
                       <Form.Control.Feedback type="valid">
                         {form_Data.confirm_password === form_Data.nvpassword &&
-                        form_Data.confirm_password.length >= 6
+                          form_Data.confirm_password.length >= 6
                           ? "Les mots de passe correspondent et sont valides."
                           : ""}
                       </Form.Control.Feedback>

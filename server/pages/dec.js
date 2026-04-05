@@ -250,13 +250,56 @@ exports.post_dec = async (req, res) => {
       console.log("if 3asba");
       reporttva = 0;
     } else {
-      reporttva = req.body.ReportTVA;
+      reporttva = Math.max(0, toSafeNumber(req.body.ReportTVA));
     }
     // 2. Check if declaration exists or insert new
     const decls = await dbQuery(
       "SELECT * FROM declarations WHERE client_id = ? AND date = ?",
       [client_id, date],
     );
+
+    // 2.5 Check if the submission is completely empty
+    const isEmpty =
+      (req.body.factures || []).length === 0 &&
+      (req.body.paie || []).length === 0 &&
+      (req.body.retenue || []).length === 0 &&
+      toSafeNumber(req.body.ReportTVA) === 0;
+
+    if (isEmpty) {
+      if (decls.length > 0) {
+        const dec_id = decls[0].id;
+        const ops = [
+          dbQuery("DELETE FROM summary WHERE dec_id = ? AND client_id = ?", [
+            dec_id,
+            client_id,
+          ]),
+          dbQuery("DELETE FROM factures WHERE decla_id = ? AND client_id = ?", [
+            dec_id,
+            client_id,
+          ]),
+          dbQuery("DELETE FROM paie WHERE decla_id = ? AND client_id = ?", [
+            dec_id,
+            client_id,
+          ]),
+          dbQuery(
+            "DELETE FROM retenue WHERE decla_id = ? AND client_id = ?",
+            [dec_id, client_id],
+          ),
+          dbQuery("DELETE FROM declarations WHERE id = ? AND client_id = ?", [
+            dec_id,
+            client_id,
+          ]),
+        ];
+        await Promise.all(ops);
+        return res
+          .status(200)
+          .json({ message: "Declaration removed as it is now empty", saved: true });
+      }
+      return res
+        .status(200)
+        .json({ message: "Empty declaration - nothing to save", saved: true });
+    }
+
     let dec_id;
 
     if (decls.length === 0) {
