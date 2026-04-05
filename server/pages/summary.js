@@ -32,6 +32,21 @@ handlebars.registerHelper("fr", function (value) {
     maximumFractionDigits: 3,
   }).format(value);
 });
+
+function calculateRetenueAchat1000(facture) {
+  const ttc = Number(facture.ttc);
+  if (facture.type === "Facture d'achat" && !isNaN(ttc) && ttc > 1000) {
+    return ttc * 0.1;
+  }
+  return 0;
+}
+
+function calculateTotalAchatTTC1000(factures) {
+  return factures
+    .filter((f) => f.type === "Facture d'achat" && Number(f.ttc) > 1000)
+    .reduce((sum, f) => sum + Number(f.ttc), 0);
+}
+
 exports.welcome = async (req, res) => {
   console.log("summary func : ", req.body);
   if (req.session.authorized == true) {
@@ -374,8 +389,16 @@ exports.print_doc = async (req, res) => {
   } else {
     html_data.total_tva_sum = differencefin;
   }
+  html_data.tot_achat_ttc_1000 = calculateTotalAchatTTC1000(html_data.factures);
+  let tot_retenue_1000 = 0;
+  for (let i = 0; i < html_data.factures.length; i++) {
+    html_data.factures[i].retenue_1000 = calculateRetenueAchat1000(html_data.factures[i]);
+    tot_retenue_1000 += html_data.factures[i].retenue_1000;
+  }
+  html_data.tot_retenue_1000 = tot_retenue_1000;
+
   html_data.mouwared =
-    html_data.tot_irpp_m + html_data.total_css + html_data.tot_ttc_retenue_15;
+    html_data.tot_irpp_m + html_data.total_css + html_data.tot_ttc_retenue_15 + html_data.tot_retenue_1000;
   html_data.declaration =
     html_data.mouwared +
     html_data.total_brut_type_tot +

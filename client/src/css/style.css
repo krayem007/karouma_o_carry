@@ -19,15 +19,18 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
 /* header */
 /* scrollbar */
 
 ::-webkit-scrollbar {
   width: 10px;
 }
+
 ::-webkit-scrollbar-track {
   box-shadow: inset 0 0 5px grey;
 }
+
 ::-webkit-scrollbar-thumb {
   background: crimson;
 }
@@ -75,7 +78,8 @@ a.navbar-brand {
 }
 
 .navbar-toggler {
-  font-size: 24px !important; /* Adjust icon size */
+  font-size: 24px !important;
+  /* Adjust icon size */
   color: crimson !important;
 }
 
@@ -155,7 +159,7 @@ footer li {
 
 /* Breadcrumb */
 
-.breadcrumb-item + .breadcrumb-item::before {
+.breadcrumb-item+.breadcrumb-item::before {
   content: ">" !important;
 }
 
@@ -163,6 +167,7 @@ footer li {
   text-decoration: none !important;
   color: #212529bf !important;
 }
+
 .no-decoration a:hover {
   color: black !important;
 }
@@ -197,7 +202,8 @@ div.card {
 .carsour {
   height: 100vh;
   display: flex;
-  justify-content: center; /* Centers the content horizontally */
+  justify-content: center;
+  /* Centers the content horizontally */
   align-items: center;
   background-image: url(/src/images/home-bg.jpg);
   background-size: cover;
@@ -283,6 +289,7 @@ div.card {
 #cardcomment {
   width: auto;
 }
+
 .card a {
   color: white;
   text-decoration: none;
@@ -296,7 +303,7 @@ div.card {
   width: 120px;
 }
 
-.comment .card > div {
+.comment .card>div {
   color: #2c3e50;
   font-size: 50px;
 }
@@ -328,8 +335,10 @@ div.card {
 
 @media (max-width: 1030px) {
   .arrow-col {
-    display: none !important; /* Ensures it hides on smaller screens */
+    display: none !important;
+    /* Ensures it hides on smaller screens */
   }
+
   .col-card {
     justify-content: center !important;
     align-items: center !important;
@@ -338,9 +347,11 @@ div.card {
     padding: 0 !important;
     width: 430px !important;
   }
+
   .card {
     min-height: 268px !important;
   }
+
   div .bodyconnected {
     text-align: center !important;
   }
@@ -363,6 +374,7 @@ div.card {
     font-size: 12px !important;
     width: 100px;
   }
+
   .col-card {
     width: 300px !important;
   }
@@ -385,13 +397,15 @@ div.card {
 
 .cnssgrey {
   margin: 15px 0 !important;
-  background-color: #dbdada !important; /* Light gray background */
-  cursor: not-allowed !important ;
+  background-color: #dbdada !important;
+  /* Light gray background */
+  cursor: not-allowed !important;
 }
 
 .card-titlecnss {
   text-align: center !important;
 }
+
 /* Registre */
 
 .form-title {
@@ -442,7 +456,8 @@ div.card {
 }
 
 .custom-primary {
-  background-color: rgb(43, 62, 79) !important; /* Custom green */
+  background-color: rgb(43, 62, 79) !important;
+  /* Custom green */
   color: white;
   border: none !important;
 }
@@ -468,15 +483,18 @@ div.card {
 }
 
 @media (max-width: 1030px) {
+
   #anne,
   #cessation_annee {
     width: 60px;
   }
+
   #cessation_jour,
   #cessation_mois,
   #mois {
     width: 45px !important;
   }
+
   #postal_code {
     width: 45px;
   }
@@ -492,17 +510,22 @@ div.card {
   .custom-primary {
     padding-right: auto !important;
   }
+
   .boutons {
-    display: flex; /* Makes the child elements align in a row */
+    display: flex;
+    /* Makes the child elements align in a row */
     align-items: center;
-    justify-content: center; /* Centers the buttons horizontally */
-    gap: 10px; /* Adds space between buttons */
+    justify-content: center;
+    /* Centers the buttons horizontally */
+    gap: 10px;
+    /* Adds space between buttons */
     padding-top: 50px;
   }
 
   .custom-secondary {
     max-height: 33px;
   }
+
   .custom-primary {
     min-height: 33px;
   }
@@ -510,18 +533,23 @@ div.card {
 }
 
 @media (width > 1030px) {
+
   #anne,
   #cessation_annee {
     width: 75px;
   }
+
   #cessation_jour,
   #cessation_mois,
   #mois {
     width: 60px !important;
   }
+
   .boutons {
-    justify-content: center; /* Center buttons horizontally */
-    gap: 10px; /* Add space between buttons */
+    justify-content: center;
+    /* Center buttons horizontally */
+    gap: 10px;
+    /* Add space between buttons */
   }
 
   .invalid-feedback {
@@ -532,6 +560,7 @@ div.card {
 .section_title {
   margin: 20px 0px !important;
 }
+
 .invalid-feedback,
 .valid-feedback {
   margin: 0 !important;
@@ -542,12 +571,14 @@ div.card {
 #maxwidthfeed {
   max-width: 200px !important;
 }
+
 .is-valid,
 .is-invalid,
 .form-control:valid,
 .form-control:invalid {
   background-image: none !important;
-  box-shadow: none !important; /* Removes any remaining box-shadow */
+  box-shadow: none !important;
+  /* Removes any remaining box-shadow */
 }
 
 .form-group.required .control-label:after {
@@ -558,7 +589,8 @@ div.card {
 /* Gerer */
 
 .custom-primaryg {
-  background-color: #1abc9c !important; /* Custom green */
+  background-color: #1abc9c !important;
+  /* Custom green */
   color: white;
   border: none !important;
   font-size: 13px !important;
@@ -588,10 +620,12 @@ input.form-control {
   color: black !important;
   font-size: 13px !important;
 }
+
 .Reporttva {
   color: black !important;
   font-size: 13px !important;
 }
+
 .form-select {
   color: black !important;
   font-size: 13px !important;
@@ -602,9 +636,11 @@ input.form-control {
 .form-selectmois {
   width: 75px !important;
 }
+
 .Retard {
   width: 220px !important;
 }
+
 .row-gt {
   padding-bottom: 20px;
 }
@@ -652,6 +688,7 @@ th {
 .checkbox-column {
   width: 60px !important;
 }
+
 .form-labelannee {
   width: 75px !important;
   height: 37.5px;
@@ -661,9 +698,10 @@ th {
 
 .Reporttva {
   width: 220px !important;
-  height: 37.5px ;
+  height: 37.5px;
   align-content: center;
 }
+
 .accordion-body {
   background-color: rgb(229, 229, 229);
 }
@@ -671,19 +709,23 @@ th {
 .accordion-button {
   background-color: #e0f1ee !important;
 }
+
 .table-custom th,
 .table-custom td {
   border: 2.5px solid #d3d2d2;
 }
 
 table {
-  table-layout: fixed; /* Allows more control over column widths */
-  width: 100%; /* Stretch table to 100% width */
+  table-layout: fixed;
+  /* Allows more control over column widths */
+  width: 100%;
+  /* Stretch table to 100% width */
 }
 
 th,
 td {
-  width: 100px; /* Or use percentages like 20% */
+  width: 100px;
+  /* Or use percentages like 20% */
 }
 
 .btn-primary {
@@ -694,28 +736,34 @@ td {
   width: 150px;
 }
 
-.thmt{
+.thmt {
   width: 250px;
 }
 
-.thautre{
+.thautre {
   width: 150px;
 }
+
 /* Custom scrollbar for Firefox */
 .table-container {
-  scrollbar-color: crimson #f1f1f1; /* Thumb color and track color */
+  scrollbar-color: crimson #f1f1f1;
+  /* Thumb color and track color */
 }
 
 @media (max-width: 1030px) {
+
   .btn-primary,
   .form-labelannee,
   .form-select {
     margin: 7px 0 !important;
   }
+
   th,
   td {
-    width: 200px; /* Or use percentages like 20% */
+    width: 200px;
+    /* Or use percentages like 20% */
   }
+
   #custome_th {
     width: 200px;
   }
@@ -723,6 +771,7 @@ td {
   .form-labelannee {
     margin: 0 !important;
   }
+
   div .form-labelannee {
     margin-right: 10px !important;
   }
@@ -733,38 +782,49 @@ td {
 
   .grey1 {
     margin: 7px 0px !important;
-    background-color: #dbdada !important; /* Light gray background */
+    background-color: #dbdada !important;
+    /* Light gray background */
     cursor: not-allowed !important;
   }
 
-   .row-gt > .form-labelannee,
-  .row-gt > .form-selectmois {
+  .row-gt>.form-labelannee,
+  .row-gt>.form-selectmois {
     display: flex !important;
-    align-items: center !important; /* centre verticalement le contenu */
+    align-items: center !important;
+    /* centre verticalement le contenu */
   }
 
   /* Uniformiser hauteur et padding */
   .form-labelannee input,
   .form-selectmois {
-    height: 38px !important; /* même hauteur que bouton */
-    padding: 0 10px;          /* padding interne uniforme */
-    box-sizing: border-box;   /* inclure padding et border */
+    height: 38px !important;
+    /* même hauteur que bouton */
+    padding: 0 10px;
+    /* padding interne uniforme */
+    box-sizing: border-box;
+    /* inclure padding et border */
   }
 }
 
 .grey1 {
-  background-color: #dbdada !important; /* Light gray background */
+  background-color: #dbdada !important;
+  /* Light gray background */
   cursor: not-allowed !important;
 }
 
 td .form-control {
-  margin-bottom: 9px !important; /* Removes space below Form.Control */
+  margin-bottom: 9px !important;
+  /* Removes space below Form.Control */
 }
+
 td {
   padding-bottom: 15px !important;
-  position: relative; /* Allows absolute positioning of feedback within td */
-  overflow: hidden; /* Ensures feedback stays within td boundaries */
+  position: relative;
+  /* Allows absolute positioning of feedback within td */
+  overflow: hidden;
+  /* Ensures feedback stays within td boundaries */
 }
+
 td .form-select {
   margin-bottom: 5px !important;
 }
@@ -773,13 +833,16 @@ td .form-select {
 td .feedback {
   margin-top: 0 !important;
   padding-top: 0 !important;
-  text-align: left !important ;
+  text-align: left !important;
   font-size: 9px !important;
-  color: red; /* Optional: Customize as needed */
+  color: red;
+  /* Optional: Customize as needed */
   position: absolute !important;
-  white-space: nowrap !important; /* Prevents wrapping */
+  white-space: nowrap !important;
+  /* Prevents wrapping */
   overflow: hidden !important;
-  text-overflow: ellipsis !important; /* Adds '...' if text overflows */
+  text-overflow: ellipsis !important;
+  /* Adds '...' if text overflows */
 }
 
 .text-danger {
@@ -801,18 +864,23 @@ td .feedback {
 }
 
 .container-col {
-  margin: 20px !important; /* Add some space between cards */
+  margin: 20px !important;
+  /* Add some space between cards */
 }
 
 @media (max-width: 1030px) {
   .card {
     display: flex !important;
-    width: auto !important; /* Allow cards to adjust their width */
-    max-width: 90% !important; /* Ensure they don’t exceed the container width */
-    margin-bottom: 20px; /* Space between cards */
+    width: auto !important;
+    /* Allow cards to adjust their width */
+    max-width: 90% !important;
+    /* Ensure they don’t exceed the container width */
+    margin-bottom: 20px;
+    /* Space between cards */
     max-width: 397px !important;
     margin-right: 0 !important;
   }
+
   .card-body {
     text-align: left !important;
   }
@@ -826,17 +894,20 @@ td .feedback {
 .visualiser-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Full viewport height */
+  min-height: 100vh;
+  /* Full viewport height */
   margin-bottom: 50px;
 }
 
 #clic {
   text-decoration: none !important;
 }
+
 /* Mon compte */
 
 .grey {
-  background-color: #dbdada !important; /* Light gray background */
+  background-color: #dbdada !important;
+  /* Light gray background */
   cursor: not-allowed !important;
 }
 
@@ -881,6 +952,7 @@ td .feedback {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   opacity: 0.9;
 }
+
 .toast.bg-success {
   background-color: #1abc9c !important;
   color: white;
@@ -890,8 +962,10 @@ td .feedback {
 /* Contact Style */
 
 .li {
-  list-style: disc inside; /* Show bullets inside the content box */
-  padding-left: 1rem; /* Adjust padding for alignment */
+  list-style: disc inside;
+  /* Show bullets inside the content box */
+  padding-left: 1rem;
+  /* Adjust padding for alignment */
 }
 
 /* Réinitialisation de Mot de Passe */

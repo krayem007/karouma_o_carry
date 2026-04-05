@@ -11,47 +11,81 @@ const db = mysql.createConnection({
   database: process.env.db,
 });
 
+function toSafeNumber(value) {
+  if (value === null || value === undefined || value === '') return 0;
+  const num = Number(value);
+  if (isNaN(num)) return 0;
+  return num;
+}
+
+function toNullableNumber(value) {
+  if (value === null || value === undefined || value === '') return null;
+  const num = Number(value);
+  if (isNaN(num)) return null;
+  return num;
+}
+
+function toSafeString(value) {
+  if (value === null || value === undefined) return '';
+  return String(value).trim();
+}
+
 function fc_ttc_vente(facture) {
-  if (facture.Type == "Facture de vente") return facture.TotalTTC;
+  if (facture.Type == "Facture de vente") return toSafeNumber(facture.TotalTTC);
   return 0;
 }
 function fc_ht_vente(facture) {
-  if (facture.Type == "Facture de vente") return facture.TotalHT;
+  if (facture.Type == "Facture de vente") return toSafeNumber(facture.TotalHT);
   return 0;
 }
 
 function fc_tva_vente(facture) {
   return (
-    ((fc_ht_vente(facture) + Number(facture.MTFODEC) + Number(facture.MTDC)) *
-      facture.tva) /
+    ((toSafeNumber(fc_ht_vente(facture)) + toSafeNumber(facture.MTFODEC) + toSafeNumber(facture.MTDC)) *
+      toSafeNumber(facture.tva)) /
     100
   );
 }
 
 function fc_total_mtdc(facture) {
-  if (facture.Type == "Facture de vente") return Number(facture.MTDC);
+  if (facture.Type == "Facture de vente") return toSafeNumber(facture.MTDC);
   return 0;
 }
 function fc_total_fodec(facture) {
-  if (facture.Type == "Facture de vente") return Number(facture.MTFODEC);
+  if (facture.Type == "Facture de vente") return toSafeNumber(facture.MTFODEC);
   return 0;
 }
 
 function fc_ht_chat(facture) {
-  if (facture.Type == "Facture d'achat") return facture.TotalHT;
+  if (facture.Type == "Facture d'achat") return toSafeNumber(facture.TotalHT);
   return 0;
 }
 function fc_tva_achat(facture) {
   if (facture.Type === "Facture d'achat") {
     return (
-      ((Number(facture.TotalHT) +
-        Number(facture.MTFODEC) +
-        Number(facture.MTDC)) *
-        Number(facture.tva)) /
+      ((toSafeNumber(facture.TotalHT) +
+        toSafeNumber(facture.MTFODEC) +
+        toSafeNumber(facture.MTDC)) *
+        toSafeNumber(facture.tva)) /
       100
     );
   }
   return 0;
+}
+
+function fc_retenue_1000(facture) {
+  const ttc = toSafeNumber(facture.TotalTTC);
+  if (facture.Type === "Facture d'achat" && ttc > 1000) {
+    return ttc * 0.1;
+  }
+  return 0;
+}
+
+function calcTotalAchatTTC1000(factures) {
+  return factures.filter(f => {
+    const ttc = Number(f.TotalTTC);
+    return f.Type === "Facture d'achat" && !isNaN(ttc) && ttc > 1000;
+  }).reduce((sum, f) => sum + Number(f.TotalTTC), 0);
 }
 
 // const paie = { salaireBrut: 1000, chef: "Non", enfants: 3 };
@@ -251,20 +285,35 @@ exports.post_dec = async (req, res) => {
 
     // Factures
     req.body.factures.forEach((f, i) => {
-      smm_tva_p1 =
-        smm_tva_p1 + parseFloat(fc_tva_vente(f)) - parseFloat(fc_tva_achat(f));
-      if (f.Type === "Facture de vente" && f.Timbre > 0) {
-        smm_droite_t = smm_droite_t + parseFloat(f.Timbre);
+      smm_tva_p1 = smm_tva_p1 + toSafeNumber(fc_tva_vente(f)) - toSafeNumber(fc_tva_achat(f));
+
+      if (f.Type === "Facture de vente" && toSafeNumber(f.Timbre) > 0) {
+        smm_droite_t = smm_droite_t + toSafeNumber(f.Timbre);
       }
+
       total_mtdc += fc_total_mtdc(f);
       total_fodec += fc_total_fodec(f);
       console.log(" total_fodec : ", total_fodec);
-
       console.log("smm_tva_p1 : ", smm_tva_p1);
-      // Ensure tauxdc is a valid number and not null or undefined
-      let tauxdcValue = parseFloat(f.TauxDC);
-      smm_tcl = smm_tcl + fc_ttc_vente(f) / 500;
+
+      // Ensure these values are safe numbers
+      let tauxdcValue = toSafeNumber(f.TauxDC);
+      let ht = toSafeNumber(f.TotalHT);
+      let tva = toSafeNumber(f.tva);
+      let timber = toSafeNumber(f.Timbre);
+      let mtfodec = toSafeNumber(f.MTFODEC);
+      let mtdc = toSafeNumber(f.MTDC);
+      let ttc = toSafeNumber(f.TotalTTC);
+      let ttc_vente = toSafeNumber(fc_ttc_vente(f));
+      let ht_vente = toSafeNumber(fc_ht_vente(f));
+      let tva_vente = toSafeNumber(fc_tva_vente(f));
+      let ht_chat = toSafeNumber(fc_ht_chat(f));
+      let tva_achat = toSafeNumber(fc_tva_achat(f));
+      let safe_ref = toSafeString(f.Ref);
+
+      smm_tcl = smm_tcl + toSafeNumber(fc_ttc_vente(f)) / 500;
       console.log("gggg fuck me [", i, "] id: ", f.id);
+
       if (f.id > 0) {
         const sql = `
           UPDATE factures 
@@ -274,20 +323,20 @@ exports.post_dec = async (req, res) => {
           f.Date,
           f.Type,
           f.TypeAV,
-          f.Ref,
-          f.TotalHT,
-          f.tva,
-          f.Timbre,
+          safe_ref,
+          ht,
+          tva,
+          timber,
           f.FODEC,
-          f.MTFODEC,
+          mtfodec,
           tauxdcValue,
-          f.MTDC,
-          f.TotalTTC,
-          fc_ttc_vente(f),
-          fc_ht_vente(f),
-          fc_tva_vente(f),
-          fc_ht_chat(f),
-          fc_tva_achat(f),
+          mtdc,
+          ttc,
+          ttc_vente,
+          ht_vente,
+          tva_vente,
+          ht_chat,
+          tva_achat,
           f.id,
           client_id,
         ];
@@ -297,20 +346,20 @@ exports.post_dec = async (req, res) => {
           date: f.Date,
           type: f.Type,
           type_achat_vente: f.TypeAV,
-          ref: f.Ref,
-          ht: f.TotalHT,
-          tva: f.tva,
-          timber: f.Timbre,
+          ref: safe_ref,
+          ht: ht,
+          tva: tva,
+          timber: timber,
           fodec: f.FODEC,
-          mtfodec: f.MTFODEC,
+          mtfodec: mtfodec,
           tauxdc: tauxdcValue,
-          mtdc: f.MTDC,
-          ttc: f.TotalTTC,
-          ttc_vente: fc_ttc_vente(f),
-          ht_vente: fc_ht_vente(f),
-          tva_vente: fc_tva_vente(f),
-          ht_chat: fc_ht_chat(f),
-          tva_achat: fc_tva_achat(f),
+          mtdc: mtdc,
+          ttc: ttc,
+          ttc_vente: ttc_vente,
+          ht_vente: ht_vente,
+          tva_vente: tva_vente,
+          ht_chat: ht_chat,
+          tva_achat: tva_achat,
           decla_id: dec_id,
           client_id,
         };
@@ -322,11 +371,21 @@ exports.post_dec = async (req, res) => {
     let smm_tfp_part1 = 0;
     // Paie
     req.body.paie.forEach((p, i) => {
-      if ("Type 2" == p.typepaie) smm_tfp_part1 = p.salaireBrut / 100;
-      else smm_tfp_part1 = p.salaireBrut / 50;
+      let brut = toSafeNumber(p.salaireBrut);
+      let num_kids = toSafeNumber(p.enfants);
+
+      if ("Type 2" == p.typepaie) smm_tfp_part1 = brut / 100;
+      else smm_tfp_part1 = brut / 50;
+
       smm_tfp = smm_tfp + smm_tfp_part1;
-      smm_foprolos = smm_foprolos + p.salaireBrut / 100;
-      console.log("gggg  shit paie[", i, "] id: ", p.id);
+      smm_foprolos = smm_foprolos + brut / 100;
+      console.log("gggg  chit paiee[", i, "] id: ", p.id);
+
+      let safe_net = toSafeNumber(fc_net(p));
+      let safe_irpp_a = toSafeNumber(fc_irpp_a(p));
+      let safe_irpp_m = toSafeNumber(fc_irpp_m(p));
+      let safe_css = toSafeNumber(fc_css(p));
+
       if (p.id > 0) {
         const sql = `
           UPDATE paie SET secteur = ?, salarier = ?, famille = ?, num_kids = ?, brut = ?, net = ?, irpp_a = ?, irpp_m = ?, css = ?
@@ -335,12 +394,12 @@ exports.post_dec = async (req, res) => {
           p.typepaie,
           p.Salarier,
           p.chef,
-          p.enfants,
-          p.salaireBrut,
-          fc_net(p),
-          fc_irpp_a(p),
-          fc_irpp_m(p),
-          fc_css(p),
+          num_kids,
+          brut,
+          safe_net,
+          safe_irpp_a,
+          safe_irpp_m,
+          safe_css,
           p.id,
           client_id,
         ];
@@ -350,12 +409,12 @@ exports.post_dec = async (req, res) => {
           secteur: p.typepaie,
           salarier: p.Salarier,
           famille: p.chef,
-          num_kids: p.enfants,
-          brut: p.salaireBrut,
-          net: fc_net(p),
-          irpp_a: fc_irpp_a(p),
-          irpp_m: fc_irpp_m(p),
-          css: fc_css(p),
+          num_kids: num_kids,
+          brut: brut,
+          net: safe_net,
+          irpp_a: safe_irpp_a,
+          irpp_m: safe_irpp_m,
+          css: safe_css,
           decla_id: dec_id,
           client_id,
         };
@@ -365,7 +424,13 @@ exports.post_dec = async (req, res) => {
     let smm_tva_p2 = 0;
     // Retenue
     req.body.retenue.forEach((rtn, i) => {
-      smm_tva_p2 = smm_tva_p2 - parseFloat(fc_tva_r(rtn));
+      let ht = toSafeNumber(rtn.montantHT);
+      let tva = toSafeNumber(rtn.tva);
+      let ttc = toSafeNumber(rtn.montantTTC);
+      let tva_r = toSafeNumber(fc_tva_r(rtn));
+      let retenue_val = toSafeNumber(fc_retenue(rtn));
+
+      smm_tva_p2 = smm_tva_p2 - tva_r;
       console.log("smm_tva_p2 : ", smm_tva_p2);
       console.log("gggg retune a  la hell [", i, "] id: ", rtn.id);
       if (rtn.id > 0) {
@@ -374,11 +439,11 @@ exports.post_dec = async (req, res) => {
           WHERE id = ? AND client_id = ?`;
         const vals = [
           rtn.source,
-          rtn.montantHT,
-          rtn.tva,
-          rtn.montantTTC,
-          fc_tva_r(rtn),
-          fc_retenue(rtn),
+          ht,
+          tva,
+          ttc,
+          tva_r,
+          retenue_val,
           rtn.id,
           client_id,
         ];
@@ -386,29 +451,35 @@ exports.post_dec = async (req, res) => {
       } else {
         const row = {
           type: rtn.source,
-          ht: rtn.montantHT,
-          tva: rtn.tva,
-          ttc: rtn.montantTTC,
-          tva_r: fc_tva_r(rtn),
-          retenue: fc_retenue(rtn),
+          ht: ht,
+          tva: tva,
+          ttc: ttc,
+          tva_r: tva_r,
+          retenue: retenue_val,
           decla_id: dec_id,
           client_id,
         };
         ops.push(dbQuery("INSERT INTO retenue SET ?", row));
       }
     });
-    let smm_tva = smm_tva_p1 + smm_tva_p2 - reporttva;
+    let smm_tva = smm_tva_p1 + smm_tva_p2 - toSafeNumber(reporttva);
     if (smm_tva < 0) smm_tva = 0;
     let smm_ttrs = 0;
 
     // On calcule d'abord la somme des retenues
     req.body.retenue.forEach((rtn) => {
-      smm_ttrs += fc_retenue(rtn); // retenue simple
+      smm_ttrs += toSafeNumber(fc_retenue(rtn)); // retenue simple
     });
 
     // À la fin, on ajoute IRPP mensuel et CSS de toutes les paies
     req.body.paie.forEach((paie) => {
       smm_ttrs += fc_irpp_m(paie) + fc_css(paie);
+    });
+
+    // Store retenue_1000 in each facture object and add to total smm_ttrs
+    req.body.factures.forEach((f) => {
+      f.retenue_1000 = fc_retenue_1000(f);
+      smm_ttrs += f.retenue_1000;
     });
 
     // Maintenant tu peux calculer ton total final
@@ -422,7 +493,7 @@ exports.post_dec = async (req, res) => {
           smm_droite_t +
           total_mtdc +
           total_fodec) *
-          1000,
+        1000,
       ) / 1000;
 
     const row = {

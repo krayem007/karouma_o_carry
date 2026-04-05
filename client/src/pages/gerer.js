@@ -55,7 +55,13 @@ const Gerer = () => {
   };
   const [activeAccordion, setActiveAccordion] = useState(getOpenedAccordions);
   const [validated, set_Validated] = useState(false);
-  const [alert, setAlert] = useState({ message: "", type: "" });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+
+  const showAlert = (type, message, duration = 5000) => {
+    setAlert({ show: true, type, message });
+    setTimeout(() => setAlert({ show: false, type: "", message: "" }), duration);
+  };
+
   const navigate = useNavigate(); // Initialize navigate hook
   // Toggle a single accordion
   const toggleAccordionItem = (key) => {
@@ -141,15 +147,28 @@ const Gerer = () => {
         setRetenue((prev) => [...prev, ...rnewRows]);
       } else if (response.data.not_found != true) {
         setAlert({
-          message: response.data.message,
+          message: response.data.message || "Erreur de chargement",
           type: "error",
         });
 
         // Clear the alert after 3 seconds
         setTimeout(() => {
-          setAlert(null);
+          setAlert({ message: "", type: "" });
         }, 3000);
       }
+    }).catch((error) => {
+      const msg = getErrorMessage(error);
+      if (error?.response?.status === 401 || msg.includes('not authorized') || msg.includes('non autorisé')) {
+        setAlert({
+          message: "Connexion requise pour effectuer cette opération",
+          type: "error",
+        });
+        setTimeout(() => {
+          navigate("/connexion");
+        }, 2000);
+        return;
+      }
+      showAlert("error", msg);
     });
   };
 
@@ -190,12 +209,7 @@ const Gerer = () => {
   }, []);
 
   const handleChangerMoisAnneeClick = () => {
-    setMois(""); // Reset 'mois' to empty
-    setAnnee(""); // Reset 'annee' to empty
     setIsSaisieClicked(false); // Reset isSaisieClicked to false
-    setFactures([]);
-    setPaie([]);
-    setRetenue([]);
   };
 
   const handleAddFacture = () => {
@@ -306,55 +320,158 @@ const Gerer = () => {
     setRows(updatedRows);
   };
 
+  // Sanitization helpers
+  const toSafeNumber = (value) => {
+    if (value === null || value === undefined || value === '') return 0;
+    const num = Number(value);
+    if (isNaN(num)) return 0;
+    return num;
+  };
+
+  const toSafeBoolean = (value) => {
+    if (value === null || value === undefined || value === '') return false;
+    if (value === 'Oui' || value === true || value === 'true') return true;
+    if (value === 'Non' || value === false || value === 'false') return false;
+    return Boolean(value);
+  };
+
+  const getErrorMessage = (error) => {
+    if (!error) return 'Erreur inconnue';
+    return error?.response?.data?.message || error?.message || error.toString();
+  };
+
   // Handle form submission
-  const submitFn = (event) => {
+  const submitFn = async (event) => {
     event.preventDefault(); // Prevent default form submission
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
       event.stopPropagation();
-    } else {
-      const data = {
+      set_Validated(true);
+      return;
+    }
+
+    try {
+      // 1. Sanitize Factures
+      const sanitizedFactures = (Array.isArray(factures) ? factures : []).map(f => {
+        const cleaned = {
+          ...f,
+          TotalHT: toSafeNumber(f.TotalHT),
+          TotalTTC: toSafeNumber(f.TotalTTC),
+          Timbre: toSafeNumber(f.Timbre),
+          tva: toSafeNumber(f.tva),
+        };
+
+        // Remove optional empty fields or safely cast them
+        if (f.FODEC !== undefined && f.FODEC !== '') {
+          cleaned.FODEC = toSafeBoolean(f.FODEC) ? "Oui" : "Non";
+        } else {
+          cleaned.FODEC = "Non";
+        }
+
+        if (f.MTFODEC !== undefined && f.MTFODEC !== '') {
+          cleaned.MTFODEC = toSafeNumber(f.MTFODEC);
+        } else {
+          delete cleaned.MTFODEC;
+        }
+
+        if (f.TauxDC !== undefined && f.TauxDC !== '') {
+          cleaned.TauxDC = toSafeNumber(f.TauxDC);
+        } else {
+          delete cleaned.TauxDC;
+        }
+
+        if (f.MTDC !== undefined && f.MTDC !== '') {
+          cleaned.MTDC = toSafeNumber(f.MTDC);
+        } else {
+          delete cleaned.MTDC;
+        }
+
+        return cleaned;
+      });
+
+      // 2. Sanitize Paie
+      const sanitizedPaie = (Array.isArray(paie) ? paie : []).map(p => ({
+        ...p,
+        enfants: toSafeNumber(p.enfants),
+        salaireBrut: toSafeNumber(p.salaireBrut)
+      }));
+
+      // 3. Sanitize Retenue
+      const sanitizedRetenue = (Array.isArray(retenue) ? retenue : []).map(r => ({
+        ...r,
+        montantHT: toSafeNumber(r.montantHT),
+        montantTTC: toSafeNumber(r.montantTTC),
+        tva: toSafeNumber(r.tva)
+      }));
+
+      // Assemble protected payload
+      const payload = {
         annee,
         mois,
-        ReportTVA,
-        factures,
-        paie,
-        retenue,
-        deleteFactureIds,
-        deletePaieIds,
-        deleteRetenueIds,
+        ReportTVA: toSafeNumber(ReportTVA),
+        factures: sanitizedFactures,
+        paie: sanitizedPaie,
+        retenue: sanitizedRetenue,
+        deleteFactureIds: Array.isArray(deleteFactureIds) ? deleteFactureIds : [],
+        deletePaieIds: Array.isArray(deletePaieIds) ? deletePaieIds : [],
+        deleteRetenueIds: Array.isArray(deleteRetenueIds) ? deleteRetenueIds : [],
       };
-      console.log("data data : ", data);
-      instance.post("/dec", data).then((response) => {
-        if (response.data.saved == true) {
-          setAlert({
-            message:
-              "Vous avez saisi vos données. Vous pouvez maintenant imprimer votre déclaration.",
-            type: "success",
-          });
-          console.log("Alert shown, waiting to navigate");
 
-          setTimeout(() => {
-            navigate("/visualiser");
-          }, 3000);
-        } else {
-          setAlert({
-            message: response.data.message,
-            type: "error",
-          });
+      console.log("Safe Payload : ", payload);
 
-          // Clear the alert after 3 seconds
-          setTimeout(() => {
-            setAlert(null);
-          }, 3000);
-        }
+      const response = await instance.post("/dec", payload);
+
+      if (response.data.saved === true) {
+        setAlert({
+          message: "Vous avez saisi vos données. Vous pouvez maintenant imprimer votre déclaration.",
+          type: "success",
+        });
+        console.log("Alert shown, waiting to navigate");
+
+        setTimeout(() => {
+          navigate("/visualiser");
+        }, 3000);
+      } else {
+        setAlert({
+          message: response.data.message || 'Erreur inconnue',
+          type: "error",
+        });
+
+        // Clear the alert after 3 seconds
+        setTimeout(() => {
+          setAlert({ message: "", type: "" });
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("API ERROR:", error?.response?.data || error?.message);
+      const msg = getErrorMessage(error);
+
+      if (error?.response?.status === 401 || msg.includes('not authorized') || msg.includes('non autorisé')) {
+        setAlert({
+          message: "Connexion requise pour effectuer cette opération",
+          type: "error",
+        });
+        setTimeout(() => {
+          navigate("/connexion");
+        }, 2000);
+        return;
+      }
+
+      setAlert({
+        message: msg,
+        type: "error",
       });
+      setTimeout(() => {
+        setAlert({ message: "", type: "" });
+      }, 3000);
     }
 
     set_Validated(true);
   };
 
   const chngFn = (index, updatedFacture, fieldChanged) => {
+    const parseNumber = (val) => isNaN(Number(val)) || val == null || val === "" ? 0 : Number(val);
     const newFactures = [...factures];
     const currentFacture = { ...updatedFacture };
 
@@ -373,15 +490,32 @@ const Gerer = () => {
       currentFacture.dcSource = null;
 
       newFactures[index] = currentFacture;
-      setFactures([...newFactures]);
+      setFactures(newFactures);
       set_Validated(false);
       return;
     }
 
-    if (fieldChanged === "HT" && currentFacture.TotalHT !== "") {
+    if (fieldChanged === "HT") {
+      currentFacture.inputSource = "HT";
+      newFactures[index] = currentFacture;
+      setFactures(newFactures);
+      set_Validated(false);
+      return;
+    }
+
+    if (fieldChanged === "TTC") {
+      currentFacture.inputSource = "TTC";
+      newFactures[index] = currentFacture;
+      setFactures(newFactures);
+      set_Validated(false);
+      return;
+    }
+
+    // Capture explicit re-triggers from blurred focus states
+    if (fieldChanged === "HT_BLUR" && currentFacture.TotalHT !== "") {
       currentFacture.inputSource = "HT";
     }
-    if (fieldChanged === "TTC" && currentFacture.TotalTTC !== "") {
+    if (fieldChanged === "TTC_BLUR" && currentFacture.TotalTTC !== "") {
       currentFacture.inputSource = "TTC";
     }
     if (fieldChanged === "TauxDC" && currentFacture.TauxDC !== "") {
@@ -391,69 +525,75 @@ const Gerer = () => {
       currentFacture.dcSource = "MTDC";
     }
 
-    if (!currentFacture.inputSource) {
-      newFactures[index] = currentFacture;
-      setFactures([...newFactures]);
-      set_Validated(false);
-      return;
-    }
-
-    const master = currentFacture.inputSource;
-    const tvaRate = parseTVA(currentFacture.tva) || 0;
-    const timbre = parseFloat(currentFacture.Timbre) || 0;
     const isFodec = currentFacture.FODEC === "Oui";
     const fodecRate = isFodec ? 0.01 : 0;
+    const tvaRate = parseNumber(currentFacture.tva) / 100;
+    const timbre = parseNumber(currentFacture.Timbre);
 
-    let tdcRate =
-      parseFloat(currentFacture.TauxDC) > 0
-        ? parseFloat(currentFacture.TauxDC) / 100
-        : 0;
+    let tdcRate = parseNumber(currentFacture.TauxDC) / 100;
+    let mtdc = parseNumber(currentFacture.MTDC);
 
-    let mtdc = parseFloat(currentFacture.MTDC) || 0;
+    let htBase = 0;
+    const master = currentFacture.inputSource;
 
-    const recalc = (htBase) => {
-      // DC
-      if (currentFacture.dcSource === "TauxDC") {
-        mtdc = htBase * tdcRate;
-        currentFacture.MTDC = mtdc.toFixed(3);
-      } else if (currentFacture.dcSource === "MTDC") {
-        tdcRate = htBase !== 0 ? mtdc / htBase : 0;
-        currentFacture.TauxDC = (tdcRate * 100).toFixed(3);
+    // Determine HT base based on known reliable source
+    if (master === "HT" && currentFacture.TotalHT !== "") {
+      htBase = parseNumber(currentFacture.TotalHT);
+    } else if (master === "TTC" && currentFacture.TotalTTC !== "") {
+      const ttc = parseNumber(currentFacture.TotalTTC);
+      if (currentFacture.dcSource === "MTDC") {
+        const val = ((ttc - timbre) / (1 + tvaRate) - mtdc) / (1 + fodecRate);
+        htBase = val > 0 ? val : 0;
+        currentFacture.TotalHT = htBase.toFixed(3);
+      } else {
+        const coef = 1 + tdcRate + fodecRate + tvaRate * (1 + tdcRate + fodecRate);
+        htBase = coef > 0 ? (ttc - timbre) / coef : 0;
+        currentFacture.TotalHT = htBase.toFixed(3);
       }
-
-      // FODEC
-      const fodecAmount = isFodec ? htBase * fodecRate : 0;
-      currentFacture.MTFODEC = isFodec ? fodecAmount.toFixed(3) : "";
-
-      // TVA SUR (HT + DC + FODEC)
-      const tvaBase = htBase + mtdc + fodecAmount;
-      const tvaAmount = tvaBase * tvaRate;
-
-      return { dc: mtdc, fodec: fodecAmount, tva: tvaAmount };
-    };
-
-    if (master === "TTC" && currentFacture.TotalTTC !== "") {
-      const ttc = parseFloat(currentFacture.TotalTTC);
-
-      const coef =
-        1 + tdcRate + fodecRate + tvaRate * (1 + tdcRate + fodecRate);
-
-      const htBase = coef > 0 ? (ttc - timbre) / coef : 0;
-
-      recalc(htBase);
+    } else if (currentFacture.TotalHT !== "") {
+      htBase = parseNumber(currentFacture.TotalHT);
+    } else if (currentFacture.TotalTTC !== "") {
+      const ttc = parseNumber(currentFacture.TotalTTC);
+      const coef = 1 + tdcRate + fodecRate + tvaRate * (1 + tdcRate + fodecRate);
+      htBase = coef > 0 ? (ttc - timbre) / coef : 0;
       currentFacture.TotalHT = htBase.toFixed(3);
     }
 
-    if (master === "HT" && currentFacture.TotalHT !== "") {
-      const ht = parseFloat(currentFacture.TotalHT);
+    // Call recalc to update dependents safely
+    if (htBase > 0 || currentFacture.TotalHT !== "") {
+      const recalc = (ht) => {
+        // Evaluate DC relationships
+        if (currentFacture.dcSource === "TauxDC" || (!currentFacture.dcSource && currentFacture.TauxDC)) {
+          mtdc = ht * tdcRate;
+          currentFacture.MTDC = mtdc.toFixed(3);
+        } else if (currentFacture.dcSource === "MTDC") {
+          tdcRate = ht > 0 ? mtdc / ht : 0;
+          currentFacture.TauxDC = (tdcRate * 100).toFixed(3);
+        }
 
-      const { dc, fodec, tva } = recalc(ht);
+        // Evaluate FODEC logic
+        const fodecAmount = isFodec ? ht * fodecRate : 0;
+        currentFacture.MTFODEC = isFodec ? fodecAmount.toFixed(3) : "";
 
-      currentFacture.TotalTTC = (ht + dc + fodec + tva + timbre).toFixed(3);
+        // Final TVA & TTC Cascade
+        const tvaBase = ht + mtdc + fodecAmount;
+        const tvaAmount = tvaBase * tvaRate;
+
+        // Never overwrite a currently active explicit user element string directly unless rounding is intentionally fired
+        if (fieldChanged !== "TTC" && fieldChanged !== "TTC_BLUR") {
+          currentFacture.TotalTTC = (ht + mtdc + fodecAmount + tvaAmount + timbre).toFixed(3);
+        }
+        if (fieldChanged === "TTC_BLUR" || fieldChanged === "HT_BLUR") {
+          if (master === "TTC") currentFacture.TotalTTC = parseNumber(currentFacture.TotalTTC).toFixed(3);
+          if (master === "HT") currentFacture.TotalHT = parseNumber(currentFacture.TotalHT).toFixed(3);
+        }
+      };
+
+      recalc(htBase);
     }
 
     newFactures[index] = currentFacture;
-    setFactures([...newFactures]);
+    setFactures(newFactures);
     set_Validated(false);
   };
 
@@ -537,13 +677,13 @@ const Gerer = () => {
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
       </Helmet>
-      {alert.message && (
+      {alert?.message && (
         <Toast
           className="toast"
-          bg={alert.type}
+          bg={alert?.type || "info"}
           onClose={() => setAlert({ message: "", type: "" })}
         >
-          <Toast.Body>{alert.message}</Toast.Body>
+          <Toast.Body>{alert?.message || ''}</Toast.Body>
         </Toast>
       )}
       <Container className="visualiser-page">
@@ -865,6 +1005,7 @@ const Gerer = () => {
                                           "HT",
                                         )
                                       }
+                                      onBlur={() => chngFn(index, facture, "HT_BLUR")}
                                       required
                                       isInvalid={
                                         validated &&
@@ -1060,6 +1201,7 @@ const Gerer = () => {
                                           "TTC",
                                         )
                                       }
+                                      onBlur={() => chngFn(index, facture, "TTC_BLUR")}
                                       required
                                       isInvalid={
                                         validated &&
@@ -1227,7 +1369,7 @@ const Gerer = () => {
                                   <Form.Group controlId={`type-paie-${index}`}>
                                     <Form.Select
                                       aria-label="Secteur d'activité"
-                                      className="form-control"
+                                      className="form-select"
                                       value={paie[index]?.typepaie ?? ""} // Ensure correct access to the row's value
                                       onChange={(e) =>
                                         chngFn1(index, {
@@ -1259,7 +1401,7 @@ const Gerer = () => {
                                   <Form.Group controlId={`chef-paie-${index}`}>
                                     <Form.Select
                                       aria-label="Chef de famille"
-                                      className="form-control"
+                                      className="form-select"
                                       value={paie[index]?.chef ?? ""} // Access the 'chef' value of the specific row
                                       onChange={(e) =>
                                         chngFn1(index, {
@@ -1306,7 +1448,8 @@ const Gerer = () => {
                                       required
                                       isInvalid={
                                         validated &&
-                                        (!paie[index]?.enfants ||
+                                        (paie[index]?.enfants == null ||
+                                          paie[index]?.enfants === "" ||
                                           paie[index].enfants < 0)
                                       } // Check if 'enfants' is empty for validation
                                     />
