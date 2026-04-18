@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const path = require("path"); // <-- add this
 const dotenv = require("dotenv");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const fs = require("fs").promises;
 const handlebars = require("handlebars");
 const { Readable } = require("stream");
@@ -14,6 +14,7 @@ const db = mysql.createConnection({
   user: process.env.db_user,
   password: process.env.db_password,
   database: process.env.db,
+  dateStrings: true
 });
 
 // Promise-based db query wrapper

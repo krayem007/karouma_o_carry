@@ -42,7 +42,7 @@ const Visualiser = () => {
       .map((row) => {
         // Ensure month has two digits (e.g., 3 -> 03)
         const month = row.mois.toString().padStart(2, "0");
-        return `${row.Anne}-${month}-00`;
+        return `${row.Anne}-${month}-01`;
       });
   };
 

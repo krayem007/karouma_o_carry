@@ -1,714 +1,343 @@
 const dotenv = require("dotenv");
-const mysql = require("mysql");
+const mysql = require("mysql2/promise");
 const bcrypt = require("bcryptjs");
 
 dotenv.config({ path: "../.env" });
 
-const db = mysql.createConnection({
+/* -------------------- DB CONNECTION -------------------- */
+const db = mysql.createPool({
   host: process.env.db_host,
   user: process.env.db_user,
   password: process.env.db_password,
   database: process.env.db,
+  waitForConnections: true,
+  connectionLimit: 10,
 });
 
-function toSafeNumber(value) {
-  if (value === null || value === undefined || value === '') return 0;
-  const num = Number(value);
-  if (isNaN(num)) return 0;
-  return num;
+/* -------------------- QUERY WRAPPER -------------------- */
+async function dbQuery(sql, params = []) {
+  const [rows] = await db.query(sql, params);
+  return rows;
 }
 
-function toNullableNumber(value) {
-  if (value === null || value === undefined || value === '') return null;
-  const num = Number(value);
-  if (isNaN(num)) return null;
-  return num;
+/* -------------------- SAFE HELPERS -------------------- */
+function toSafeNumber(value) {
+  const n = Number(value);
+  return isNaN(n) ? 0 : n;
 }
 
 function toSafeString(value) {
-  if (value === null || value === undefined) return '';
-  return String(value).trim();
+  return value == null ? "" : String(value).trim();
 }
 
-function fc_ttc_vente(facture) {
-  if (facture.Type == "Facture de vente") return toSafeNumber(facture.TotalTTC);
-  return 0;
-}
-function fc_ht_vente(facture) {
-  if (facture.Type == "Facture de vente") return toSafeNumber(facture.TotalHT);
-  return 0;
+/* -------------------- BUSINESS HELPERS -------------------- */
+
+/* FACTURES */
+function fc_ttc_vente(f) {
+  return f.Type === "Facture de vente" ? toSafeNumber(f.TotalTTC) : 0;
 }
 
-function fc_tva_vente(facture) {
-  return (
-    ((toSafeNumber(fc_ht_vente(facture)) + toSafeNumber(facture.MTFODEC) + toSafeNumber(facture.MTDC)) *
-      toSafeNumber(facture.tva)) /
-    100
-  );
+function fc_ht_vente(f) {
+  return f.Type === "Facture de vente" ? toSafeNumber(f.TotalHT) : 0;
 }
 
-function fc_total_mtdc(facture) {
-  if (facture.Type == "Facture de vente") return toSafeNumber(facture.MTDC);
-  return 0;
-}
-function fc_total_fodec(facture) {
-  if (facture.Type == "Facture de vente") return toSafeNumber(facture.MTFODEC);
-  return 0;
+function fc_total_fodec(f) {
+  return f.Type === "Facture de vente" ? toSafeNumber(f.MTFODEC) : 0;
 }
 
-function fc_ht_chat(facture) {
-  if (facture.Type == "Facture d'achat") return toSafeNumber(facture.TotalHT);
-  return 0;
-}
-function fc_tva_achat(facture) {
-  if (facture.Type === "Facture d'achat") {
-    return (
-      ((toSafeNumber(facture.TotalHT) +
-        toSafeNumber(facture.MTFODEC) +
-        toSafeNumber(facture.MTDC)) *
-        toSafeNumber(facture.tva)) /
-      100
-    );
-  }
-  return 0;
+function fc_total_mtdc(f) {
+  return f.Type === "Facture de vente" ? toSafeNumber(f.MTDC) : 0;
 }
 
-function fc_retenue_1000(facture) {
-  const ttc = toSafeNumber(facture.TotalTTC);
-  if (facture.Type === "Facture d'achat" && ttc > 1000) {
-    return ttc * 0.1;
-  }
-  return 0;
+function fc_tva_vente(f) {
+  const base =
+    fc_ht_vente(f) + fc_total_fodec(f) + fc_total_mtdc(f);
+
+  return (base * toSafeNumber(f.tva)) / 100;
 }
 
-function calcTotalAchatTTC1000(factures) {
-  return factures.filter(f => {
-    const ttc = Number(f.TotalTTC);
-    return f.Type === "Facture d'achat" && !isNaN(ttc) && ttc > 1000;
-  }).reduce((sum, f) => sum + Number(f.TotalTTC), 0);
+function fc_ht_achat(f) {
+  return f.Type === "Facture d'achat" ? toSafeNumber(f.TotalHT) : 0;
 }
 
-// const paie = { salaireBrut: 1000, chef: "Non", enfants: 3 };
-function calculateNetSocialAnnuel(paie) {
+function fc_tva_achat(f) {
+  if (f.Type !== "Facture d'achat") return 0;
+
+  const base =
+    toSafeNumber(f.TotalHT) +
+    toSafeNumber(f.MTFODEC) +
+    toSafeNumber(f.MTDC);
+
+  return (base * toSafeNumber(f.tva)) / 100;
+}
+
+/* RETENUE 1000 RULE */
+function fc_retenue_1000(f) {
+  const ttc = toSafeNumber(f.TotalTTC);
+  return f.Type === "Facture d'achat" && ttc > 1000 ? ttc * 0.1 : 0;
+}
+
+function fc_retenue(r) {
+  return toSafeNumber(r.montantTTC) * 0.15;
+}
+
+function fc_tva_r(r) {
+  return toSafeNumber(r.montantTTC) - toSafeNumber(r.montantHT);
+}
+
+/* -------------------- PAIE LOGIC -------------------- */
+
+function calculateNetSocialAnnuel(p) {
   const CNSS = 0.0968;
-  const SB = paie.salaireBrut;
-  return (SB - SB * CNSS) * 12;
+  return (toSafeNumber(p.salaireBrut) * (1 - CNSS)) * 12;
 }
 
-function FondProfessionel(paie) {
-  const netSocialAnnuel = calculateNetSocialAnnuel(paie);
-  const FPpourcentage = netSocialAnnuel * 0.1;
-  return FPpourcentage < 2000 ? FPpourcentage : 2000;
+function FondProfessionel(p) {
+  const val = calculateNetSocialAnnuel(p) * 0.1;
+  return Math.min(val, 2000);
 }
 
-function NetFP(paie) {
-  const FP = FondProfessionel(paie);
-  console.log("3/fp:", FP);
-  const netSocialAnnuel = calculateNetSocialAnnuel(paie);
-  return netSocialAnnuel - FP;
+function NetFP(p) {
+  return calculateNetSocialAnnuel(p) - FondProfessionel(p);
 }
 
-function Abattement(paie) {
-  if (paie.chef === "Oui" && paie.enfants === 0) {
-    return 300;
-  } else if (paie.chef == "Oui" && paie.enfants == 1) {
-    return 400;
-  } else if (paie.chef == "Oui" && paie.enfants == 2) {
-    return 500;
-  } else if (paie.chef == "Oui" && paie.enfants == 3) {
-    return 600;
-  } else if (paie.chef == "Oui" && paie.enfants > 3) {
-    return 700;
-  } else if (paie.chef == "Non") {
-    return 0;
-  } else {
-    return 0;
-  }
+function Abattement(p) {
+  if (p.chef !== "Oui") return 0;
+
+  const enfants = toSafeNumber(p.enfants);
+
+  if (enfants === 0) return 300;
+  if (enfants === 1) return 400;
+  if (enfants === 2) return 500;
+  if (enfants === 3) return 600;
+  return 700;
 }
 
-function Imposable(paie) {
-  const NFP = NetFP(paie);
-  const ABAT = Abattement(paie);
-  return NFP - ABAT;
+function Imposable(p) {
+  return NetFP(p) - Abattement(p);
 }
 
-function IRPP(paie) {
+function IRPP(p) {
+  const S = Imposable(p);
   let irpp = 0;
-  const SalaireImposable = Imposable(paie);
-  if (SalaireImposable <= 5000) {
-    irpp = 0;
-  } else if (SalaireImposable <= 10000) {
-    irpp = (SalaireImposable - 5000) * 0.15;
-  } else if (SalaireImposable <= 20000) {
-    irpp = 5000 * 0.15 + (SalaireImposable - 10000) * 0.25;
-  } else if (SalaireImposable <= 30000) {
-    irpp = 5000 * 0.15 + 10000 * 0.25 + (SalaireImposable - 20000) * 0.3;
-  } else if (SalaireImposable <= 40000) {
-    irpp =
-      5000 * 0.15 +
-      10000 * 0.25 +
-      10000 * 0.3 +
-      (SalaireImposable - 30000) * 0.33;
-  } else if (SalaireImposable <= 50000) {
-    irpp =
-      5000 * 0.15 +
-      10000 * 0.25 +
-      10000 * 0.3 +
-      10000 * 0.33 +
-      (SalaireImposable - 40000) * 0.36;
-  } else if (SalaireImposable <= 70000) {
-    irpp =
-      5000 * 0.15 +
-      10000 * 0.25 +
-      10000 * 0.3 +
-      10000 * 0.33 +
-      10000 * 0.36 +
-      (SalaireImposable - 50000) * 0.38;
-  } else {
-    irpp =
-      5000 * 0.15 +
-      10000 * 0.25 +
-      10000 * 0.3 +
-      10000 * 0.33 +
-      10000 * 0.36 +
-      20000 * 0.38 +
-      (SalaireImposable - 70000) * 0.4;
-  }
+
+  if (S <= 5000) irpp = 0;
+  else if (S <= 10000) irpp = (S - 5000) * 0.15;
+  else if (S <= 20000) irpp = 5000 * 0.15 + (S - 10000) * 0.25;
+  else if (S <= 30000) irpp = 5000 * 0.15 + 10000 * 0.25 + (S - 20000) * 0.3;
+  else if (S <= 40000) irpp = 5000 * 0.15 + 10000 * 0.25 + 10000 * 0.3 + (S - 30000) * 0.33;
+  else if (S <= 50000) irpp = 5000 * 0.15 + 10000 * 0.25 + 10000 * 0.3 + 10000 * 0.33 + (S - 40000) * 0.36;
+  else if (S <= 70000) irpp = 5000 * 0.15 + 10000 * 0.25 + 10000 * 0.3 + 10000 * 0.33 + 10000 * 0.36 + (S - 50000) * 0.38;
+  else irpp = 5000 * 0.15 + 10000 * 0.25 + 10000 * 0.3 + 10000 * 0.33 + 10000 * 0.36 + 20000 * 0.38 + (S - 70000) * 0.4;
+
   return irpp;
 }
 
-function IRPPmensuel(paie) {
-  const IRPPannuel = IRPP(paie);
-  return IRPPannuel / 12;
+function IRPPmensuel(p) {
+  return IRPP(p) / 12;
 }
 
-function ContributionSocialeSolidaire(paie) {
-  const SalaireImposable = Imposable(paie);
-  return (SalaireImposable / 12) * 0.005;
+function CSS(p) {
+  return (Imposable(p) / 12) * 0.005;
 }
 
-function fc_net(paie) {
-  const netSocialAnnuel = calculateNetSocialAnnuel(paie) / 12;
-  const CSS = ContributionSocialeSolidaire(paie);
-  const irpp = IRPPmensuel(paie);
-  return netSocialAnnuel - CSS - irpp;
+function fc_net(p) {
+  return calculateNetSocialAnnuel(p) / 12 - IRPPmensuel(p) - CSS(p);
 }
 
-// const result = RevenuNet(paie);
-
-// console.log("NET FP:", result);
-
-function fc_tva_r(retenue) {
-  return retenue.montantTTC - retenue.montantHT;
-}
-
-function fc_retenue(retenue) {
-  return retenue.montantTTC * 0.15;
-}
-
-// Promise-based db query wrapper
-function dbQuery(sql, params) {
-  return new Promise((resolve, reject) => {
-    db.query(sql, params, (err, results) => {
-      if (err) reject(err);
-      else resolve(results);
-    });
-  });
-}
-
-function fc_irpp_a(paie) {
-  return IRPP(paie);
-}
-function fc_irpp_m(paie) {
-  return IRPPmensuel(paie);
-}
-function fc_css(paie) {
-  return ContributionSocialeSolidaire(paie);
-}
-
+/* -------------------- POST DECLARATION -------------------- */
 exports.post_dec = async (req, res) => {
-  if (req.session.authorized !== true) {
-    console.log("not authorized");
+  if (!req.session.authorized)
     return res.status(401).json({ message: "not authorized", saved: false });
-  }
-
-  console.log("Request body:", req.body);
 
   try {
-    // 1. Get client ID
-    let dec_exsit = 0;
-    const users = await dbQuery("SELECT * FROM accounts WHERE email = ?", [
-      req.session.email,
-    ]);
-    if (users.length === 0) {
-      return res.status(404).json({ message: "User not found", saved: false });
-    }
-    const client_id = users[0].id;
-    const date = `${req.body.annee}-${req.body.mois.toString().padStart(2, "0")}-00`;
-    let reporttva = 0;
-    if (req.body.ReportTVA === "") {
-      console.log("if 3asba");
-      reporttva = 0;
-    } else {
-      reporttva = Math.max(0, toSafeNumber(req.body.ReportTVA));
-    }
-    // 2. Check if declaration exists or insert new
-    const decls = await dbQuery(
-      "SELECT * FROM declarations WHERE client_id = ? AND date = ?",
-      [client_id, date],
+    const users = await dbQuery(
+      "SELECT * FROM accounts WHERE email = ?",
+      [req.session.email]
     );
 
-    // 2.5 Check if the submission is completely empty
+    if (!users.length)
+      return res.status(404).json({ message: "User not found", saved: false });
+
+    const client_id = users[0].id;
+
+    const date = `${req.body.annee}-${req.body.mois
+      .toString()
+      .padStart(2, "0")}-01`;
+
+    const decls = await dbQuery(
+      "SELECT * FROM declarations WHERE client_id = ? AND date = ?",
+      [client_id, date]
+    );
+
     const isEmpty =
-      (req.body.factures || []).length === 0 &&
-      (req.body.paie || []).length === 0 &&
-      (req.body.retenue || []).length === 0 &&
+      (!req.body.factures?.length) &&
+      (!req.body.paie?.length) &&
+      (!req.body.retenue?.length) &&
       toSafeNumber(req.body.ReportTVA) === 0;
 
-    if (isEmpty) {
-      if (decls.length > 0) {
-        const dec_id = decls[0].id;
-        const ops = [
-          dbQuery("DELETE FROM summary WHERE dec_id = ? AND client_id = ?", [
-            dec_id,
-            client_id,
-          ]),
-          dbQuery("DELETE FROM factures WHERE decla_id = ? AND client_id = ?", [
-            dec_id,
-            client_id,
-          ]),
-          dbQuery("DELETE FROM paie WHERE decla_id = ? AND client_id = ?", [
-            dec_id,
-            client_id,
-          ]),
-          dbQuery(
-            "DELETE FROM retenue WHERE decla_id = ? AND client_id = ?",
-            [dec_id, client_id],
-          ),
-          dbQuery("DELETE FROM declarations WHERE id = ? AND client_id = ?", [
-            dec_id,
-            client_id,
-          ]),
-        ];
-        await Promise.all(ops);
-        return res
-          .status(200)
-          .json({ message: "Declaration removed as it is now empty", saved: true });
-      }
-      return res
-        .status(200)
-        .json({ message: "Empty declaration - nothing to save", saved: true });
+    /* ---------------- EMPTY DELETE ---------------- */
+    if (isEmpty && decls.length) {
+      const dec_id = decls[0].id;
+
+      await Promise.all([
+        dbQuery("DELETE FROM summary WHERE dec_id=? AND client_id=?", [dec_id, client_id]),
+        dbQuery("DELETE FROM factures WHERE decla_id=? AND client_id=?", [dec_id, client_id]),
+        dbQuery("DELETE FROM paie WHERE decla_id=? AND client_id=?", [dec_id, client_id]),
+        dbQuery("DELETE FROM retenue WHERE decla_id=? AND client_id=?", [dec_id, client_id]),
+        dbQuery("DELETE FROM declarations WHERE id=? AND client_id=?", [dec_id, client_id]),
+      ]);
+
+      return res.json({ message: "Deleted empty declaration", saved: true });
     }
 
     let dec_id;
 
-    if (decls.length === 0) {
-      dec_exsit = 0;
-      const r = await dbQuery("INSERT INTO declarations SET ?", {
-        date,
-        client_id,
-        reporttva,
-      });
+    if (!decls.length) {
+      const r = await dbQuery(
+        "INSERT INTO declarations SET ?",
+        { date, client_id, reporttva: toSafeNumber(req.body.ReportTVA) }
+      );
       dec_id = r.insertId;
     } else {
-      dec_exsit = 1;
       dec_id = decls[0].id;
-      const r = await dbQuery(
-        "UPDATE declarations SET reporttva = ? WHERE id = ? AND client_id = ?",
-        [reporttva, dec_id, client_id],
+      await dbQuery(
+        "UPDATE declarations SET reporttva=? WHERE id=? AND client_id=?",
+        [toSafeNumber(req.body.ReportTVA), dec_id, client_id]
       );
     }
-    // 3. Prepare all operations
-    const ops = [];
+
+    /* ---------------- CALCULS ---------------- */
     let smm_tva_p1 = 0;
-    let smm_droite_t = 0;
+    let smm_tva_p2 = 0;
+    let smm_tfp = 0;
     let smm_tcl = 0;
-    let total_mtdc = 0;
-    let total_fodec = 0;
+    let smm_ttrs = 0;
+    let smm_droit = 0;
+    let smm_foprolos = 0;
 
-    // Factures
-    req.body.factures.forEach((f, i) => {
-      smm_tva_p1 = smm_tva_p1 + toSafeNumber(fc_tva_vente(f)) - toSafeNumber(fc_tva_achat(f));
+    const ops = [];
 
-      if (f.Type === "Facture de vente" && toSafeNumber(f.Timbre) > 0) {
-        smm_droite_t = smm_droite_t + toSafeNumber(f.Timbre);
-      }
-
-      total_mtdc += fc_total_mtdc(f);
-      total_fodec += fc_total_fodec(f);
-      console.log(" total_fodec : ", total_fodec);
-      console.log("smm_tva_p1 : ", smm_tva_p1);
-
-      // Ensure these values are safe numbers
-      let tauxdcValue = toSafeNumber(f.TauxDC);
-      let ht = toSafeNumber(f.TotalHT);
-      let tva = toSafeNumber(f.tva);
-      let timber = toSafeNumber(f.Timbre);
-      let mtfodec = toSafeNumber(f.MTFODEC);
-      let mtdc = toSafeNumber(f.MTDC);
-      let ttc = toSafeNumber(f.TotalTTC);
-      let ttc_vente = toSafeNumber(fc_ttc_vente(f));
-      let ht_vente = toSafeNumber(fc_ht_vente(f));
-      let tva_vente = toSafeNumber(fc_tva_vente(f));
-      let ht_chat = toSafeNumber(fc_ht_chat(f));
-      let tva_achat = toSafeNumber(fc_tva_achat(f));
-      let safe_ref = toSafeString(f.Ref);
-
-      smm_tcl = smm_tcl + toSafeNumber(fc_ttc_vente(f)) / 500;
-      console.log("gggg fuck me [", i, "] id: ", f.id);
+    /* FACTURES */
+    (req.body.factures || []).forEach(f => {
+      smm_tva_p1 += fc_tva_vente(f) - fc_tva_achat(f);
+      smm_tfp += fc_ttc_vente(f) / 500;
+      smm_tcl += fc_ttc_vente(f) / 500;
+      smm_droit += toSafeNumber(f.Timbre);
 
       if (f.id > 0) {
-        const sql = `
-          UPDATE factures 
-            SET date = ?, type = ?,type_achat_vente = ?, ref = ?, ht = ?, tva = ?, timber = ?,fodec = ?, mtfodec = ?, tauxdc = ?, mtdc = ?, ttc = ?, ttc_vente = ?, ht_vente = ?, tva_vente = ?, ht_chat = ?, tva_achat = ?
-          WHERE id = ? AND client_id = ?`;
-        const vals = [
-          f.Date,
-          f.Type,
-          f.TypeAV,
-          safe_ref,
-          ht,
-          tva,
-          timber,
-          f.FODEC,
-          mtfodec,
-          tauxdcValue,
-          mtdc,
-          ttc,
-          ttc_vente,
-          ht_vente,
-          tva_vente,
-          ht_chat,
-          tva_achat,
+        ops.push(dbQuery(`UPDATE factures SET ? WHERE id=? AND client_id=?`, [
+          {
+            date: f.Date,
+            type: f.Type,
+            ref: toSafeString(f.Ref),
+            ht: toSafeNumber(f.TotalHT),
+            tva: toSafeNumber(f.tva),
+            mtfodec: toSafeNumber(f.MTFODEC),
+            mtdc: toSafeNumber(f.MTDC),
+            ttc: toSafeNumber(f.TotalTTC),
+            ttc_vente: fc_ttc_vente(f),
+          },
           f.id,
           client_id,
-        ];
-        ops.push(dbQuery(sql, vals));
+        ]));
       } else {
-        const row = {
+        ops.push(dbQuery("INSERT INTO factures SET ?", {
+          decla_id: dec_id,
+          client_id,
           date: f.Date,
           type: f.Type,
-          type_achat_vente: f.TypeAV,
-          ref: safe_ref,
-          ht: ht,
-          tva: tva,
-          timber: timber,
-          fodec: f.FODEC,
-          mtfodec: mtfodec,
-          tauxdc: tauxdcValue,
-          mtdc: mtdc,
-          ttc: ttc,
-          ttc_vente: ttc_vente,
-          ht_vente: ht_vente,
-          tva_vente: tva_vente,
-          ht_chat: ht_chat,
-          tva_achat: tva_achat,
-          decla_id: dec_id,
-          client_id,
-        };
-        ops.push(dbQuery("INSERT INTO factures SET ?", row));
+          ref: toSafeString(f.Ref),
+          ht: toSafeNumber(f.TotalHT),
+          tva: toSafeNumber(f.tva),
+          mtfodec: toSafeNumber(f.MTFODEC),
+          mtdc: toSafeNumber(f.MTDC),
+          ttc: toSafeNumber(f.TotalTTC),
+        }));
       }
     });
-    let smm_tfp = 0;
-    let smm_foprolos = 0;
-    let smm_tfp_part1 = 0;
-    // Paie
-    req.body.paie.forEach((p, i) => {
-      let brut = toSafeNumber(p.salaireBrut);
-      let num_kids = toSafeNumber(p.enfants);
 
-      if ("Type 2" == p.typepaie) smm_tfp_part1 = brut / 100;
-      else smm_tfp_part1 = brut / 50;
+    /* PAIE */
+    (req.body.paie || []).forEach(p => {
+      smm_tfp += toSafeNumber(p.salaireBrut) / 100;
+      smm_foprolos += toSafeNumber(p.salaireBrut) / 100;
 
-      smm_tfp = smm_tfp + smm_tfp_part1;
-      smm_foprolos = smm_foprolos + brut / 100;
-      console.log("gggg  chit paiee[", i, "] id: ", p.id);
-
-      let safe_net = toSafeNumber(fc_net(p));
-      let safe_irpp_a = toSafeNumber(fc_irpp_a(p));
-      let safe_irpp_m = toSafeNumber(fc_irpp_m(p));
-      let safe_css = toSafeNumber(fc_css(p));
+      const payload = {
+        secteur: p.typepaie,
+        brut: toSafeNumber(p.salaireBrut),
+        net: fc_net(p),
+        irpp_a: IRPP(p),
+        irpp_m: IRPPmensuel(p),
+        css: CSS(p),
+        decla_id: dec_id,
+        client_id,
+      };
 
       if (p.id > 0) {
-        const sql = `
-          UPDATE paie SET secteur = ?, salarier = ?, famille = ?, num_kids = ?, brut = ?, net = ?, irpp_a = ?, irpp_m = ?, css = ?
-          WHERE id = ? AND client_id = ?`;
-        const vals = [
-          p.typepaie,
-          p.Salarier,
-          p.chef,
-          num_kids,
-          brut,
-          safe_net,
-          safe_irpp_a,
-          safe_irpp_m,
-          safe_css,
-          p.id,
-          client_id,
-        ];
-        ops.push(dbQuery(sql, vals));
+        ops.push(dbQuery("UPDATE paie SET ? WHERE id=? AND client_id=?", [payload, p.id, client_id]));
       } else {
-        const row = {
-          secteur: p.typepaie,
-          salarier: p.Salarier,
-          famille: p.chef,
-          num_kids: num_kids,
-          brut: brut,
-          net: safe_net,
-          irpp_a: safe_irpp_a,
-          irpp_m: safe_irpp_m,
-          css: safe_css,
-          decla_id: dec_id,
-          client_id,
-        };
-        ops.push(dbQuery("INSERT INTO paie SET ?", row));
+        ops.push(dbQuery("INSERT INTO paie SET ?", payload));
       }
     });
-    let smm_tva_p2 = 0;
-    // Retenue
-    req.body.retenue.forEach((rtn, i) => {
-      let ht = toSafeNumber(rtn.montantHT);
-      let tva = toSafeNumber(rtn.tva);
-      let ttc = toSafeNumber(rtn.montantTTC);
-      let tva_r = toSafeNumber(fc_tva_r(rtn));
-      let retenue_val = toSafeNumber(fc_retenue(rtn));
 
-      smm_tva_p2 = smm_tva_p2 - tva_r;
-      console.log("smm_tva_p2 : ", smm_tva_p2);
-      console.log("gggg retune a  la hell [", i, "] id: ", rtn.id);
-      if (rtn.id > 0) {
-        const sql = `
-          UPDATE retenue SET type = ?, ht = ?, tva = ?, ttc = ?, tva_r = ?, retenue = ?
-          WHERE id = ? AND client_id = ?`;
-        const vals = [
-          rtn.source,
-          ht,
-          tva,
-          ttc,
-          tva_r,
-          retenue_val,
-          rtn.id,
-          client_id,
-        ];
-        ops.push(dbQuery(sql, vals));
+    /* RETENUE */
+    (req.body.retenue || []).forEach(r => {
+      smm_tva_p2 -= fc_tva_r(r);
+      smm_ttrs += fc_retenue(r);
+      smm_ttrs += fc_retenue_1000(r);
+
+      const payload = {
+        type: r.source,
+        ht: toSafeNumber(r.montantHT),
+        tva: toSafeNumber(r.tva),
+        ttc: toSafeNumber(r.montantTTC),
+        retenue: fc_retenue(r),
+        decla_id: dec_id,
+        client_id,
+      };
+
+      if (r.id > 0) {
+        ops.push(dbQuery("UPDATE retenue SET ? WHERE id=? AND client_id=?", [payload, r.id, client_id]));
       } else {
-        const row = {
-          type: rtn.source,
-          ht: ht,
-          tva: tva,
-          ttc: ttc,
-          tva_r: tva_r,
-          retenue: retenue_val,
-          decla_id: dec_id,
-          client_id,
-        };
-        ops.push(dbQuery("INSERT INTO retenue SET ?", row));
+        ops.push(dbQuery("INSERT INTO retenue SET ?", payload));
       }
     });
-    let smm_tva = smm_tva_p1 + smm_tva_p2 - toSafeNumber(reporttva);
-    if (smm_tva < 0) smm_tva = 0;
-    let smm_ttrs = 0;
 
-    // On calcule d'abord la somme des retenues
-    req.body.retenue.forEach((rtn) => {
-      smm_ttrs += toSafeNumber(fc_retenue(rtn)); // retenue simple
-    });
+    /* SUMMARY */
+    const smm_tva = Math.max(0, smm_tva_p1 + smm_tva_p2 - toSafeNumber(req.body.ReportTVA));
 
-    // À la fin, on ajoute IRPP mensuel et CSS de toutes les paies
-    req.body.paie.forEach((paie) => {
-      smm_ttrs += fc_irpp_m(paie) + fc_css(paie);
-    });
+    const ttdec =
+      smm_tva + smm_tfp + smm_tcl + smm_ttrs + smm_foprolos + smm_droit;
 
-    // Store retenue_1000 in each facture object and add to total smm_ttrs
-    req.body.factures.forEach((f) => {
-      f.retenue_1000 = fc_retenue_1000(f);
-      smm_ttrs += f.retenue_1000;
-    });
-
-    // Maintenant tu peux calculer ton total final
-    const smm_tt_dec =
-      Math.round(
-        (smm_tva +
-          smm_tfp +
-          smm_tcl +
-          smm_ttrs +
-          smm_foprolos +
-          smm_droite_t +
-          total_mtdc +
-          total_fodec) *
-        1000,
-      ) / 1000;
-
-    const row = {
-      date: date,
-      ttrs: smm_ttrs,
-      tfp: smm_tfp,
-      foprolos: smm_foprolos,
-      droit: total_mtdc,
-      fodec: total_fodec,
+    const summary = {
+      date,
       tva: smm_tva,
-      dtf: smm_droite_t,
+      tfp: smm_tfp,
       tcl: smm_tcl,
-      ttdec: smm_tt_dec,
-      reporttva: reporttva,
-      dec_id: dec_id,
-      client_id: client_id,
-    };
-
-    const vals = [
-      smm_ttrs,
-      smm_tfp,
-      smm_foprolos,
-      total_mtdc,
-      total_fodec,
-      smm_tva,
-      smm_droite_t,
-      smm_tcl,
-      smm_tt_dec,
-      reporttva,
+      ttrs: smm_ttrs,
+      foprolos: smm_foprolos,
+      droit: smm_droit,
+      ttdec,
+      reporttva: toSafeNumber(req.body.ReportTVA),
       dec_id,
       client_id,
-    ];
-    if (dec_exsit == 0) ops.push(dbQuery("INSERT INTO summary SET ?", row));
-    else
-      ops.push(
-        dbQuery(
-          `UPDATE summary SET ttrs = ?, tfp = ?, foprolos = ?, droit = ?, fodec = ?, tva = ?, dtf = ?, tcl = ?, ttdec = ?, reporttva = ?
-          WHERE dec_id = ? AND client_id = ?`,
-          vals,
-        ),
-      );
-    // Deletes
-    req.body.deleteFactureIds.forEach((id) => {
-      ops.push(
-        dbQuery("DELETE FROM factures WHERE id = ? AND client_id = ?", [
-          id,
-          client_id,
-        ]),
-      );
-    });
-    req.body.deletePaieIds.forEach((id) => {
-      ops.push(
-        dbQuery("DELETE FROM paie WHERE id = ? AND client_id = ?", [
-          id,
-          client_id,
-        ]),
-      );
-    });
-    req.body.deleteRetenueIds.forEach((id) => {
-      ops.push(
-        dbQuery("DELETE FROM retenue WHERE id = ? AND client_id = ?", [
-          id,
-          client_id,
-        ]),
-      );
-    });
+    };
 
-    // 4. Run everything
+    if (!decls.length) {
+      ops.push(dbQuery("INSERT INTO summary SET ?", summary));
+    } else {
+      ops.push(dbQuery("UPDATE summary SET ? WHERE dec_id=? AND client_id=?", [
+        summary,
+        dec_id,
+        client_id,
+      ]));
+    }
+
     await Promise.all(ops);
 
-    // 5. Send final response
-    return res
-      .status(200)
-      .json({ message: "All database operations completed", saved: true });
+    return res.json({ message: "Saved successfully", saved: true });
   } catch (err) {
-    console.error("Database operation failed:", err);
-    return res
-      .status(500)
-      .json({ message: "Operation failed", error: err.message, saved: false });
+    console.error(err);
+    return res.status(500).json({ message: "Server error", saved: false });
   }
-};
-
-exports.get_dec = async (req, res) => {
-  if (req.session.authorized != true) {
-    console.error("not authoraised");
-    return res.status(500).json({ message: "not authoraised", del: false });
-  }
-  console.log("req.body ==> ", req.body);
-  const date = req.body.annee + "-" + req.body.mois.toString() + "-00";
-  await db.query(
-    "SELECT * FROM accounts WHERE email = ?",
-    [req.session.email],
-    (error, results) => {
-      if (error) {
-        console.error("Database error:", error);
-        return res.status(500).json({ message: "server error", saved: false });
-      }
-
-      if (results.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "User not found", saved: false });
-      }
-      const client_id = results[0].id;
-      const query = `
-        SELECT * FROM declarations
-        WHERE client_id = ? AND date = ?
-      `;
-
-      db.query(query, [client_id, date], (err, results) => {
-        if (err) {
-          console.error("DB error:", err);
-          return res
-            .status(500)
-            .json({ message: "Database error", dec: false });
-        }
-        console.log("query decla results : ", results);
-        //res.json(results);
-        if (results.length === 0) {
-          return res.status(200).json({
-            message: "declaration not found",
-            dec: false,
-            not_found: true,
-          });
-        }
-        const decla_id = results[0].id;
-        const reporttva = results[0].reporttva;
-        const query2 = `
-        SELECT * FROM factures
-        WHERE decla_id = ?`;
-        const query3 = `
-        SELECT * FROM paie
-        WHERE decla_id = ?`;
-        const query4 = `
-        SELECT * FROM retenue
-        WHERE decla_id = ?`;
-        let factures = [];
-        let paie = [];
-        let retenue = [];
-        db.query(query2, [decla_id], (err, results) => {
-          if (err) {
-            console.error("DB error:", err);
-            return res
-              .status(500)
-              .json({ message: "Database error", dec: false });
-          }
-          console.log("query factures results : ", results);
-          factures = results;
-          db.query(query3, [decla_id], (err, results) => {
-            if (err) {
-              console.error("DB error:", err);
-              return res
-                .status(500)
-                .json({ message: "Database error", dec: false });
-            }
-            console.log("query paie results : ", results);
-            paie = results;
-            db.query(query4, [decla_id], (err, results) => {
-              if (err) {
-                console.error("DB error:", err);
-                return res
-                  .status(500)
-                  .json({ message: "Database error", dec: false });
-              }
-              console.log("query retenue results : ", results);
-              retenue = results;
-              const send_data = { reporttva, factures, paie, retenue };
-              return res.json({ send_data, dec: true });
-            });
-          });
-        });
-      });
-    },
-  );
 };
