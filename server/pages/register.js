@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const mysql = require("mysql2");
+const bcrypt = require('bcryptjs');
 
 dotenv.config({path: '../.env'});
 
@@ -12,7 +13,7 @@ const db = mysql.createConnection({
 
 
 
-exports.save = (req, res) => {
+exports.save = async (req, res) => {
     console.log(req.body);
     let { password,
             email, 
@@ -45,8 +46,8 @@ exports.save = (req, res) => {
             return res;
         }
         else{
-            //let hashedPassword = await bcrypt.hash(password, 8);
-            //console.log(hashedPassword)
+            let hashedPassword = await bcrypt.hash(password, 12);
+            console.log(hashedPassword)
             db.query('INSERT INTO accounts SET ?', {
                 code_acte: code_acte,
                 identifiant_fiscal: identifiant_fiscal,
@@ -59,7 +60,7 @@ exports.save = (req, res) => {
                 activite : activite,
                 activite_date : cessation_annee.toString()+'-'+cessation_mois.toString()+'-'+cessation_jour.toString(),
                 email : email, 
-                password : password}, (error, results) => {
+                password : hashedPassword}, (error, results) => {
                     if(error)
                     {
                         console.log("couldn,t save the user in the data base : ", error);

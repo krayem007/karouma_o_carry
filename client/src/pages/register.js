@@ -16,7 +16,6 @@ import {
   Breadcrumb,
   Toast,
 } from "react-bootstrap";
-const bcrypt = require('bcryptjs');
 
 const TITLE = "Inscription | " + Config.SITE_TITLE;
 const DESC = "Inscription ";
@@ -32,7 +31,7 @@ const Inscription = () => {
   });
   const [alert, setAlert] = useState({ message: "", type: "" });
 
-  const submitFn = async (event) => {
+  const submitFn = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -40,7 +39,7 @@ const Inscription = () => {
       event.stopPropagation();
     } else {
       // Show success alert
-      const data = { password : await bcrypt.hash(form_Data.password, 8),
+      const data = { password : form_Data.password,
         email : form_Data.email, 
         code_acte : form_Data.code_acte, 
         identifiant_fiscal : form_Data.identifiant_fiscal,
