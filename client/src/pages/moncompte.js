@@ -44,7 +44,9 @@ const Moncompte = () => {
     activite: localStorage.getItem("activite"),
     cessation_jour: localStorage.getItem("cessation_jour"),
     cessation_mois: localStorage.getItem("cessation_mois"),
-    cessation_annee: localStorage.getItem("cessation_annee")
+    cessation_annee: localStorage.getItem("cessation_annee"),
+    nature_entite: localStorage.getItem("nature_entite") || "",
+    details_regime: localStorage.getItem("details_regime") || ""
   };
   console.log("data : ", data);
   const [validated, set_Validated] = useState(false);
@@ -66,6 +68,8 @@ const Moncompte = () => {
     cessation_annee: data.cessation_annee,
     cessation_mois: data.cessation_mois,
     cessation_jour: data.cessation_jour,
+    nature_entite: data.nature_entite,
+    details_regime: data.details_regime,
   });
 
   console.log("form_data: ", form_Data)
@@ -138,6 +142,8 @@ const Moncompte = () => {
         code_postal: form_Data.code_postal,
         activite: form_Data.activite,
         activite_date: form_Data.cessation_annee.toString() + '-' + form_Data.cessation_mois.toString() + '-' + form_Data.cessation_jour.toString(),
+        nature_entite: form_Data.nature_entite,
+        details_regime: form_Data.details_regime,
         email: localStorage.getItem("email")
       };
       console.log("changed data : ", changed_data)
@@ -156,6 +162,8 @@ const Moncompte = () => {
           localStorage.setItem("cessation_jour", form_Data.cessation_jour);
           localStorage.setItem("cessation_mois", form_Data.cessation_mois);
           localStorage.setItem("cessation_annee", form_Data.cessation_annee);
+          localStorage.setItem("nature_entite", form_Data.nature_entite);
+          localStorage.setItem("details_regime", form_Data.details_regime);
           setAlert({
             message:
               "Vos informations personnelles ont été mises à jour avec succès.",
@@ -554,6 +562,51 @@ const Moncompte = () => {
                     </Form.Group>
                   </Col>
                 </Row>
+
+                <div className="section_title" style={{ marginTop: '20px', marginBottom: '10px', fontSize: '18px', fontWeight: 'bold' }}>Profil Fiscal :</div>
+                <Row className="main-user-info">
+                  <Col md={6}>
+                    <Form.Group controlId="nature_entite" className="form-group required">
+                      <Form.Label className="control-label">Nature de l'entité :</Form.Label>
+                      <Form.Select name="nature_entite" value={form_Data.nature_entite} onChange={chngFn} required>
+                        <option value="">Sélectionnez...</option>
+                        <option value="PM">Société / Personne Morale (PM)</option>
+                        <option value="PP">Indépendant / Personne Physique (PP)</option>
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        Veuillez sélectionner la nature de l'entité.
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  {form_Data.nature_entite && (
+                    <Col md={6}>
+                      <Form.Group controlId="details_regime" className="form-group required">
+                        <Form.Label className="control-label">Détails du régime :</Form.Label>
+                        <Form.Select name="details_regime" value={form_Data.details_regime} onChange={chngFn} required>
+                          <option value="">Sélectionnez le régime...</option>
+                          {form_Data.nature_entite === 'PM' && (
+                            <>
+                              <option value="IS_10">IS 10%</option>
+                              <option value="IS_20">IS 20%</option>
+                              <option value="IS_35">IS 35%</option>
+                            </>
+                          )}
+                          {form_Data.nature_entite === 'PP' && (
+                            <>
+                              <option value="REEL_3">Régime Réel</option>
+                              <option value="FORFAITAIRE_10">Régime Forfaitaire</option>
+                            </>
+                          )}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">
+                          Veuillez sélectionner les détails du régime.
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                  )}
+                </Row>
+
                 <div className="boutons">
                   <Button variant="primary" type="submit" className="green">
                     Valider

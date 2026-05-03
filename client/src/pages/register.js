@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
-import axios from  "axios";
+import axios from "axios";
 import { Helmet } from "react-helmet";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -28,6 +28,8 @@ const Inscription = () => {
     password: "",
     confirm_password: "",
     email: "",
+    nature_entite: "",
+    details_regime: "",
   });
   const [alert, setAlert] = useState({ message: "", type: "" });
 
@@ -39,24 +41,27 @@ const Inscription = () => {
       event.stopPropagation();
     } else {
       // Show success alert
-      const data = { password : form_Data.password,
-        email : form_Data.email, 
-        code_acte : form_Data.code_acte, 
-        identifiant_fiscal : form_Data.identifiant_fiscal,
-        identifiant_tva : form_Data.identifiant_tva,
-        code_categorie : form_Data.code_categorie,
-        nombre_filial : form_Data.nombre_filial,
-        nom_prenom_raison : form_Data.nom_prenom_raison,
-        adresse : form_Data.adresse,
-        code_postal : form_Data.code_postal,
-        activite : form_Data.activite,
-        cessation_jour : form_Data.cessation_jour,
-        cessation_mois : form_Data.cessation_mois,
-        cessation_annee : form_Data.cessation_annee};
-      axios.post("http://localhost:5002/register", data).then((response) => 
-        {
-          console.log("[gg] register data send to the server");
-        });
+      const data = {
+        password: password : form_Data.password,
+        email: form_Data.email,
+        code_acte: form_Data.code_acte,
+        identifiant_fiscal: form_Data.identifiant_fiscal,
+        identifiant_tva: form_Data.identifiant_tva,
+        code_categorie: form_Data.code_categorie,
+        nombre_filial: form_Data.nombre_filial,
+        nom_prenom_raison: form_Data.nom_prenom_raison,
+        adresse: form_Data.adresse,
+        code_postal: form_Data.code_postal,
+        activite: form_Data.activite,
+        cessation_jour: form_Data.cessation_jour,
+        cessation_mois: form_Data.cessation_mois,
+        cessation_annee: form_Data.cessation_annee,
+        nature_entite: form_Data.nature_entite,
+        details_regime: form_Data.details_regime
+      };
+      axios.post("http://localhost:5002/register", data).then((response) => {
+        console.log("[gg] register data send to the server");
+      });
       setAlert({
         message:
           "L'inscription a été effectuée avec succès. Vous devez maintenant vous connecter.",
@@ -335,6 +340,51 @@ const Inscription = () => {
               </Form.Group>
             </Col>
           </Row>
+
+          <div className="section_title">Profil Fiscal :</div>
+          <Row className="main-user-info">
+            <Col md={6}>
+              <Form.Group controlId="nature_entite" className="form-group required">
+                <Form.Label className="control-label">Nature de l'entité :</Form.Label>
+                <Form.Select name="nature_entite" value={form_Data.nature_entite} onChange={chngFn} required>
+                  <option value="">Sélectionnez...</option>
+                  <option value="PM">Société / Personne Morale (PM)</option>
+                  <option value="PP">Indépendant / Personne Physique (PP)</option>
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  Veuillez sélectionner la nature de l'entité.
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+
+            {form_Data.nature_entite && (
+              <Col md={6}>
+                <Form.Group controlId="details_regime" className="form-group required">
+                  <Form.Label className="control-label">Détails du régime :</Form.Label>
+                  <Form.Select name="details_regime" value={form_Data.details_regime} onChange={chngFn} required>
+                    <option value="">Sélectionnez le régime...</option>
+                    {form_Data.nature_entite === 'PM' && (
+                      <>
+                        <option value="IS_10">IS 10%</option>
+                        <option value="IS_20">IS 20%</option>
+                        <option value="IS_35">IS 35%</option>
+                      </>
+                    )}
+                    {form_Data.nature_entite === 'PP' && (
+                      <>
+                        <option value="REEL_3">Régime Réel</option>
+                        <option value="FORFAITAIRE_10">Régime Forfaitaire</option>
+                      </>
+                    )}
+                  </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    Veuillez sélectionner les détails du régime.
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            )}
+          </Row>
+
           <div className="section_title">Identification :</div>
 
           <Row className="main-user-info">
@@ -417,14 +467,14 @@ const Inscription = () => {
                   {form_Data.confirm_password === ""
                     ? "Veuillez confirmer votre mot de passe."
                     : form_Data.confirm_password.length < 6
-                    ? "Le mot de passe doit comporter au moins 6 caractères."
-                    : "Les mots de passe ne correspondent pas."}
+                      ? "Le mot de passe doit comporter au moins 6 caractères."
+                      : "Les mots de passe ne correspondent pas."}
                 </Form.Control.Feedback>
 
                 {/* Feedback for valid case */}
                 <Form.Control.Feedback type="valid">
                   {form_Data.confirm_password === form_Data.password &&
-                  form_Data.confirm_password.length >= 6
+                    form_Data.confirm_password.length >= 6
                     ? "Les mots de passe correspondent et sont valides."
                     : ""}
                 </Form.Control.Feedback>

@@ -2,75 +2,84 @@ const dotenv = require('dotenv');
 const mysql = require("mysql2");
 const bcrypt = require('bcryptjs');
 
-dotenv.config({path: '../.env'});
+dotenv.config({ path: '../.env' });
 
 const db = mysql.createConnection({
-    host: process.env.db_host,
-    user : process.env.db_user,
-    password: process.env.db_password,
-    database: process.env.db
+  host: process.env.db_host,
+  user: process.env.db_user,
+  password: process.env.db_password,
+  database: process.env.db
 });
 
 exports.change_my_account_data = (req, res) => {
-    console.log(req.body);
-    const { code_acte, 
-            identifiant_fiscal,
-            identifiant_tva,
-            code_categorie,
-            nombre_filiale,
-            raison_sociale,
-            address,
-            code_postal,
-            activite,
-            activite_date,
-            email} = req.body;
-    const values = [code_acte, 
-                    identifiant_fiscal,
-                    identifiant_tva,
-                    code_categorie,
-                    nombre_filiale,
-                    raison_sociale,
-                    address,
-                    code_postal,
-                    activite,
-                    activite_date,
-                    email];
-    if (req.session.authorized != true) {
-        console.error('not authoraised');
-        return res.status(500).json({ error: 'not authoraised' });
-    }
+  console.log(req.body);
+  const { code_acte,
+    identifiant_fiscal,
+    identifiant_tva,
+    code_categorie,
+    nombre_filiale,
+    raison_sociale,
+    address,
+    code_postal,
+    activite,
+    activite_date,
+    nature_entite,
+    details_regime,
+    email } = req.body;
+  const values = [code_acte,
+    identifiant_fiscal,
+    identifiant_tva,
+    code_categorie,
+    nombre_filiale,
+    raison_sociale,
+    address,
+    code_postal,
+    activite,
+    activite_date,
+    nature_entite,
+    details_regime,
+    email];
+  if (req.session.authorized != true) {
+    console.error('not authoraised');
+    return res.status(500).json({ error: 'not authoraised' });
+  }
 
-    const sql = 'UPDATE accounts SET code_acte = ?, identifiant_fiscal = ?, identifiant_tva = ?, code_categorie = ?, nombre_filiale = ?, raison_sociale = ?, address = ?, code_postal = ?, activite = ?, activite_date = ? WHERE email = ?';
+  const sql = 'UPDATE accounts SET code_acte = ?, identifiant_fiscal = ?, identifiant_tva = ?, code_categorie = ?, nombre_filiale = ?, raison_sociale = ?, address = ?, code_postal = ?, activite = ?, activite_date = ?, nature_entite = ?, details_regime = ? WHERE email = ?';
 
-    db.query(sql, values, (err, result) => {
+  db.query(sql, values, (err, result) => {
     if (err) {
-        console.error('Error updating client:', err);
-        return res.status(500).json({ error: 'Database error',
-                                      update : false });
+      console.error('Error updating client:', err);
+      return res.status(500).json({
+        error: 'Database error',
+        update: false
+      });
     }
 
     if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Client not found',
-                                      update : false });
+      return res.status(404).json({
+        message: 'Client not found',
+        update: false
+      });
     }
 
-    res.json({ message: 'Client updated successfully',
-               update : true
-     });
+    res.json({
+      message: 'Client updated successfully',
+      update: true
     });
-    return res;
+  });
+  return res;
 };
 
 
 
 exports.change_password = (req, res) => {
-    if (req.session.authorized != true) {
-        console.error('not authoraised');
-        return res.status(500).json({ error: 'not authoraised', pssdate: false});
-    }
-    console.log(req.body);
+  if (req.session.authorized != true) {
+    console.error('not authoraised');
+    return res.status(500).json({ error: 'not authoraised', pssdate: false });
+  }
+  console.log(req.body);
 
-    const { email, oldPassword, newPassword } = req.body;
+  const { email, oldPassword, newPassword } = req.body;
 
   if (!email || !oldPassword || !newPassword) {
     return res.status(400).json({ error: 'Email, oldPassword and newPassword are required.', pssdate: false });
@@ -114,11 +123,10 @@ exports.change_password = (req, res) => {
 exports.delete_account = async (req, res) => {
   if (req.session.authorized != true) {
     console.error('not authoraised');
-    return res.status(500).json({ message: 'not authoraised', del: false});
+    return res.status(500).json({ message: 'not authoraised', del: false });
   }
   const { email, password } = req.body;
-  if (password.length === 0)
-  {
+  if (password.length === 0) {
     return res.status(200).json({ message: 'password can not be empty', del: false });
   }
   console.log("data : ", req.body);
@@ -141,19 +149,19 @@ exports.delete_account = async (req, res) => {
     if (!isMatch) {
       return res.status(200).json({ message: 'Incorrect password', del: false });
     }
-    else{
+    else {
       const sql = 'DELETE FROM accounts WHERE email = ?';
       db.query(sql, [email], (err, result) => {
-          if (err) {
-            console.error('Error deleting user:', err);
-            return res.status(500).json({ message: 'Internal server error', del: false  });
-          }
-      
-          if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'User not found', del: false  });
-          }
-      
-          res.json({ message: 'User deleted successfully', del: true  });
+        if (err) {
+          console.error('Error deleting user:', err);
+          return res.status(500).json({ message: 'Internal server error', del: false });
+        }
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'User not found', del: false });
+        }
+
+        res.json({ message: 'User deleted successfully', del: true });
       });
     }
   });

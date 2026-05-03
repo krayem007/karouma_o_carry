@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import axios from  "axios";
+import axios from "axios";
 
 
 //export default instance;
@@ -45,52 +45,52 @@ const Connexion = ({ setIsLoggedIn }) => {
     } else {
       event.preventDefault(); // Prevent default submission
       // Here, add your login logic (e.g., API call)
-      const data = { password : form_Data.password,
-        email : form_Data.email};
-        const res = await instance.post("http://localhost:5002/login", data).then((response) => 
-        {
-          if (response.status === 200) {
-            // If login is successful:
-            if (response.data.status == 'success')
-            {
-              karouma = true;
-              console.log ("karouma :", karouma);
-              console.log(response.data.message);
-              console.log(response.data.user);
-              console.log("response.data : ", response.data);
-              localStorage.setItem("user", response.data.user);
-              const date = new Date(response.data.user_data.activite_date);
-              localStorage.setItem("email", response.data.user_data.email);
-              localStorage.setItem("code_acte", response.data.user_data.code_acte);
-              localStorage.setItem("identifiant_fiscal", response.data.user_data.identifiant_fiscal);
-              localStorage.setItem("identifiant_tva", response.data.user_data.identifiant_tva);
-              localStorage.setItem("code_categorie", response.data.user_data.code_categorie);
-              localStorage.setItem("nombre_filial", response.data.user_data.nombre_filiale);
-              localStorage.setItem("nom_prenom_raison", response.data.user_data.raison_sociale);
-              localStorage.setItem("adresse", response.data.user_data.address);
-              localStorage.setItem("code_postal", response.data.user_data.code_postal);
-              localStorage.setItem("activite", response.data.user_data.activite);
-              localStorage.setItem("cessation_jour", date.getDate());
-              localStorage.setItem("cessation_mois", (date.getMonth()+1));
-              localStorage.setItem("cessation_annee", date.getFullYear());
-              setIsLoggedIn(true); // Update the logged-in state
-              navigate("/welcome"); // Use the navigate function
-            }
-            else if (response.data.status == 'error')
-            {
-              //show the error on the page
-              karouma = false;
-              console.log ("karouma :", karouma);
-              console.log(response.data.message);
-            }
+      const data = {
+        password: form_Data.password,
+        email: form_Data.email
+      };
+      const res = await instance.post("http://localhost:5002/login", data).then((response) => {
+        if (response.status === 200) {
+          // If login is successful:
+          if (response.data.status == 'success') {
+            karouma = true;
+            console.log("karouma :", karouma);
+            console.log(response.data.message);
+            console.log(response.data.user);
+            console.log("response.data : ", response.data);
+            localStorage.setItem("user", response.data.user);
+            const date = new Date(response.data.user_data.activite_date);
+            localStorage.setItem("email", response.data.user_data.email);
+            localStorage.setItem("code_acte", response.data.user_data.code_acte);
+            localStorage.setItem("identifiant_fiscal", response.data.user_data.identifiant_fiscal);
+            localStorage.setItem("identifiant_tva", response.data.user_data.identifiant_tva);
+            localStorage.setItem("code_categorie", response.data.user_data.code_categorie);
+            localStorage.setItem("nombre_filial", response.data.user_data.nombre_filiale);
+            localStorage.setItem("nom_prenom_raison", response.data.user_data.raison_sociale);
+            localStorage.setItem("adresse", response.data.user_data.address);
+            localStorage.setItem("code_postal", response.data.user_data.code_postal);
+            localStorage.setItem("activite", response.data.user_data.activite);
+            localStorage.setItem("cessation_jour", date.getDate());
+            localStorage.setItem("cessation_mois", (date.getMonth() + 1));
+            localStorage.setItem("cessation_annee", date.getFullYear());
+            localStorage.setItem("nature_entite", response.data.user_data.nature_entite || "");
+            localStorage.setItem("details_regime", response.data.user_data.details_regime || "");
+            setIsLoggedIn(true); // Update the logged-in state
+            navigate("/welcome"); // Use the navigate function
           }
-          else if(response.status === 400)
-          {
+          else if (response.data.status == 'error') {
+            //show the error on the page
+            karouma = false;
+            console.log("karouma :", karouma);
             console.log(response.data.message);
           }
-          console.log("[gg] checking the login info with data base");
-        });
-      
+        }
+        else if (response.status === 400) {
+          console.log(response.data.message);
+        }
+        console.log("[gg] checking the login info with data base");
+      });
+
     }
     set_Validated(true);
 
@@ -177,15 +177,15 @@ const Connexion = ({ setIsLoggedIn }) => {
                   pattern={karouma}
                   isInvalid={validated && (karouma == false || form_Data.password.length < 6)}
                 />
-            
+
                 <Form.Control.Feedback type="invalid">
                   {console.log("karouma return ", karouma)}
                   {form_Data.password.length < 6
-                  
+
                     ? "Veuillez entrer votre mot de passe valide."
-                    : 
+                    :
                     "vos informations d'identification ne sont pas correctes"
-                    }
+                  }
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>

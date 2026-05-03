@@ -28,7 +28,9 @@ exports.save = async (req, res) => {
             activite,
             cessation_jour,
             cessation_mois,
-            cessation_annee} = req.body;
+            cessation_annee,
+            nature_entite,
+            details_regime} = req.body;
             if (nombre_filial > 0)
                 console.log("k");
             else
@@ -58,9 +60,11 @@ exports.save = async (req, res) => {
                 address : adresse, 
                 code_postal : code_postal,
                 activite : activite,
-                activite_date : cessation_annee.toString()+'-'+cessation_mois.toString()+'-'+cessation_jour.toString(),
+                activite_date : (cessation_annee ? cessation_annee.toString() : '1970') + '-' + (cessation_mois ? cessation_mois.toString() : '01') + '-' + (cessation_jour ? cessation_jour.toString() : '01'),
                 email : email, 
-                password : hashedPassword}, (error, results) => {
+                password : hashedPassword,
+                nature_entite: nature_entite,
+                details_regime: details_regime}, (error, results) => {
                     if(error)
                     {
                         console.log("couldn,t save the user in the data base : ", error);
