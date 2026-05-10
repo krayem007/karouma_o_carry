@@ -42,7 +42,7 @@ const Inscription = () => {
     } else {
       // Show success alert
       const data = {
-        password: password : form_Data.password,
+        password: form_Data.password,
         email: form_Data.email,
         code_acte: form_Data.code_acte,
         identifiant_fiscal: form_Data.identifiant_fiscal,
