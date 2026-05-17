@@ -28,7 +28,13 @@ const Home = ({ isLoggedIn }) => {
       setErrorMsg("Le montant CNSS doit être supérieur à 0.");
       return;
     }
+
+    if (!hasPrime) {
+      setErrorMsg("Veuillez spécifier si vous avez une prime ou non.");
+      return;
+    }
     
+
     if (hasPrime === 'Oui') {
       const mois = Number(moisPrime);
       if (moisPrime === '' || mois < 0) {
@@ -37,15 +43,18 @@ const Home = ({ isLoggedIn }) => {
       }
     }
     
-    const enfants = Number(nbEnfants);
-    if (nbEnfants === '' || enfants < 0) {
-      setErrorMsg("Le nombre d'enfants ne peut pas être négatif ou vide.");
-      return;
-    }
-
     if (!chefFamille) {
       setErrorMsg("Veuillez spécifier si vous êtes chef de famille.");
       return;
+    }
+
+    let enfants = 0;
+    if (chefFamille === 'Oui') {
+      if (nbEnfants === '' || Number(nbEnfants) < 0) {
+        setErrorMsg("Le nombre d'enfants ne peut pas être négatif ou vide quand vous êtes chef de famille.");
+        return;
+      }
+      enfants = Number(nbEnfants);
     }
 
     // Calcul du salaire brut mensuel
@@ -68,7 +77,7 @@ const Home = ({ isLoggedIn }) => {
         body: JSON.stringify({
           salaireBrut: brut,
           chef: chefFamille,
-          enfants: nbEnfants
+          enfants: enfants
         }),
       });
 
@@ -307,7 +316,12 @@ const Home = ({ isLoggedIn }) => {
                       aria-label="Chef de famille"
                       className="cnssfc"
                       value={chefFamille}
-                      onChange={(e) => setChefFamille(e.target.value)}
+                      onChange={(e) => {
+                        setChefFamille(e.target.value);
+                        if (e.target.value === 'Non') {
+                          setNbEnfants('');
+                        }
+                      }}
                     >
                       <option value="">Sélectionner...</option>
                       <option value="Oui">Oui</option>
@@ -322,6 +336,7 @@ const Home = ({ isLoggedIn }) => {
                       value={nbEnfants}
                       onChange={(e) => setNbEnfants(e.target.value)}
                       min="0"
+                      disabled={chefFamille === 'Non'}
                     />
                   </Form.Group>
                   <Form.Group className="mt-3 text-start">
