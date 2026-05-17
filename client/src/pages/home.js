@@ -25,15 +25,15 @@ const Home = ({ isLoggedIn }) => {
 
     const cnss = Number(montantCNSS);
     if (!montantCNSS || cnss <= 0) {
-      setErrorMsg("Le montant CNSS doit être supérieur à 0.");
+      setErrorMsg("Le montant trimestriel déclaré au CNSS doit être supérieur à 0.");
       return;
     }
 
     if (!hasPrime) {
-      setErrorMsg("Veuillez spécifier si vous avez une prime ou non.");
+      setErrorMsg("Veuillez spécifier si vous avez perçu une prime ou non dans ce trimestre.");
       return;
     }
-    
+
 
     if (hasPrime === 'Oui') {
       const mois = Number(moisPrime);
@@ -42,7 +42,7 @@ const Home = ({ isLoggedIn }) => {
         return;
       }
     }
-    
+
     if (!chefFamille) {
       setErrorMsg("Veuillez spécifier si vous êtes chef de famille.");
       return;
@@ -64,7 +64,7 @@ const Home = ({ isLoggedIn }) => {
     } else {
       brut = cnss / 3;
     }
-    
+
     setSalaireBrut(brut.toFixed(3));
 
     // Calcul du salaire net via l'API
