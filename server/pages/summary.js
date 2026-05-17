@@ -34,17 +34,32 @@ handlebars.registerHelper("fr", function (value) {
   }).format(value);
 });
 
-function calculateRetenueAchat1000(facture) {
+
+function getTauxRetenue1000(facture, default_nature, default_regime) {
+  // On utilise les données de la facture si présentes, sinon les valeurs par défaut passées
+  const nature = facture.nature_entite || default_nature;
+  const regime = facture.details_regime || default_regime;
+
+  if (nature === 'PP') return 0.015;
+  if (nature === 'PM') {
+    if (regime === 'IS_10') return 0.005;
+    if (regime === 'IS_20' || regime === 'IS_15') return 0.010;
+    return 0.015;
+  }
+  return 0;
+}
+
+function calculateRetenueAchat1000(facture, default_nature, default_regime) {
   const ttc = Number(facture.ttc);
-  if (facture.type === "Facture d'achat" && !isNaN(ttc) && ttc > 1000) {
-    return ttc * 0.1;
+  if (facture.type === "Facture d'achat" && !isNaN(ttc) && ttc >= 1000) {
+    return ttc * getTauxRetenue1000(facture, default_nature, default_regime);
   }
   return 0;
 }
 
 function calculateTotalAchatTTC1000(factures) {
   return factures
-    .filter((f) => f.type === "Facture d'achat" && Number(f.ttc) > 1000)
+    .filter((f) => f.type === "Facture d'achat" && Number(f.ttc) >= 1000)
     .reduce((sum, f) => sum + Number(f.ttc), 0);
 }
 
@@ -235,12 +250,42 @@ exports.print_doc = async (req, res) => {
   html_data.total_brut_tot_1 = html_data.total_brut_tot * 0.01;
   html_data.len_retenue = retenue.length;
   html_data.retenue = retenue;
-  let tot_ttc_retenue = 0;
+
+  let tot_loyer_ht = 0;
+  let tot_loyer_val = 0;
+  let tot_honoraires_pp_forfaitaire_ht = 0;
+  let tot_honoraires_pp_forfaitaire_val = 0;
+  let tot_honoraires_pp_reel_pm_ht = 0;
+  let tot_honoraires_pp_reel_pm_val = 0;
+
   for (let i = 0; i < html_data.retenue.length; i++) {
-    tot_ttc_retenue += html_data.retenue[i].ttc;
+    const rtn = html_data.retenue[i];
+    const source = rtn.type; // "Type 1" (Loyer) or "Type 2" (Honoraires)
+    const nature = rtn.nature_beneficiaire;
+    const regime = rtn.regime_fiscal;
+    const ttc = rtn.ttc;
+    const retenue_val = rtn.retenue;
+
+    if (source === "Type 1" || source === "Loyer" || source === "LOYER") {
+      tot_loyer_ht += ttc;
+      tot_loyer_val += retenue_val;
+    } else if (source === "Type 2" || source === "Honoraires" || source === "HONORAIRES") {
+      if (nature === "PP" && regime === "FORFAITAIRE") {
+        tot_honoraires_pp_forfaitaire_ht += ttc;
+        tot_honoraires_pp_forfaitaire_val += retenue_val;
+      } else {
+        tot_honoraires_pp_reel_pm_ht += ttc;
+        tot_honoraires_pp_reel_pm_val += retenue_val;
+      }
+    }
   }
-  html_data.tot_ttc_retenue = tot_ttc_retenue;
-  html_data.tot_ttc_retenue_15 = tot_ttc_retenue * 0.15;
+
+  html_data.tot_loyer_ht = tot_loyer_ht;
+  html_data.tot_loyer_val = tot_loyer_val;
+  html_data.tot_honoraires_pp_forfaitaire_ht = tot_honoraires_pp_forfaitaire_ht;
+  html_data.tot_honoraires_pp_forfaitaire_val = tot_honoraires_pp_forfaitaire_val;
+  html_data.tot_honoraires_pp_reel_pm_ht = tot_honoraires_pp_reel_pm_ht;
+  html_data.tot_honoraires_pp_reel_pm_val = tot_honoraires_pp_reel_pm_val;
 
   let total_ht_retenue_achat = 0;
 
@@ -391,15 +436,77 @@ exports.print_doc = async (req, res) => {
     html_data.total_tva_sum = differencefin;
   }
   html_data.tot_achat_ttc_1000 = calculateTotalAchatTTC1000(html_data.factures);
-  let tot_retenue_1000 = 0;
+
+  // === Retenue à la source — Section 2 : tous cas ===
+  let tot_retenue_1000 = 0; // Total GLOBAL (tous cas)
+
+  // PP → 1,5%
+  let tot_retenue_1000_pp = 0;
+  let tot_achat_ttc_1000_pp = 0;
+
+  // PM + IS autre que 10% ou 20% → 1,5%
+  let tot_retenue_1000_pm_15 = 0;
+  let tot_achat_ttc_1000_pm_15 = 0;
+
+  // PM + IS = 20% → 1%
+  let tot_retenue_1000_pm_10 = 0;
+  let tot_achat_ttc_1000_pm_10 = 0;
+
+  // PM + IS = 10% → 0,5%
+  let tot_retenue_1000_pm_05 = 0;
+  let tot_achat_ttc_1000_pm_05 = 0;
+
   for (let i = 0; i < html_data.factures.length; i++) {
-    html_data.factures[i].retenue_1000 = calculateRetenueAchat1000(html_data.factures[i]);
-    tot_retenue_1000 += html_data.factures[i].retenue_1000;
+    const f = html_data.factures[i];
+    // On passe nature_entite et details_regime du client comme secours pour le test
+    f.retenue_1000 = calculateRetenueAchat1000(f, html_data.nature_entite, html_data.details_regime);
+    tot_retenue_1000 += f.retenue_1000;
+
+    const ttc = Number(f.ttc);
+    if (f.type === "Facture d'achat" && !isNaN(ttc) && ttc >= 1000) {
+      // On détermine le taux effectif utilisé
+      const taux = getTauxRetenue1000(f, html_data.nature_entite, html_data.details_regime);
+
+      const nature_eff = f.nature_entite || html_data.nature_entite;
+      if (nature_eff === 'PP') {
+        tot_retenue_1000_pp += f.retenue_1000;
+        tot_achat_ttc_1000_pp += ttc;
+      } else if (nature_eff === 'PM') {
+        if (taux === 0.015) {
+          tot_retenue_1000_pm_15 += f.retenue_1000;
+          tot_achat_ttc_1000_pm_15 += ttc;
+        } else if (taux === 0.010) {
+          tot_retenue_1000_pm_10 += f.retenue_1000;
+          tot_achat_ttc_1000_pm_10 += ttc;
+        } else if (taux === 0.005) {
+          tot_retenue_1000_pm_05 += f.retenue_1000;
+          tot_achat_ttc_1000_pm_05 += ttc;
+        }
+      }
+    }
   }
+
+  // Total global
   html_data.tot_retenue_1000 = tot_retenue_1000;
 
+  // Cas PP (1,5%)
+  html_data.tot_retenue_1000_pp = tot_retenue_1000_pp;
+  html_data.tot_achat_ttc_1000_pp = tot_achat_ttc_1000_pp;
+
+  // Cas PM + IS autre (1,5%)
+  html_data.tot_retenue_1000_pm_15 = tot_retenue_1000_pm_15;
+  html_data.tot_achat_ttc_1000_pm_15 = tot_achat_ttc_1000_pm_15;
+
+  // Cas PM + IS 20% (1%)
+  html_data.tot_retenue_1000_pm_10 = tot_retenue_1000_pm_10;
+  html_data.tot_achat_ttc_1000_pm_10 = tot_achat_ttc_1000_pm_10;
+
+  // Cas PM + IS 10% (0,5%)
+  html_data.tot_retenue_1000_pm_05 = tot_retenue_1000_pm_05;
+  html_data.tot_achat_ttc_1000_pm_05 = tot_achat_ttc_1000_pm_05;
+
   html_data.mouwared =
-    html_data.tot_irpp_m + html_data.total_css + html_data.tot_ttc_retenue_15 + html_data.tot_retenue_1000;
+    html_data.tot_irpp_m + html_data.total_css + html_data.tot_loyer_val + html_data.tot_honoraires_pp_forfaitaire_val + html_data.tot_honoraires_pp_reel_pm_val + html_data.tot_retenue_1000;
   html_data.declaration =
     html_data.mouwared +
     html_data.total_brut_type_tot +
@@ -506,8 +613,7 @@ exports.print_doc = async (req, res) => {
     const puppeteer = require("puppeteer-core");
 
     const browser = await puppeteer.launch({
-      executablePath: "/usr/bin/google-chrome",
-      headless: true,
+      executablePath: "/usr/bin/google-chrome", headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
@@ -550,7 +656,7 @@ exports.print_doc = async (req, res) => {
     if (browser) {
       try {
         await browser.close();
-      } catch (e) {}
+      } catch (e) { }
     }
     res.status(500).send("Failed to generate PDF: " + (err?.message || err));
   }

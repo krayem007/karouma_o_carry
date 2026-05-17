@@ -52,6 +52,8 @@ app.post("/spiderPUSS", require('./pages/my_account').change_password)
 app.post("/delete_account", require('./pages/my_account').delete_account)
 app.post("/dec", require('./pages/dec').post_dec)
 app.post("/get_dec", require('./pages/dec').get_dec)
+app.post("/calculate_net", require('./pages/dec').calculate_net)
+app.post("/contact", require('./pages/contact').send_email)
 app.get("/summary", require('./pages/summary').welcome)
 app.post("/print_doc", require('./pages/summary').print_doc)
 

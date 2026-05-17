@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import emailjs from "@emailjs/browser";
+import axios from "axios";
 import {
   Breadcrumb,
   Container,
@@ -40,46 +40,39 @@ const Contact = () => {
 
     const { name, email, objet, message } = formData;
 
-    const serviceId = "service_w3y3z3a";
-    const templateId = "template_4wuf5nk";
-    const publicKey = "uDyKP_Q20wTeLlS7-";
-
     try {
       setDisabled(true);
 
-      // Template parameters
-      const templateParams = {
+      const response = await axios.post('http://localhost:5002/contact', {
         name,
-        to_name: "Akram",
-        from_name: name,
-        message,
-        Mail: email,
+        email,
         objet,
-      };
-
-      // Send the email
-      await emailjs.send(serviceId, templateId, templateParams, publicKey);
-
-      setAlert({
-        message: "Votre message a été envoyé avec succès !",
-        type: "success",
+        message
       });
+
+      if (response.data.success) {
+        setAlert({
+          message: "Votre message a été envoyé avec succès !",
+          type: "success",
+        });
+        setFormData({
+          name: "",
+          email: "",
+          objet: "",
+          message: "",
+        });
+      } else {
+        throw new Error(response.data.message || "Erreur lors de l'envoi");
+      }
     } catch (error) {
       console.error("Error sending email:", error);
       setAlert({
-        message: "Une erreur s'est produite. Veuillez réessayer.",
+        message: error.response?.data?.message || "Une erreur s'est produite. Veuillez réessayer.",
         type: "danger",
       });
     } finally {
       setDisabled(false);
       setValidated(false);
-
-      setFormData({
-        name: "",
-        email: "",
-        objet: "",
-        message: "",
-      });
     }
   };
 

@@ -138,6 +138,8 @@ const Gerer = () => {
         for (let i = 0; i < response.data.send_data.retenue.length; i++) {
           rnewRows.push({
             source: response.data.send_data.retenue[i].type,
+            natureBeneficiaire: response.data.send_data.retenue[i].natureBeneficiaire || "",
+            regimeFiscal: response.data.send_data.retenue[i].regimeFiscal || "",
             montantHT: response.data.send_data.retenue[i].ht,
             tva: response.data.send_data.retenue[i].tva,
             montantTTC: response.data.send_data.retenue[i].ttc,
@@ -244,6 +246,8 @@ const Gerer = () => {
         ...retenue,
         {
           source: "",
+          natureBeneficiaire: "",
+          regimeFiscal: "",
           montantHT: "",
           montantTTC: "",
           tva: "",
@@ -401,6 +405,8 @@ const Gerer = () => {
       // 3. Sanitize Retenue
       const sanitizedRetenue = (Array.isArray(retenue) ? retenue : []).map(r => ({
         ...r,
+        natureBeneficiaire: r.natureBeneficiaire || "",
+        regimeFiscal: r.regimeFiscal || "",
         montantHT: toSafeNumber(r.montantHT),
         montantTTC: toSafeNumber(r.montantTTC),
         tva: toSafeNumber(r.tva)
@@ -1570,6 +1576,12 @@ const Gerer = () => {
                               <span className="text-danger">*</span>
                             </th>
                             <th>
+                              Nature Bénéficiaire <span className="text-danger">*</span>
+                            </th>
+                            <th>
+                              Régime Bénéficiaire<span className="text-danger">*</span>
+                            </th>
+                            <th>
                               Montant HT <span className="text-danger">*</span>
                             </th>
                             <th>
@@ -1585,7 +1597,7 @@ const Gerer = () => {
                           {retenue.length === 0 ? (
                             <tr>
                               <td
-                                colSpan={5}
+                                colSpan={7}
                                 className="text-start text-muted py-3 ps-5"
                               >
                                 La table des retenues à la source est vide
@@ -1635,6 +1647,59 @@ const Gerer = () => {
                                     Veuillez sélectionner la source de la
                                     retenue
                                   </Form.Control.Feedback>
+                                </td>
+
+                                <td>
+                                  {retenue[index]?.source === "Type 2" && (
+                                    <>
+                                      <Form.Select
+                                        aria-label="Nature"
+                                        value={retenue[index]?.natureBeneficiaire ?? ""}
+                                        onChange={(e) =>
+                                          chngFn2(index, {
+                                            ...retenue[index],
+                                            natureBeneficiaire: e.target.value,
+                                            regimeFiscal: e.target.value === "PM" ? "" : retenue[index].regimeFiscal
+                                          }, "nature")
+                                        }
+                                        required
+                                        isInvalid={validated && !retenue[index]?.natureBeneficiaire}
+                                      >
+                                        <option value="">Nature Bénéficiaire</option>
+                                        <option value="PP">Personne Physique (PP)</option>
+                                        <option value="PM">Personne Morale (PM)</option>
+                                      </Form.Select>
+                                      <Form.Control.Feedback className="feedback" type="invalid">
+                                        Veuillez sélectionner la nature du bénéficiaire
+                                      </Form.Control.Feedback>
+                                    </>
+                                  )}
+                                </td>
+
+                                <td>
+                                  {retenue[index]?.source === "Type 2" && retenue[index]?.natureBeneficiaire === "PP" && (
+                                    <>
+                                      <Form.Select
+                                        aria-label="Régime Fiscal"
+                                        value={retenue[index]?.regimeFiscal ?? ""}
+                                        onChange={(e) =>
+                                          chngFn2(index, {
+                                            ...retenue[index],
+                                            regimeFiscal: e.target.value,
+                                          }, "regime")
+                                        }
+                                        required
+                                        isInvalid={validated && !retenue[index]?.regimeFiscal}
+                                      >
+                                        <option value="">Régime Fiscal</option>
+                                        <option value="FORFAITAIRE">Forfaitaire</option>
+                                        <option value="REEL">Réel</option>
+                                      </Form.Select>
+                                      <Form.Control.Feedback className="feedback" type="invalid">
+                                        Veuillez sélectionner le régime du bénéficiaire
+                                      </Form.Control.Feedback>
+                                    </>
+                                  )}
                                 </td>
 
                                 <td>

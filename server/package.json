@@ -7,6 +7,7 @@
     "express-session": "^1.18.1",
     "handlebars": "^4.7.8",
     "mysql2": "^3.16.1",
+    "nodemailer": "^8.0.7",
     "nodemon": "^3.1.9",
     "print-js": "^1.6.0",
     "puppeteer": "^24.19.0"

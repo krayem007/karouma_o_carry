@@ -87,10 +87,24 @@ function fc_tva_achat(facture) {
   return 0;
 }
 
-function fc_retenue_1000(facture) {
+function getTauxRetenue1000(facture, default_nature, default_regime) {
+  // Priorité aux données de la facture (fournisseur), sinon vide (0)
+  const nature = facture.nature_entite || default_nature;
+  const regime = facture.details_regime || default_regime;
+
+  if (nature === 'PP') return 0.015;
+  if (nature === 'PM') {
+    if (regime === 'IS_10') return 0.005;
+    if (regime === 'IS_20' || regime === 'IS_15') return 0.010;
+    return 0.015;
+  }
+  return 0;
+}
+
+function fc_retenue_1000(facture, default_nature, default_regime) {
   const ttc = toSafeNumber(facture.TotalTTC);
-  if (facture.Type === "Facture d'achat" && ttc > 1000) {
-    return ttc * 0.1;
+  if (facture.Type === "Facture d'achat" && ttc >= 1000) {
+    return ttc * getTauxRetenue1000(facture, default_nature, default_regime);
   }
   return 0;
 }
@@ -212,12 +226,33 @@ function fc_net(paie) {
 
 // console.log("NET FP:", result);
 
+function getTauxRetenue(typeOperation, natureBeneficiaire, regimeFiscal) {
+  if (typeOperation === "Type 1" || typeOperation === "Loyer" || typeOperation === "LOYER") {
+    return 0.15;
+  }
+  if (typeOperation === "Type 2" || typeOperation === "Honoraires" || typeOperation === "HONORAIRES") {
+    if (natureBeneficiaire === "PP") {
+      if (regimeFiscal === "FORFAITAIRE") {
+        return 0.10;
+      }
+      if (regimeFiscal === "REEL") {
+        return 0.03;
+      }
+    }
+    if (natureBeneficiaire === "PM") {
+      return 0.03;
+    }
+  }
+  return 0;
+}
+
 function fc_tva_r(retenue) {
   return retenue.montantTTC - retenue.montantHT;
 }
 
 function fc_retenue(retenue) {
-  return retenue.montantTTC * 0.15;
+  const taux = getTauxRetenue(retenue.source || retenue.type, retenue.natureBeneficiaire || retenue.nature_beneficiaire, retenue.regimeFiscal || retenue.regime_fiscal);
+  return retenue.montantTTC * taux;
 }
 
 
@@ -478,16 +513,20 @@ exports.post_dec = async (req, res) => {
       let ttc = toSafeNumber(rtn.montantTTC);
       let tva_r = toSafeNumber(fc_tva_r(rtn));
       let retenue_val = toSafeNumber(fc_retenue(rtn));
+      let nature = rtn.natureBeneficiaire || null;
+      let regime = rtn.regimeFiscal || null;
 
       smm_tva_p2 = smm_tva_p2 - tva_r;
       console.log("smm_tva_p2 : ", smm_tva_p2);
       console.log("gggg retune a  la hell [", i, "] id: ", rtn.id);
       if (rtn.id > 0) {
         const sql = `
-          UPDATE retenue SET type = ?, ht = ?, tva = ?, ttc = ?, tva_r = ?, retenue = ?
+          UPDATE retenue SET type = ?, nature_beneficiaire = ?, regime_fiscal = ?, ht = ?, tva = ?, ttc = ?, tva_r = ?, retenue = ?
           WHERE id = ? AND client_id = ?`;
         const vals = [
           rtn.source,
+          nature,
+          regime,
           ht,
           tva,
           ttc,
@@ -500,6 +539,8 @@ exports.post_dec = async (req, res) => {
       } else {
         const row = {
           type: rtn.source,
+          nature_beneficiaire: nature,
+          regime_fiscal: regime,
           ht: ht,
           tva: tva,
           ttc: ttc,
@@ -527,7 +568,7 @@ exports.post_dec = async (req, res) => {
 
     // Store retenue_1000 in each facture object and add to total smm_ttrs
     req.body.factures.forEach((f) => {
-      f.retenue_1000 = fc_retenue_1000(f);
+      f.retenue_1000 = fc_retenue_1000(f, users[0].nature_entite, users[0].details_regime);
       smm_ttrs += f.retenue_1000;
     });
 
@@ -628,32 +669,56 @@ exports.post_dec = async (req, res) => {
 
 /* -------------------- GET DEC -------------------- */
 exports.get_dec = async (req, res) => {
-  if (!req.session.authorized) return res.status(401).json({ message:'not authorized', del:false });
+  if (!req.session.authorized) return res.status(401).json({ message: 'not authorized', del: false });
   console.log("after autoraize");
   try {
     console.log("start of try");
-    const date = `${req.body.annee}-${req.body.mois.toString().padStart(2,'0')}-01`;
+    const date = `${req.body.annee}-${req.body.mois.toString().padStart(2, '0')}-01`;
 
-    const users = await dbQuery('SELECT * FROM accounts WHERE email=?',[req.session.email]);
-    if (users.length===0) {console.log("gg no email found");return res.status(404).json({ message:'User not found', saved:false });}
+    const users = await dbQuery('SELECT * FROM accounts WHERE email=?', [req.session.email]);
+    if (users.length === 0) { console.log("gg no email found"); return res.status(404).json({ message: 'User not found', saved: false }); }
     console.log("after foundinfg the email");
     const client_id = users[0].id;
-    const decls = await dbQuery('SELECT * FROM declarations WHERE client_id=? AND date=?',[client_id,date]);
-    if (decls.length===0) {console.log("gg no dec found");return res.status(200).json({ message:'declaration not found', dec:false, not_found:true });}
+    const decls = await dbQuery('SELECT * FROM declarations WHERE client_id=? AND date=?', [client_id, date]);
+    if (decls.length === 0) { console.log("gg no dec found"); return res.status(200).json({ message: 'declaration not found', dec: false, not_found: true }); }
     console.log("after foundinfg the dec");
     let reporttva = 0;
     const decla_id = decls[0].id;
     if (typeof decls[0].reporttva !== "undefined")
       reporttva = decls[0].reporttva;
-    const factures = await dbQuery('SELECT * FROM factures WHERE decla_id=?',[decla_id]);
-    const paie     = await dbQuery('SELECT * FROM paie WHERE decla_id=?',[decla_id]);
-    const retenue  = await dbQuery('SELECT * FROM retenue WHERE decla_id=?',[decla_id]);
+    const factures = await dbQuery('SELECT * FROM factures WHERE decla_id=?', [decla_id]);
+    const paie = await dbQuery('SELECT * FROM paie WHERE decla_id=?', [decla_id]);
+    const retenue = await dbQuery('SELECT * FROM retenue WHERE decla_id=?', [decla_id]);
 
-    return res.json({ send_data:{reporttva,factures,paie,retenue}, dec:true });
+    const mappedRetenue = retenue.map(r => ({
+      ...r,
+      source: r.type,
+      natureBeneficiaire: r.nature_beneficiaire,
+      regimeFiscal: r.regime_fiscal,
+    }));
 
-  } catch(err) {
+    return res.json({ send_data: { reporttva, factures, paie, retenue: mappedRetenue }, dec: true });
+
+  } catch (err) {
     console.log("data base error in catch");
     console.error("Database error:", err);
-    return res.status(500).json({ message:"Database error", dec:false });
+    return res.status(500).json({ message: "Database error", dec: false });
+  }
+};
+
+/* -------------------- CALCULATE NET -------------------- */
+exports.calculate_net = async (req, res) => {
+  try {
+    const { salaireBrut, chef, enfants } = req.body;
+    const paie = {
+       salaireBrut: Number(salaireBrut) || 0,
+       chef: chef || 'Non',
+       enfants: Number(enfants) || 0
+    };
+    const net = fc_net(paie);
+    return res.status(200).json({ net: net });
+  } catch (error) {
+    console.error("Calculate net error:", error);
+    return res.status(500).json({ message: "Erreur de calcul", error: error.message });
   }
 };

@@ -1,5 +1,5 @@
 import icon from "../images/icon.png";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
@@ -9,6 +9,84 @@ const DESC = "Accueil";
 const CANONICAL = Config.SITE_DOMAIN + "/";
 
 const Home = ({ isLoggedIn }) => {
+  const [montantCNSS, setMontantCNSS] = useState('');
+  const [hasPrime, setHasPrime] = useState('');
+  const [moisPrime, setMoisPrime] = useState('');
+  const [chefFamille, setChefFamille] = useState('');
+  const [nbEnfants, setNbEnfants] = useState('');
+  const [salaireBrut, setSalaireBrut] = useState('');
+  const [salaireNet, setSalaireNet] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleCalculate = async () => {
+    setErrorMsg('');
+    setSalaireBrut('');
+    setSalaireNet('');
+
+    const cnss = Number(montantCNSS);
+    if (!montantCNSS || cnss <= 0) {
+      setErrorMsg("Le montant CNSS doit être supérieur à 0.");
+      return;
+    }
+    
+    if (hasPrime === 'Oui') {
+      const mois = Number(moisPrime);
+      if (moisPrime === '' || mois < 0) {
+        setErrorMsg("Le nombre de mois de prime ne peut pas être négatif ou vide.");
+        return;
+      }
+    }
+    
+    const enfants = Number(nbEnfants);
+    if (nbEnfants === '' || enfants < 0) {
+      setErrorMsg("Le nombre d'enfants ne peut pas être négatif ou vide.");
+      return;
+    }
+
+    if (!chefFamille) {
+      setErrorMsg("Veuillez spécifier si vous êtes chef de famille.");
+      return;
+    }
+
+    // Calcul du salaire brut mensuel
+    let brut = 0;
+    if (hasPrime === 'Oui') {
+      brut = cnss / (3 + Number(moisPrime));
+    } else {
+      brut = cnss / 3;
+    }
+    
+    setSalaireBrut(brut.toFixed(3));
+
+    // Calcul du salaire net via l'API
+    try {
+      const response = await fetch('http://localhost:5002/calculate_net', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          salaireBrut: brut,
+          chef: chefFamille,
+          enfants: nbEnfants
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur de communication avec le serveur.");
+      }
+
+      const data = await response.json();
+      if (data && data.net !== undefined) {
+        setSalaireNet(Number(data.net).toFixed(3));
+      } else {
+        setErrorMsg("Erreur lors du calcul du salaire net.");
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMsg("Une erreur s'est produite lors de la connexion au serveur.");
+    }
+  };
   return (
     <>
       <Helmet>
@@ -182,49 +260,90 @@ const Home = ({ isLoggedIn }) => {
                 Saisissez les détails de votre déclaration CNSS :
               </Card.Title>
               <Card.Body>
+                {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
                 <Form>
-                  <Form.Group>
+                  <Form.Group className="text-start">
+                    <Form.Label>Montant trimestriel déclaré au CNSS</Form.Label>
                     <Form.Control
                       type="number"
-                      placeholder="Montant trimestriel déclaré au CNSS"
                       className="cnssfc"
+                      value={montantCNSS}
+                      onChange={(e) => setMontantCNSS(e.target.value)}
                     />
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group className="mt-3 text-start">
+                    <Form.Label>Y a-t-il une prime durant ce trimestre ?</Form.Label>
                     <Form.Select
-                      aria-label="Chef de famille"
+                      aria-label="Y a-t-il une prime durant ce trimestre ?"
                       className="cnssfc"
+                      name="prime_trimestre"
+                      value={hasPrime}
+                      onChange={(e) => {
+                        setHasPrime(e.target.value);
+                        if (e.target.value !== 'Oui') {
+                          setMoisPrime('');
+                        }
+                      }}
                     >
-                      <option value="">Chef de famille ou non ?</option>
+                      <option value="">Sélectionner...</option>
                       <option value="Oui">Oui</option>
                       <option value="Non">Non</option>
                     </Form.Select>
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group className="mt-3 text-start">
+                    <Form.Label>Nombre de mois de la prime</Form.Label>
                     <Form.Control
                       type="number"
-                      placeholder="Nombre d'enfants"
                       className="cnssfc"
+                      min="0"
+                      value={moisPrime}
+                      onChange={(e) => setMoisPrime(e.target.value)}
+                      disabled={hasPrime !== 'Oui'}
                     />
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group className="mt-3 text-start">
+                    <Form.Label>Chef de famille ou non ?</Form.Label>
+                    <Form.Select
+                      aria-label="Chef de famille"
+                      className="cnssfc"
+                      value={chefFamille}
+                      onChange={(e) => setChefFamille(e.target.value)}
+                    >
+                      <option value="">Sélectionner...</option>
+                      <option value="Oui">Oui</option>
+                      <option value="Non">Non</option>
+                    </Form.Select>
+                  </Form.Group>
+                  <Form.Group className="mt-3 text-start">
+                    <Form.Label>Nombre d'enfants</Form.Label>
                     <Form.Control
                       type="number"
-                      placeholder="Salaire brut mensuel"
-                      className="cnssgrey"
-                      readOnly
+                      className="cnssfc"
+                      value={nbEnfants}
+                      onChange={(e) => setNbEnfants(e.target.value)}
+                      min="0"
                     />
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group className="mt-3 text-start">
+                    <Form.Label>Salaire brut mensuel</Form.Label>
                     <Form.Control
                       type="number"
-                      placeholder="Salaire net mensuel"
                       className="cnssgrey"
                       readOnly
+                      value={salaireBrut}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mt-3 text-start">
+                    <Form.Label>Salaire net mensuel</Form.Label>
+                    <Form.Control
+                      type="number"
+                      className="cnssgrey"
+                      readOnly
+                      value={salaireNet}
                     />
                   </Form.Group>
                   <div className="boutons">
-                    <Button variant="primary" className="green">
+                    <Button variant="primary" className="green" onClick={handleCalculate}>
                       Calculer
                     </Button>
                   </div>
