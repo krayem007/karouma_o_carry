@@ -94,34 +94,33 @@ const Welcome = () => {
 
         <Container
           fluid
-          className="d-flex justify-content-center align-items-center flex-column"
-          style={{ minHeight: "300px", padding: "0 15px" }}
+          className="d-flex justify-content-center align-items-center flex-column welcome-cards-container"
         >
-          <Row className="comment justify-content-center">
-            <Col xs={12} sm={6} md={5} className="container-col">
-              <Card as={Link} to="/gerer" id="clic">
-                <div>
+          <Row className="justify-content-center gap-4">
+            <Col xs={12} sm="auto">
+              <Link to="/gerer" className="modern-card-link">
+                <div className="icon-wrapper">
                   <i className="fa-solid fa-calculator"></i>
                 </div>
-                <Card.Title as="h3">Saisissez vos informations</Card.Title>
-                <Card.Body className="bodyconnected">
+                <div className="card-title">Saisissez vos informations</div>
+                <div className="bodyconnected">
                   Renseignez vos factures et les informations de vos fiches de
                   paie
-                </Card.Body>
-              </Card>
+                </div>
+              </Link>
             </Col>
 
-            <Col xs={12} sm={6} md={5} className="container-col">
-              <Card id="clic" as={Link} to="/visualiser">
-                <div>
+            <Col xs={12} sm="auto">
+              <Link to="/visualiser" className="modern-card-link">
+                <div className="icon-wrapper">
                   <i className="fa-solid fa-print"></i>
                 </div>
-                <Card.Title as="h3">Imprimer vos déclarations</Card.Title>
-                <Card.Body className="bodyconnected">
+                <div className="card-title">Imprimer vos déclarations</div>
+                <div className="bodyconnected">
                   Vérifiez vos déclarations en les visualisant, puis
                   imprimez-les
-                </Card.Body>
-              </Card>
+                </div>
+              </Link>
             </Col>
           </Row>
         </Container>

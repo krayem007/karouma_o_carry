@@ -178,16 +178,16 @@ const Home = ({ isLoggedIn }) => {
           {isLoggedIn ? (
             <>
               <Col md="auto" className="col-card mb-4">
-                <Card as={Link} to="/gerer" id="clic">
-                  <div>
+                <Link to="/gerer" className="modern-card-link">
+                  <div className="icon-wrapper">
                     <i className="fa-solid fa-calculator"></i>
                   </div>
-                  <Card.Title as="h3">Saisissez vos informations</Card.Title>
-                  <Card.Body className="bodyconnected">
+                  <div className="card-title">Saisissez vos informations</div>
+                  <div className="bodyconnected">
                     Renseignez vos factures et les informations de vos fiches de
                     paie
-                  </Card.Body>
-                </Card>
+                  </div>
+                </Link>
               </Col>
             </>
           ) : (
@@ -215,16 +215,16 @@ const Home = ({ isLoggedIn }) => {
           {isLoggedIn ? (
             <>
               <Col md="auto" className="col-card mb-4">
-                <Card id="clic" as={Link} to="/visualiser">
-                  <div>
+                <Link to="/visualiser" className="modern-card-link">
+                  <div className="icon-wrapper">
                     <i className="fa-solid fa-print"></i>
                   </div>
-                  <Card.Title as="h3">Imprimer vos déclarations</Card.Title>
-                  <Card.Body className="bodyconnected">
+                  <div className="card-title">Imprimer vos déclarations</div>
+                  <div className="bodyconnected">
                     Vérifiez vos déclarations en les visualisant, puis
                     imprimez-les
-                  </Card.Body>
-                </Card>
+                  </div>
+                </Link>
               </Col>
             </>
           ) : (
@@ -255,116 +255,135 @@ const Home = ({ isLoggedIn }) => {
           </Col>
         </Row>
         <Row className="comment justify-content-center mt-4">
-          <Col md="auto" className="col-card mb-4">
-            <Card className="cardcnss text-center">
-              <div>
-                <i class="fa-solid fa-check-to-slot"></i>
+          <Col md={10} className="mb-4">
+            <div className="cnss-dashboard-card text-center">
+              <div className="cnss-icon-header">
+                <i className="fa-solid fa-check-to-slot"></i>
               </div>
-              <Card.Title className="card-titlecnss">
+              <h3 className="card-titlecnss">
                 Outil simplifié pour la vérification CNSS et le calcul des
                 salaires brut et net
-              </Card.Title>
+              </h3>
 
-              <Card.Title as="h3">
+              <h4 className="cnss-subtitle">
                 Saisissez les détails de votre déclaration CNSS :
-              </Card.Title>
-              <Card.Body>
-                {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
-                <Form>
-                  <Form.Group className="text-start">
-                    <Form.Label>Montant trimestriel déclaré au CNSS</Form.Label>
-                    <Form.Control
-                      type="number"
-                      className="cnssfc"
-                      value={montantCNSS}
-                      onChange={(e) => setMontantCNSS(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mt-3 text-start">
-                    <Form.Label>Y a-t-il une prime durant ce trimestre ?</Form.Label>
-                    <Form.Select
-                      aria-label="Y a-t-il une prime durant ce trimestre ?"
-                      className="cnssfc"
-                      name="prime_trimestre"
-                      value={hasPrime}
-                      onChange={(e) => {
-                        setHasPrime(e.target.value);
-                        if (e.target.value !== 'Oui') {
-                          setMoisPrime('');
-                        }
-                      }}
-                    >
-                      <option value="">Sélectionner...</option>
-                      <option value="Oui">Oui</option>
-                      <option value="Non">Non</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group className="mt-3 text-start">
-                    <Form.Label>Nombre de mois de la prime</Form.Label>
-                    <Form.Control
-                      type="number"
-                      className="cnssfc"
-                      min="0"
-                      value={moisPrime}
-                      onChange={(e) => setMoisPrime(e.target.value)}
-                      disabled={hasPrime !== 'Oui'}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mt-3 text-start">
-                    <Form.Label>Chef de famille ou non ?</Form.Label>
-                    <Form.Select
-                      aria-label="Chef de famille"
-                      className="cnssfc"
-                      value={chefFamille}
-                      onChange={(e) => {
-                        setChefFamille(e.target.value);
-                        if (e.target.value === 'Non') {
-                          setNbEnfants('');
-                        }
-                      }}
-                    >
-                      <option value="">Sélectionner...</option>
-                      <option value="Oui">Oui</option>
-                      <option value="Non">Non</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group className="mt-3 text-start">
-                    <Form.Label>Nombre d'enfants</Form.Label>
-                    <Form.Control
-                      type="number"
-                      className="cnssfc"
-                      value={nbEnfants}
-                      onChange={(e) => setNbEnfants(e.target.value)}
-                      min="0"
-                      disabled={chefFamille === 'Non'}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mt-3 text-start">
-                    <Form.Label>Salaire brut mensuel</Form.Label>
-                    <Form.Control
-                      type="number"
-                      className="cnssgrey"
-                      readOnly
-                      value={salaireBrut}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mt-3 text-start">
-                    <Form.Label>Salaire net mensuel</Form.Label>
-                    <Form.Control
-                      type="number"
-                      className="cnssgrey"
-                      readOnly
-                      value={salaireNet}
-                    />
-                  </Form.Group>
-                  <div className="boutons">
-                    <Button variant="primary" className="green" onClick={handleCalculate}>
-                      Calculer
-                    </Button>
+              </h4>
+
+              {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
+
+              <Form className="text-start">
+                <Row className="justify-content-center">
+                  <Col md={6}>
+                    <Form.Group className="mb-3 text-center">
+                      <Form.Label>Montant trimestriel déclaré au CNSS</Form.Label>
+                      <Form.Control
+                        type="number"
+                        className="cnssfc text-center"
+                        value={montantCNSS}
+                        onChange={(e) => setMontantCNSS(e.target.value)}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Y a-t-il une prime durant ce trimestre ?</Form.Label>
+                      <Form.Select
+                        className="cnssfc"
+                        name="prime_trimestre"
+                        value={hasPrime}
+                        onChange={(e) => {
+                          setHasPrime(e.target.value);
+                          if (e.target.value !== 'Oui') {
+                            setMoisPrime('');
+                          }
+                        }}
+                      >
+                        <option value="">Sélectionner...</option>
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Nombre de mois de la prime</Form.Label>
+                      <Form.Control
+                        type="number"
+                        className="cnssfc"
+                        min="0"
+                        value={moisPrime}
+                        onChange={(e) => setMoisPrime(e.target.value)}
+                        disabled={hasPrime !== 'Oui'}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Chef de famille ou non ?</Form.Label>
+                      <Form.Select
+                        className="cnssfc"
+                        value={chefFamille}
+                        onChange={(e) => {
+                          setChefFamille(e.target.value);
+                          if (e.target.value === 'Non') {
+                            setNbEnfants('');
+                          }
+                        }}
+                      >
+                        <option value="">Sélectionner...</option>
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Nombre d'enfants</Form.Label>
+                      <Form.Control
+                        type="number"
+                        className="cnssfc"
+                        value={nbEnfants}
+                        onChange={(e) => setNbEnfants(e.target.value)}
+                        min="0"
+                        disabled={chefFamille === 'Non'}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <div className="boutons">
+                  <Button variant="primary" className="green" onClick={handleCalculate}>
+                    Calculer
+                  </Button>
+                </div>
+
+                {(salaireBrut || salaireNet) && (
+                  <div className="result-box-container">
+                    <h4>Résultats de l'estimation</h4>
+                    <Row>
+                      <Col md={6} className="mb-3 mb-md-0">
+                        <div className="result-item">
+                          <div className="result-item-label">Salaire Brut Mensuel</div>
+                          <div className="result-item-value">{salaireBrut || '0.000'} <span className="result-unit">TND</span></div>
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <div className="result-item">
+                          <div className="result-item-label">Salaire Net Mensuel</div>
+                          <div className="result-item-value">{salaireNet || '0.000'} <span className="result-unit">TND</span></div>
+                        </div>
+                      </Col>
+                    </Row>
                   </div>
-                </Form>
-              </Card.Body>
-            </Card>
+                )}
+              </Form>
+            </div>
           </Col>
         </Row>
       </Container>

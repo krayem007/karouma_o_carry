@@ -406,6 +406,158 @@ div.card {
   text-align: center !important;
 }
 
+/* --- Modern Dashboard UI (Home Page) --- */
+
+.modern-card-link {
+  text-decoration: none !important;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.05);
+  display: block;
+  overflow: hidden;
+  height: 100%;
+  width: 18em;
+}
+
+.modern-card-link:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+  background-color: #f8fcfb; /* light subtle green tint */
+}
+
+.modern-card-link .icon-wrapper {
+  margin: 30px auto 20px;
+  color: #2c3e50;
+  font-size: 50px !important;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.modern-card-link:hover .icon-wrapper {
+  transform: scale(1.1);
+}
+
+.modern-card-link .card-title {
+  color: #2c3e50;
+  font-weight: bold;
+  font-size: 22px !important;
+  text-align: center !important;
+  margin-bottom: 15px;
+}
+
+.modern-card-link .bodyconnected {
+  color: #555;
+  text-align: center !important;
+  padding: 0 20px 30px;
+  font-size: 15px;
+}
+
+.cnss-dashboard-card {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 15px;
+  border: none;
+  background: #ffffff;
+  padding: 40px 30px;
+  margin-bottom: 50px !important;
+  width: 100% !important;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cnss-dashboard-card .card-titlecnss {
+  color: #2c3e50;
+  font-weight: bold;
+  font-size: 26px;
+  margin-bottom: 35px !important;
+}
+
+.cnss-dashboard-card .form-label {
+  font-weight: bold;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.cnss-dashboard-card .cnssfc {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 10px 15px;
+  transition: border-color 0.2s;
+  background-color: #fafafa;
+  font-size: 15px;
+}
+
+.cnss-dashboard-card .cnssfc:focus {
+  border-color: #ced4da;
+  box-shadow: none;
+  background-color: #ffffff;
+}
+
+.result-box-container {
+  background: linear-gradient(135deg, #1abc9c 0%, #2c3e50 100%);
+  border-radius: 12px;
+  padding: 30px;
+  color: white;
+  margin-top: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.result-box-container h4 {
+  margin-bottom: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.result-item {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: 100%;
+}
+
+.result-item-label {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.result-item-value {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+/* --- End Modern Dashboard UI --- */
+
+.cnss-icon-header {
+  font-size: 40px;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.cnss-subtitle {
+  color: #555;
+  margin-bottom: 30px;
+  font-size: 18px;
+}
+
+.result-unit {
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.welcome-cards-container {
+  min-height: 300px;
+  padding: 0 15px;
+}
+
 /* Registre */
 
 .form-title {
