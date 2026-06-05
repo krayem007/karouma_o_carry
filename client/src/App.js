@@ -15,6 +15,7 @@ import Faq from "./pages/faq";
 import Propos from "./pages/propos";
 import Conditions from "./pages/condition";
 import Reinitialisation from "./pages/reinitialisation";
+import ResetPassword from "./pages/resetpassword";
 import axios from  "axios";
 import {useNavigate } from "react-router-dom";
 
@@ -59,7 +60,7 @@ function App() {
             }
           />
           <Route path="/inscription" element={<Inscription />} />
-          <Route path="/moncompte" element={<Moncompte />} />
+          <Route path="/moncompte" element={<Moncompte setIsLoggedIn={setIsLoggedIn} />} />
           <Route
             path="/connexion"
             element={<Connexion setIsLoggedIn={setIsLoggedIn} />}
@@ -73,6 +74,7 @@ function App() {
           <Route path="/propos" element={<Propos />} />
           <Route path="/condition" element={<Conditions />} />
           <Route path="/reinitialisation" element={<Reinitialisation />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
         <Footer />
       </Router>

@@ -15,6 +15,12 @@ import {
   Breadcrumb,
   Toast,
 } from "react-bootstrap";
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: 'http://localhost:5002',
+  withCredentials: true,
+});
 
 const TITLE = "Réinitialisation de Mot de Passe | " + Config.SITE_TITLE;
 const DESC = "Réinitialisation de Mot de Passe ";
@@ -37,28 +43,27 @@ const Reinitialisation = () => {
       set_Validated(true);
     } else {
       set_Validated(true);
-      const emailExists = false; //******Gassouna Change this to true or false *******
 
-      if (emailExists) {
-        setAlert({
-          message:
-            "Nous allons vous envoyer un e-mail contenant le lien de réinitialisation de votre mot de passe.",
-          type: "success",
+      instance.post('/request_reset', { email: form_Data.email })
+        .then((response) => {
+          setAlert({
+            message: response.data.message || "Nous allons vous envoyer un e-mail contenant le lien de réinitialisation de votre mot de passe.",
+            type: "success",
+          });
+          setTimeout(() => {
+            navigate("/connexion");
+          }, 3000);
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.error || "Une erreur s'est produite lors de la réinitialisation.";
+          setAlert({
+            message: errorMessage,
+            type: "error",
+          });
+          setTimeout(() => {
+            setAlert(null);
+          }, 3000);
         });
-        console.log("Alerte de succès affichée.");
-        setTimeout(() => {
-          navigate("/connexion");
-        }, 3000);
-      } else {
-        setAlert({
-          message: "Cette adresse e-mail n'est pas associée à un compte.",
-          type: "error",
-        });
-        console.log("Alerte d'erreur affichée.");
-        setTimeout(() => {
-          setAlert(null);
-        }, 3000);
-      }
     }
   };
 

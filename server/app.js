@@ -56,6 +56,9 @@ app.post("/calculate_net", require('./pages/dec').calculate_net)
 app.post("/contact", require('./pages/contact').send_email)
 app.get("/summary", require('./pages/summary').welcome)
 app.post("/print_doc", require('./pages/summary').print_doc)
+app.post("/request_reset", require('./pages/reset_password').request_reset)
+app.post("/apply_reset", require('./pages/reset_password').apply_reset)
+app.get("/verify_reset_token/:token", require('./pages/reset_password').verify_token)
 
 const port = 5002;
 app.listen(port, ()=> {console.log("server started on port 5002")})

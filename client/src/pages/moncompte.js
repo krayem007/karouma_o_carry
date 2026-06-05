@@ -29,7 +29,7 @@ const TITLE = "Mon Compte | " + Config.SITE_TITLE;
 const DESC = "Mon Compte ";
 const CANONICAL = Config.SITE_DOMAIN + "/moncompte";
 
-const Moncompte = () => {
+const Moncompte = ({ setIsLoggedIn }) => {
   const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
   const data = {
     email: localStorage.getItem("email"),
@@ -90,9 +90,14 @@ const Moncompte = () => {
   }, []);
 
   const [alert, setAlert] = useState(null);
+  const [deleteError, setDeleteError] = useState(false);
   let OldPasswordCheck = true; // ******Gassouna Change this to true or false *******
 
   const handleRemoveItem = () => {
+    if (!form_Data.anpassword) {
+      setDeleteError(true);
+      return;
+    }
     //const res = window.confirm(
     //  "Êtes-vous sûr de vouloir supprimer définitivement votre compte ?"
     //);
@@ -108,6 +113,8 @@ const Moncompte = () => {
         setTimeout(() => {
           setAlert(null);
           instance.post("/logout").then((response) => { console.log(response.data); });
+          localStorage.clear();
+          if (setIsLoggedIn) setIsLoggedIn(false);
           navigate("/");
         }, 3000);
       }
@@ -235,6 +242,7 @@ const Moncompte = () => {
     }));
     set_Validated1(false);
     set_Validated(false);
+    setDeleteError(false);
   };
 
   return (
@@ -659,12 +667,11 @@ const Moncompte = () => {
                         minLength={6}
                         required
                         isInvalid={
-                          validated1 &&
-                          (!OldPasswordCheck || form_Data.anpassword === "")
+                          (validated1 && (!OldPasswordCheck || form_Data.anpassword === "")) || deleteError
                         }
                       />
                       <Form.Control.Feedback type="invalid">
-                        {!OldPasswordCheck && form_Data.anpassword !== ""
+                        {(!OldPasswordCheck && form_Data.anpassword !== "")
                           ? "L'ancien mot de passe que vous avez saisi est incorrect."
                           : "Veuillez entrer votre ancien mot de passe."}
                       </Form.Control.Feedback>

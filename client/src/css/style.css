@@ -482,6 +482,15 @@ div.card {
   cursor: pointer;
 }
 
+.reset-error-title {
+  color: #dc3545 !important;
+}
+
+.reset-verify-msg {
+  margin-top: 100px;
+  text-align: center;
+}
+
 @media (max-width: 1030px) {
 
   #anne,
@@ -986,4 +995,14 @@ form .feedw {
 
 .text {
   color: black !important;
+}
+
+/* Styles for reset password page */
+.token-checking-msg {
+  margin-top: 100px;
+  text-align: center;
+}
+
+.expired-link-title {
+  color: #dc3545 !important;
 }

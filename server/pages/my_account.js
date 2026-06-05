@@ -106,10 +106,10 @@ exports.change_password = (req, res) => {
     }
 
     // Step 3: Hash the new password
-    //const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
 
     // Step 4: Update the password
-    db.query('UPDATE accounts SET password = ? WHERE email = ?', [newPassword, email], (updateErr, updateResult) => {
+    db.query('UPDATE accounts SET password = ? WHERE email = ?', [hashedNewPassword, email], (updateErr, updateResult) => {
       if (updateErr) {
         console.error('Database error:', updateErr);
         return res.status(500).json({ error: 'Failed to update password', pssdate: false });
@@ -127,7 +127,7 @@ exports.delete_account = async (req, res) => {
   }
   const { email, password } = req.body;
   if (password.length === 0) {
-    return res.status(200).json({ message: 'password can not be empty', del: false });
+    return res.status(200).json({ message: 'Veuillez saisir votre mot de passe actuel', del: false });
   }
   console.log("data : ", req.body);
   console.log("emai | password :", email, password);
