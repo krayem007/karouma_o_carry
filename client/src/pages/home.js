@@ -351,7 +351,7 @@ const Home = ({ isLoggedIn }) => {
                         value={nbEnfants}
                         onChange={(e) => setNbEnfants(e.target.value)}
                         min="0"
-                        disabled={chefFamille === 'Non'}
+                        disabled={chefFamille !== 'Oui'}
                       />
                     </Form.Group>
                   </Col>
@@ -365,7 +365,6 @@ const Home = ({ isLoggedIn }) => {
 
                 {(salaireBrut || salaireNet) && (
                   <div className="result-box-container">
-                    <h4>Résultats de l'estimation</h4>
                     <Row>
                       <Col md={6} className="mb-3 mb-md-0">
                         <div className="result-item">
