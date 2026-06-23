@@ -217,6 +217,7 @@ const Gerer = () => {
 
   const handleAddFacture = () => {
     if (isSaisieClicked) {
+      set_Validated(false); // Reset validation when adding a new row
       // Adding a new facture with all necessary fields, including `inputSource`
       setFactures([
         ...factures,
@@ -236,12 +237,14 @@ const Gerer = () => {
 
   const handleAddPaie = () => {
     if (isSaisieClicked) {
+      set_Validated(false); // Reset validation when adding a new row
       setPaie([...paie, {}]);
     }
   };
 
   const handleAddRetenue = () => {
     if (isSaisieClicked) {
+      set_Validated(false); // Reset validation when adding a new row
       setRetenue([
         ...retenue,
         {
@@ -1414,6 +1417,7 @@ const Gerer = () => {
                                         chngFn1(index, {
                                           ...paie[index], // Copy the existing data of the row
                                           chef: e.target.value, // Update the chef field
+                                          enfants: e.target.value !== "Oui" ? "" : paie[index].enfants, // Clear enfants if not Oui
                                         })
                                       }
                                       required
@@ -1452,9 +1456,11 @@ const Gerer = () => {
                                           enfants: e.target.value, // Update the 'enfants' field
                                         })
                                       }
-                                      required
+                                      required={paie[index]?.chef === "Oui"}
+                                      disabled={paie[index]?.chef !== "Oui"}
                                       isInvalid={
                                         validated &&
+                                        paie[index]?.chef === "Oui" &&
                                         (paie[index]?.enfants == null ||
                                           paie[index]?.enfants === "" ||
                                           paie[index].enfants < 0)

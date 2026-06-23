@@ -481,6 +481,25 @@ const Inscription = () => {
               </Form.Group>
             </Col>
           </Row>
+
+          <Row className="main-user-info mb-3">
+            <Col md={12}>
+              <Form.Group className="mb-3">
+                <Form.Check
+                  required
+                  name="cgu"
+                  id="cgu"
+                  label={
+                    <span>
+                      J'accepte les <Link to="/condition" target="_blank">Conditions Générales d'Utilisation</Link>
+                    </span>
+                  }
+                  feedback="Vous devez accepter les conditions générales d'utilisation avant de vous inscrire."
+                  feedbackType="invalid"
+                />
+              </Form.Group>
+            </Col>
+          </Row>
           <div className="boutons">
             <Button variant="primary" type="submit" className="custom-primary">
               Enregistrer

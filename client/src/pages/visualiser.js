@@ -10,6 +10,7 @@ import {
   Container,
   Table,
   Form,
+  Spinner,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -29,6 +30,7 @@ const hiddenStyle = {
 const Visualiser = () => {
   const [rows, setRows] = useState([]);
   const [selectAllRows, setSelectAllRows] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   const navigate = useNavigate(); // Initialize navigate hook
 
   const handleSelectAllRows = () => {
@@ -119,6 +121,9 @@ const print_doc = () => {
 
   const print_doc = async () => {
     const selectedDates = getSelectedDates();
+    if (selectedDates.length === 0) return;
+
+    setIsPrinting(true);
     console.log("🗓️ Selected dates:", selectedDates);
 
     for (const date of selectedDates) {
@@ -147,6 +152,7 @@ const print_doc = () => {
     }
 
     console.log("🎉 All PDFs processed!");
+    setIsPrinting(false);
   };
 
   return (
@@ -323,11 +329,26 @@ const print_doc = () => {
           <div className="boutons">
             <Button
               variant="primary"
-              type="submit"
+              type="button"
               onClick={print_doc}
               className="custom-primary"
+              disabled={isPrinting}
             >
-              Imprimer
+              {isPrinting ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Génération...
+                </>
+              ) : (
+                "Imprimer"
+              )}
             </Button>
           </div>
         </Row>
