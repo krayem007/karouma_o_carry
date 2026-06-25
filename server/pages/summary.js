@@ -226,22 +226,22 @@ exports.print_doc = async (req, res) => {
     tot_irpp_m += html_data.paie[i].irpp_m;
   }
   html_data.tot_irpp_m = tot_irpp_m;
-  let total_brut_type2 = 0;
-  for (let i = 0; i < html_data.paie.length; i++) {
-    if (html_data.paie[i].secteur === "Type 2") {
-      total_brut_type2 += html_data.paie[i].brut;
-    }
-  }
   let total_brut_type1 = 0;
   for (let i = 0; i < html_data.paie.length; i++) {
     if (html_data.paie[i].secteur === "Type 1") {
       total_brut_type1 += html_data.paie[i].brut;
     }
   }
+  let total_brut_type2 = 0;
+  for (let i = 0; i < html_data.paie.length; i++) {
+    if (html_data.paie[i].secteur === "Type 2") {
+      total_brut_type2 += html_data.paie[i].brut;
+    }
+  }
   html_data.total_brut_type2 = total_brut_type2;
-  html_data.total_brut_type2_2 = total_brut_type2 * 0.01;
+  html_data.total_brut_type2_2 = total_brut_type2 * 0.02;
   html_data.total_brut_type1 = total_brut_type1;
-  html_data.total_brut_type1_1 = total_brut_type1 * 0.02;
+  html_data.total_brut_type1_1 = total_brut_type1 * 0.01;
   html_data.total_brut_type_tot =
     html_data.total_brut_type2_2 + html_data.total_brut_type1_1;
   html_data.total_brut_type_PR = html_data.total_brut_type_tot > 0 ? "P" : "R";

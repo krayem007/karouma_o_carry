@@ -212,7 +212,12 @@ function IRPPmensuel(paie) {
 
 function ContributionSocialeSolidaire(paie) {
   const SalaireImposable = Imposable(paie);
-  return (SalaireImposable / 12) * 0.005;
+
+  if (SalaireImposable <= 5000) {
+    return 0;
+  } else {
+    return (SalaireImposable / 12) * 0.005;
+  }
 }
 
 function fc_net(paie) {
@@ -458,8 +463,8 @@ exports.post_dec = async (req, res) => {
       let brut = toSafeNumber(p.salaireBrut);
       let num_kids = toSafeNumber(p.enfants);
 
-      if ("Type 2" == p.typepaie) smm_tfp_part1 = brut / 100;
-      else smm_tfp_part1 = brut / 50;
+      if ("Type 2" == p.typepaie) smm_tfp_part1 = brut / 50;
+      else smm_tfp_part1 = brut / 100;
 
       smm_tfp = smm_tfp + smm_tfp_part1;
       smm_foprolos = smm_foprolos + brut / 100;
@@ -711,9 +716,9 @@ exports.calculate_net = async (req, res) => {
   try {
     const { salaireBrut, chef, enfants } = req.body;
     const paie = {
-       salaireBrut: Number(salaireBrut) || 0,
-       chef: chef || 'Non',
-       enfants: Number(enfants) || 0
+      salaireBrut: Number(salaireBrut) || 0,
+      chef: chef || 'Non',
+      enfants: Number(enfants) || 0
     };
     const net = fc_net(paie);
     return res.status(200).json({ net: net });

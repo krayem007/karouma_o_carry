@@ -30,14 +30,14 @@ const CANONICAL = Config.SITE_DOMAIN + "/connexion";
 
 const Connexion = ({ setIsLoggedIn }) => {
   const [validated, set_Validated] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState("");
   const [form_Data, set_Form_Data] = useState({
     password: "",
     email: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
   let karouma = false;
 
   const submitFn = async (event) => {
