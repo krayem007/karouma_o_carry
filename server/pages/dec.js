@@ -137,18 +137,17 @@ function NetFP(paie) {
 }
 
 function Abattement(paie) {
-  if (paie.chef === "Oui" && paie.enfants === 0) {
+  const enfants = Number(paie.enfants) || 0;
+  if (paie.chef === "Oui" && enfants === 0) {
     return 300;
-  } else if (paie.chef == "Oui" && paie.enfants == 1) {
+  } else if (paie.chef == "Oui" && enfants == 1) {
     return 400;
-  } else if (paie.chef == "Oui" && paie.enfants == 2) {
+  } else if (paie.chef == "Oui" && enfants == 2) {
     return 500;
-  } else if (paie.chef == "Oui" && paie.enfants == 3) {
+  } else if (paie.chef == "Oui" && enfants == 3) {
     return 600;
-  } else if (paie.chef == "Oui" && paie.enfants > 3) {
+  } else if (paie.chef == "Oui" && enfants > 3) {
     return 700;
-  } else if (paie.chef == "Non") {
-    return 0;
   } else {
     return 0;
   }
@@ -291,11 +290,8 @@ exports.post_dec = async (req, res) => {
     }
     const client_id = users[0].id;
     const date = `${req.body.annee}-${req.body.mois.toString().padStart(2, "0")}-01`;
-    let reporttva = 0;
-    if (req.body.ReportTVA === "") {
-      console.log("if 3asba");
-      reporttva = 0;
-    } else {
+    let reporttva = null;
+    if (req.body.ReportTVA !== "" && req.body.ReportTVA != null && req.body.ReportTVA !== undefined) {
       reporttva = Math.max(0, toSafeNumber(req.body.ReportTVA));
     }
     // 2. Check if declaration exists or insert new
@@ -687,10 +683,8 @@ exports.get_dec = async (req, res) => {
     const decls = await dbQuery('SELECT * FROM declarations WHERE client_id=? AND date=?', [client_id, date]);
     if (decls.length === 0) { console.log("gg no dec found"); return res.status(200).json({ message: 'declaration not found', dec: false, not_found: true }); }
     console.log("after foundinfg the dec");
-    let reporttva = 0;
     const decla_id = decls[0].id;
-    if (typeof decls[0].reporttva !== "undefined")
-      reporttva = decls[0].reporttva;
+    let reporttva = decls[0].reporttva ?? null;
     const factures = await dbQuery('SELECT * FROM factures WHERE decla_id=?', [decla_id]);
     const paie = await dbQuery('SELECT * FROM paie WHERE decla_id=?', [decla_id]);
     const retenue = await dbQuery('SELECT * FROM retenue WHERE decla_id=?', [decla_id]);
@@ -716,9 +710,9 @@ exports.calculate_net = async (req, res) => {
   try {
     const { salaireBrut, chef, enfants } = req.body;
     const paie = {
-      salaireBrut: Number(salaireBrut) || 0,
+      salaireBrut: Number(String(salaireBrut).replace(/,/g, '.')) || 0,
       chef: chef || 'Non',
-      enfants: Number(enfants) || 0
+      enfants: enfants === "" || enfants == null ? 0 : Number(enfants)
     };
     const net = fc_net(paie);
     return res.status(200).json({ net: net });

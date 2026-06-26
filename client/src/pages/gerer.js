@@ -94,7 +94,7 @@ const Gerer = () => {
     instance.post("/get_dec", date).then((response) => {
       console.log(" decla found : ", response.data);
       if (response.data.dec == true) {
-        setReportTVA(response.data.send_data.reporttva);
+        setReportTVA(response.data.send_data.reporttva ?? "");
         //handleAddFacture(true, response.data.send_data.factures);
         let fnewRows = [];
         //add factures
@@ -125,7 +125,7 @@ const Gerer = () => {
             Salarier: response.data.send_data.paie[i].salarier,
             typepaie: response.data.send_data.paie[i].secteur,
             chef: response.data.send_data.paie[i].famille,
-            enfants: response.data.send_data.paie[i].num_kids,
+            enfants: response.data.send_data.paie[i].famille === "Oui" ? response.data.send_data.paie[i].num_kids : "",
             salaireBrut: response.data.send_data.paie[i].brut,
             id: response.data.send_data.paie[i].id,
             selected: false,
@@ -331,7 +331,8 @@ const Gerer = () => {
   // Sanitization helpers
   const toSafeNumber = (value) => {
     if (value === null || value === undefined || value === '') return 0;
-    const num = Number(value);
+    const normalized = typeof value === 'string' ? value.replace(/,/g, '.') : value;
+    const num = Number(normalized);
     if (isNaN(num)) return 0;
     return num;
   };
@@ -350,7 +351,8 @@ const Gerer = () => {
 
   // Handle form submission
   const submitFn = async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
+    if (!isSaisieClicked) return;
     const form = event.currentTarget;
 
     if (form.checkValidity() === false) {
@@ -401,7 +403,7 @@ const Gerer = () => {
       // 2. Sanitize Paie
       const sanitizedPaie = (Array.isArray(paie) ? paie : []).map(p => ({
         ...p,
-        enfants: toSafeNumber(p.enfants),
+        enfants: p.enfants === "" || p.enfants == null ? "" : toSafeNumber(p.enfants),
         salaireBrut: toSafeNumber(p.salaireBrut)
       }));
 
@@ -419,7 +421,7 @@ const Gerer = () => {
       const payload = {
         annee,
         mois,
-        ReportTVA: toSafeNumber(ReportTVA),
+        ReportTVA: ReportTVA === "" || ReportTVA == null ? "" : toSafeNumber(ReportTVA),
         factures: sanitizedFactures,
         paie: sanitizedPaie,
         retenue: sanitizedRetenue,
@@ -745,7 +747,7 @@ const Gerer = () => {
               <div className="boutong">
                 <Button
                   variant="primary"
-                  type="submit"
+                  type="button"
                   className="custom-primaryg w-100"
                   onClick={handleSaisie}
                   disabled={!isFormValid}
@@ -996,41 +998,37 @@ const Gerer = () => {
                                     }
                                   />
                                 </td>
-                                <td>
-                                  <Form.Group
-                                    controlId={`TotalHT-facture${index}`}
-                                  >
-                                    <Form.Control
-                                      min="0"
-                                      placeholder="Total HT"
-                                      value={facture.TotalHT}
-                                      step="0.001"
-                                      onChange={(e) =>
-                                        chngFn(
-                                          index,
-                                          {
-                                            ...facture,
-                                            TotalHT: e.target.value,
-                                          },
-                                          "HT",
-                                        )
-                                      }
-                                      onBlur={() => chngFn(index, facture, "HT_BLUR")}
-                                      required
-                                      isInvalid={
-                                        validated &&
-                                        (factures[index]?.TotalHT == null ||
-                                          factures[index].TotalHT <= 0)
-                                      }
-                                    />
-                                    <Form.Control.Feedback
-                                      className="feedback"
-                                      type="invalid"
+                                  <td>
+                                    <Form.Group
+                                      controlId={`TotalHT-facture${index}`}
                                     >
-                                      Veuillez remplir le Total HT
-                                    </Form.Control.Feedback>
-                                  </Form.Group>
-                                </td>
+                                      <Form.Control
+                                        min="0"
+                                        placeholder="Total HT"
+                                        value={facture.TotalHT}
+                                        step="0.001"
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          if (val === "" || parseFloat(val) >= 0) {
+                                            chngFn(index, { ...facture, TotalHT: val }, "HT");
+                                          }
+                                        }}
+                                        onBlur={() => chngFn(index, facture, "HT_BLUR")}
+                                        required
+                                        isInvalid={
+                                          validated &&
+                                          (factures[index]?.TotalHT == null ||
+                                            factures[index].TotalHT <= 0)
+                                        }
+                                      />
+                                      <Form.Control.Feedback
+                                        className="feedback"
+                                        type="invalid"
+                                      >
+                                        Veuillez remplir le Total HT
+                                      </Form.Control.Feedback>
+                                    </Form.Group>
+                                  </td>
                                 <td>
                                   <Form.Group
                                     controlId={`tva-facture-${index}`}
@@ -1076,16 +1074,12 @@ const Gerer = () => {
                                       min="0"
                                       placeholder="Timbre"
                                       value={facture.Timbre}
-                                      onChange={(e) =>
-                                        chngFn(
-                                          index,
-                                          {
-                                            ...facture,
-                                            Timbre: e.target.value,
-                                          },
-                                          "Timbre",
-                                        )
-                                      }
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === "" || parseFloat(val) >= 0) {
+                                          chngFn(index, { ...facture, Timbre: val }, "Timbre");
+                                        }
+                                      }}
                                       required
                                       isInvalid={
                                         validated &&
@@ -1147,50 +1141,52 @@ const Gerer = () => {
                                     />
                                   </Form.Group>
                                 </td>
-                                <td>
-                                  <Form.Group
-                                    controlId={`TauxDC-facture${index}`}
-                                  >
-                                    <Form.Control
-                                      min="0"
-                                      placeholder="Taux DC en %"
-                                      value={facture.TauxDC}
-                                      onChange={(e) =>
-                                        chngFn(
-                                          index,
-                                          {
-                                            ...facture,
-                                            TauxDC: e.target.value,
-                                          },
-                                          "TauxDC",
-                                        )
-                                      }
-                                    />
-                                  </Form.Group>
-                                </td>
-                                <td>
-                                  <Form.Group
-                                    controlId={`MTDC-facture${index}`}
-                                  >
-                                    <Form.Control
-                                      type="number"
-                                      min="0"
-                                      placeholder="Montant DC"
-                                      value={facture.MTDC}
-                                      step="0.001"
-                                      onChange={(e) =>
-                                        chngFn(
-                                          index,
-                                          {
-                                            ...facture,
-                                            MTDC: e.target.value,
-                                          },
-                                          "MTDC",
-                                        )
-                                      }
-                                    />
-                                  </Form.Group>
-                                </td>
+                                  <td>
+                                    <Form.Group
+                                      controlId={`TauxDC-facture${index}`}
+                                    >
+                                      <Form.Control
+                                        type="number"
+                                        min="0"
+                                        step="0.001"
+                                        placeholder="Taux DC en %"
+                                        value={facture.TauxDC}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          if (val === "" || parseFloat(val) >= 0) {
+                                            chngFn(index, { ...facture, TauxDC: val }, "TauxDC");
+                                          }
+                                        }}
+                                        isInvalid={validated && facture.TauxDC < 0}
+                                      />
+                                      <Form.Control.Feedback className="feedback" type="invalid">
+                                        Le taux ne peut pas être négatif
+                                      </Form.Control.Feedback>
+                                    </Form.Group>
+                                  </td>
+                                  <td>
+                                    <Form.Group
+                                      controlId={`MTDC-facture${index}`}
+                                    >
+                                      <Form.Control
+                                        type="number"
+                                        min="0"
+                                        placeholder="Montant DC"
+                                        value={facture.MTDC}
+                                        step="0.001"
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          if (val === "" || parseFloat(val) >= 0) {
+                                            chngFn(index, { ...facture, MTDC: val }, "MTDC");
+                                          }
+                                        }}
+                                        isInvalid={validated && facture.MTDC < 0}
+                                      />
+                                      <Form.Control.Feedback className="feedback" type="invalid">
+                                        Le montant ne peut pas être négatif
+                                      </Form.Control.Feedback>
+                                    </Form.Group>
+                                  </td>
                                 <td>
                                   <Form.Group
                                     controlId={`TotalTTC-facture${index}`}
@@ -1201,16 +1197,12 @@ const Gerer = () => {
                                       placeholder="Total TTC"
                                       value={facture.TotalTTC}
                                       step="0.001"
-                                      onChange={(e) =>
-                                        chngFn(
-                                          index,
-                                          {
-                                            ...facture,
-                                            TotalTTC: e.target.value,
-                                          },
-                                          "TTC",
-                                        )
-                                      }
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === "" || parseFloat(val) >= 0) {
+                                          chngFn(index, { ...facture, TotalTTC: val }, "TTC");
+                                        }
+                                      }}
                                       onBlur={() => chngFn(index, facture, "TTC_BLUR")}
                                       required
                                       isInvalid={
@@ -1449,13 +1441,13 @@ const Gerer = () => {
                                       type="number"
                                       min="0"
                                       placeholder="Nombre d'enfants"
-                                      value={paie[index]?.enfants ?? ""} // Bind the value to the specific row's 'enfants' field
-                                      onChange={(e) =>
-                                        chngFn1(index, {
-                                          ...paie[index], // Copy existing row data
-                                          enfants: e.target.value, // Update the 'enfants' field
-                                        })
-                                      }
+                                      value={paie[index]?.enfants ?? ""}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === "" || parseFloat(val) >= 0) {
+                                          chngFn1(index, { ...paie[index], enfants: val });
+                                        }
+                                      }}
                                       required={paie[index]?.chef === "Oui"}
                                       disabled={paie[index]?.chef !== "Oui"}
                                       isInvalid={
@@ -1481,21 +1473,21 @@ const Gerer = () => {
                                   >
                                     <Form.Control
                                       className="textadj"
-                                      type="number"
-                                      min="0"
+                                      type="text"
+                                      inputMode="decimal"
                                       placeholder="Salaire Brut"
-                                      value={paie[index]?.salaireBrut ?? ""} // Bind to the 'salaireBrut' value for the specific row
-                                      onChange={(e) =>
-                                        chngFn1(index, {
-                                          ...paie[index], // Copy the existing row data
-                                          salaireBrut: e.target.value, // Update the 'salaireBrut' field
-                                        })
-                                      }
+                                      value={paie[index]?.salaireBrut ?? ""}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === "" || parseFloat(val) >= 0) {
+                                          chngFn1(index, { ...paie[index], salaireBrut: val });
+                                        }
+                                      }}
                                       required
                                       isInvalid={
                                         validated &&
                                         (paie[index]?.salaireBrut == null ||
-                                          paie[index].salaireBrut <= 0)
+                                          toSafeNumber(paie[index].salaireBrut) <= 0)
                                       } // Validation: Show feedback if empty
                                     />
                                     <Form.Control.Feedback
@@ -1708,38 +1700,34 @@ const Gerer = () => {
                                   )}
                                 </td>
 
-                                <td>
-                                  <Form.Control
-                                    className="textadj"
-                                    type="number"
-                                    min="0"
-                                    placeholder="Montant HT"
-                                    value={retenue[index]?.montantHT ?? ""}
-                                    step="0.001"
-                                    onChange={(e) =>
-                                      chngFn2(
-                                        index,
-                                        {
-                                          ...retenue[index],
-                                          montantHT: e.target.value,
-                                        },
-                                        "montantHT",
-                                      )
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated &&
-                                      (retenue[index]?.montantHT == null ||
-                                        retenue[index].montantHT <= 0)
-                                    }
-                                  />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
-                                  >
-                                    Veuillez remplir le montant HT
-                                  </Form.Control.Feedback>
-                                </td>
+                                  <td>
+                                    <Form.Control
+                                      className="textadj"
+                                      type="number"
+                                      min="0"
+                                      placeholder="Montant HT"
+                                      value={retenue[index]?.montantHT ?? ""}
+                                      step="0.001"
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === "" || parseFloat(val) >= 0) {
+                                          chngFn2(index, { ...retenue[index], montantHT: val }, "montantHT");
+                                        }
+                                      }}
+                                      required
+                                      isInvalid={
+                                        validated &&
+                                        (retenue[index]?.montantHT == null ||
+                                          retenue[index].montantHT <= 0)
+                                      }
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir le montant HT
+                                    </Form.Control.Feedback>
+                                  </td>
 
                                 <td>
                                   <Form.Select
@@ -1773,38 +1761,34 @@ const Gerer = () => {
                                   </Form.Control.Feedback>
                                 </td>
 
-                                <td>
-                                  <Form.Control
-                                    className="textadj"
-                                    type="number"
-                                    min="0"
-                                    placeholder="Montant TTC"
-                                    value={retenue[index]?.montantTTC ?? ""}
-                                    step="0.001"
-                                    onChange={(e) =>
-                                      chngFn2(
-                                        index,
-                                        {
-                                          ...retenue[index],
-                                          montantTTC: e.target.value,
-                                        },
-                                        "montantTTC",
-                                      )
-                                    }
-                                    required
-                                    isInvalid={
-                                      validated &&
-                                      (retenue[index]?.montantTTC == null ||
-                                        retenue[index].montantTTC <= 0)
-                                    }
-                                  />
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
-                                  >
-                                    Veuillez remplir le montant TTC
-                                  </Form.Control.Feedback>
-                                </td>
+                                  <td>
+                                    <Form.Control
+                                      className="textadj"
+                                      type="number"
+                                      min="0"
+                                      placeholder="Montant TTC"
+                                      value={retenue[index]?.montantTTC ?? ""}
+                                      step="0.001"
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === "" || parseFloat(val) >= 0) {
+                                          chngFn2(index, { ...retenue[index], montantTTC: val }, "montantTTC");
+                                        }
+                                      }}
+                                      required
+                                      isInvalid={
+                                        validated &&
+                                        (retenue[index]?.montantTTC == null ||
+                                          retenue[index].montantTTC <= 0)
+                                      }
+                                    />
+                                    <Form.Control.Feedback
+                                      className="feedback"
+                                      type="invalid"
+                                    >
+                                      Veuillez remplir le montant TTC
+                                    </Form.Control.Feedback>
+                                  </td>
                                 <td style={hiddenStyle}>
                                   <Form.Group
                                     className="textadj"

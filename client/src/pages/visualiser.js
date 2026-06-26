@@ -61,15 +61,15 @@ const Visualiser = () => {
           fnewRows.push({
             mois: month,
             Anne: year,
-            totalRS: response.data.summary[i].ttrs,
-            tfp: response.data.summary[i].tfp,
-            foprolos: response.data.summary[i].foprolos,
-            droitConsommation: response.data.summary[i].droit,
-            fodec: response.data.summary[i].fodec,
-            tva: response.data.summary[i].tva,
-            droitTimbreFiscal: response.data.summary[i].dtf,
-            tcl: response.data.summary[i].tcl,
-            totalDeclarer: response.data.summary[i].ttdec,
+            totalRS: (Number(response.data.summary[i].ttrs) || 0).toFixed(3),
+            tfp: (Number(response.data.summary[i].tfp) || 0).toFixed(3),
+            foprolos: (Number(response.data.summary[i].foprolos) || 0).toFixed(3),
+            droitConsommation: (Number(response.data.summary[i].droit) || 0).toFixed(3),
+            fodec: (Number(response.data.summary[i].fodec) || 0).toFixed(3),
+            tva: (Number(response.data.summary[i].tva) || 0).toFixed(3),
+            droitTimbreFiscal: (Number(response.data.summary[i].dtf) || 0).toFixed(3),
+            tcl: (Number(response.data.summary[i].tcl) || 0).toFixed(3),
+            totalDeclarer: (Number(response.data.summary[i].ttdec) || 0).toFixed(3),
             selected: false,
           });
         }
@@ -175,7 +175,7 @@ const print_doc = () => {
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
       </Helmet>
-      <Container className="visualiser-page">
+      <Container className="visualiser-page" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter") print_doc(); }}>
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>

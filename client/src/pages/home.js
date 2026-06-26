@@ -271,7 +271,7 @@ const Home = ({ isLoggedIn }) => {
 
               {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
 
-              <Form className="text-start">
+              <Form className="text-start" onSubmit={(e) => { e.preventDefault(); handleCalculate(); }}>
                 <Row className="justify-content-center">
                   <Col md={6}>
                     <Form.Group className="mb-3 text-center">

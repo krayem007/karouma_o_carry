@@ -721,8 +721,8 @@ const Gerer = () => {
                                 >
                                   <Form.Control
                                     className="textadj"
-                                    type="number"
-                                    min="0"
+                                    type="text"
+                                    inputMode="decimal"
                                     placeholder="Salaire Brut"
                                     value={paie[index]?.salaireBrut || ""} // Bind to the 'salaireBrut' value for the specific row
                                     onChange={(e) =>
@@ -735,7 +735,7 @@ const Gerer = () => {
                                     isInvalid={
                                       validated &&
                                       (paie[index]?.salaireBrut == null ||
-                                        paie[index].salaireBrut <= 0)
+                                        Number(String(paie[index].salaireBrut).replace(/,/g, '.')) <= 0)
                                     } // Validation: Show feedback if empty
                                   />
                                   <Form.Control.Feedback
