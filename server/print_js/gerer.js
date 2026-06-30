@@ -111,8 +111,35 @@ const Gerer = () => {
 
     if (form.checkValidity() === false) {
       event.stopPropagation();
-    } else {
-      setAlert({
+      set_Validated(true);
+      return;
+    }
+
+    // Bloquer si un champ obligatoire est à 0
+    let hasInvalidZero = false;
+
+    (Array.isArray(factures) ? factures : []).forEach(f => {
+      if (f.TotalHT !== undefined && f.TotalHT !== "" && f.TotalHT != null && Number(String(f.TotalHT).replace(/,/g, ".")) <= 0) hasInvalidZero = true;
+      if (f.TotalTTC !== undefined && f.TotalTTC !== "" && f.TotalTTC != null && Number(String(f.TotalTTC).replace(/,/g, ".")) <= 0) hasInvalidZero = true;
+      if (f.Timbre !== undefined && f.Timbre !== "" && f.Timbre != null && Number(String(f.Timbre).replace(/,/g, ".")) <= 0) hasInvalidZero = true;
+    });
+
+    (Array.isArray(paie) ? paie : []).forEach(p => {
+      if (p.salaireBrut !== undefined && p.salaireBrut !== "" && p.salaireBrut != null && Number(String(p.salaireBrut).replace(/,/g, ".")) <= 0) hasInvalidZero = true;
+    });
+
+    (Array.isArray(retenue) ? retenue : []).forEach(r => {
+      if (r.montantHT !== undefined && r.montantHT !== "" && r.montantHT != null && Number(String(r.montantHT).replace(/,/g, ".")) <= 0) hasInvalidZero = true;
+      if (r.montantTTC !== undefined && r.montantTTC !== "" && r.montantTTC != null && Number(String(r.montantTTC).replace(/,/g, ".")) <= 0) hasInvalidZero = true;
+    });
+
+    if (hasInvalidZero) {
+      event.stopPropagation();
+      set_Validated(true);
+      return;
+    }
+
+    setAlert({
         message:
           "Vous avez saisi vos données. Vous pouvez maintenant imprimer votre déclaration.",
         type: "success",
@@ -122,7 +149,6 @@ const Gerer = () => {
       setTimeout(() => {
         navigate("/visualiser");
       }, 3000);
-    }
 
     set_Validated(true);
   };
@@ -458,28 +484,33 @@ const Gerer = () => {
                                 >
                                   <Form.Control
                                     className="textadj"
-                                    type="number"
-                                    min="0"
+                                    type="text"
+                                    inputMode="decimal"
                                     placeholder="Timbre"
                                     value={facture.Timbre}
-                                    onChange={(e) =>
-                                      chngFn(index, {
-                                        ...facture,
-                                        Timbre: e.target.value,
-                                      })
-                                    }
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      const normalized = val.replace(/,/g, ".");
+                                      if (val === "" || (!isNaN(Number(normalized)) && Number(normalized) >= 0)) {
+                                        chngFn(index, {
+                                          ...facture,
+                                          Timbre: val,
+                                        });
+                                      }
+                                    }}
                                     required
                                     isInvalid={
                                       validated &&
-                                      (!factures[index]?.Timbre ||
-                                        factures[index].Timbre < 0)
+                                      (factures[index]?.Timbre == null ||
+                                        factures[index]?.Timbre === "" ||
+                                        Number(String(factures[index]?.Timbre || "").replace(/,/g, ".")) <= 0)
                                     }
                                   />
                                   <Form.Control.Feedback
                                     className="feedback"
                                     type="invalid"
                                   >
-                                    Veuillez remplir le montant du Timbre
+                                    Le montant du timbre ne doit pas être nul
                                   </Form.Control.Feedback>
                                 </Form.Group>
                               </td>

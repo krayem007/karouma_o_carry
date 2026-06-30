@@ -107,10 +107,10 @@ const Gerer = () => {
             TotalHT: response.data.send_data.factures[i].ht,
             tva: response.data.send_data.factures[i].tva,
             Timbre: response.data.send_data.factures[i].timber,
-            FODEC: response.data.send_data.factures[i].fodec,
-            MTFODEC: response.data.send_data.factures[i].mtfodec,
-            TauxDC: response.data.send_data.factures[i].tauxdc,
-            MTDC: response.data.send_data.factures[i].mtdc,
+            FODEC: response.data.send_data.factures[i].fodec || "",
+            MTFODEC: response.data.send_data.factures[i].mtfodec || "",
+            TauxDC: response.data.send_data.factures[i].tauxdc || "",
+            MTDC: response.data.send_data.factures[i].mtdc || "",
             TotalTTC: response.data.send_data.factures[i].ttc,
             id: response.data.send_data.factures[i].id,
             selected: false,
@@ -361,6 +361,32 @@ const Gerer = () => {
       return;
     }
 
+    // Bloquer si un champ obligatoire est à 0
+    let hasInvalidZero = false;
+
+    (Array.isArray(factures) ? factures : []).forEach(f => {
+      if (f.TotalHT !== undefined && f.TotalHT !== "" && f.TotalHT != null && toSafeNumber(f.TotalHT) <= 0) hasInvalidZero = true;
+      if (f.TotalTTC !== undefined && f.TotalTTC !== "" && f.TotalTTC != null && toSafeNumber(f.TotalTTC) <= 0) hasInvalidZero = true;
+      if (f.Timbre !== undefined && f.Timbre !== "" && f.Timbre != null && toSafeNumber(f.Timbre) <= 0) hasInvalidZero = true;
+      if (f.TauxDC !== undefined && f.TauxDC !== "" && f.TauxDC != null && toSafeNumber(f.TauxDC) <= 0) hasInvalidZero = true;
+      if (f.MTDC !== undefined && f.MTDC !== "" && f.MTDC != null && toSafeNumber(f.MTDC) <= 0) hasInvalidZero = true;
+    });
+
+    (Array.isArray(paie) ? paie : []).forEach(p => {
+      if (p.salaireBrut !== undefined && p.salaireBrut !== "" && p.salaireBrut != null && toSafeNumber(p.salaireBrut) <= 0) hasInvalidZero = true;
+    });
+
+    (Array.isArray(retenue) ? retenue : []).forEach(r => {
+      if (r.montantHT !== undefined && r.montantHT !== "" && r.montantHT != null && toSafeNumber(r.montantHT) <= 0) hasInvalidZero = true;
+      if (r.montantTTC !== undefined && r.montantTTC !== "" && r.montantTTC != null && toSafeNumber(r.montantTTC) <= 0) hasInvalidZero = true;
+    });
+
+    if (hasInvalidZero) {
+      event.stopPropagation();
+      set_Validated(true);
+      return;
+    }
+
     try {
       // 1. Sanitize Factures
       const sanitizedFactures = (Array.isArray(factures) ? factures : []).map(f => {
@@ -483,7 +509,12 @@ const Gerer = () => {
   };
 
   const chngFn = (index, updatedFacture, fieldChanged) => {
-    const parseNumber = (val) => isNaN(Number(val)) || val == null || val === "" ? 0 : Number(val);
+    const parseNumber = (val) => {
+      if (val == null || val === "") return 0;
+      const normalized = typeof val === "string" ? val.replace(/,/g, ".") : val;
+      const num = Number(normalized);
+      return isNaN(num) ? 0 : num;
+    };
     const newFactures = [...factures];
     const currentFacture = { ...updatedFacture };
 
@@ -1070,28 +1101,29 @@ const Gerer = () => {
                                   >
                                     <Form.Control
                                       className="textadj"
-                                      type="number"
-                                      min="0"
+                                      type="text"
+                                      inputMode="decimal"
                                       placeholder="Timbre"
                                       value={facture.Timbre}
                                       onChange={(e) => {
                                         const val = e.target.value;
-                                        if (val === "" || parseFloat(val) >= 0) {
+                                        const normalized = val.replace(/,/g, ".");
+                                        if (val === "" || !isNaN(Number(normalized)) && Number(normalized) >= 0) {
                                           chngFn(index, { ...facture, Timbre: val }, "Timbre");
                                         }
                                       }}
                                       required
                                       isInvalid={
                                         validated &&
-                                        (!factures[index]?.Timbre ||
-                                          factures[index].Timbre < 0)
+                                        (factures[index]?.Timbre == null ||
+                                          toSafeNumber(factures[index]?.Timbre) <= 0)
                                       }
                                     />
                                     <Form.Control.Feedback
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Veuillez remplir le montant du Timbre
+                                      Le montant du timbre ne doit pas être nul
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1157,10 +1189,15 @@ const Gerer = () => {
                                           chngFn(index, { ...facture, TauxDC: val }, "TauxDC");
                                         }
                                       }}
-                                      isInvalid={validated && facture.TauxDC < 0}
+                                      isInvalid={
+                                        validated &&
+                                        facture.TauxDC !== "" &&
+                                        facture.TauxDC != null &&
+                                        toSafeNumber(facture.TauxDC) <= 0
+                                      }
                                     />
                                     <Form.Control.Feedback className="feedback" type="invalid">
-                                      Le taux ne peut pas être négatif
+                                      Le taux ne doit pas être nul
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1180,10 +1217,15 @@ const Gerer = () => {
                                           chngFn(index, { ...facture, MTDC: val }, "MTDC");
                                         }
                                       }}
-                                      isInvalid={validated && facture.MTDC < 0}
+                                      isInvalid={
+                                        validated &&
+                                        facture.MTDC !== "" &&
+                                        facture.MTDC != null &&
+                                        toSafeNumber(facture.MTDC) <= 0
+                                      }
                                     />
                                     <Form.Control.Feedback className="feedback" type="invalid">
-                                      Le montant ne peut pas être négatif
+                                      Le montant ne doit pas être nul
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
