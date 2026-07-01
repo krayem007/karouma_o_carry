@@ -550,7 +550,7 @@ exports.print_doc = async (req, res) => {
   } else {
     html_data.X_tcl = "";
   }
-  if (html_data.tot_ht_vente_t != 0 || html_data.total_tva_retenue_achat != 0) {
+  if (html_data.tot_ht_vente_t != 0 || html_data.tot_tva_achat != 0) {
     html_data.X_tva = "X";
   } else {
     html_data.X_tva = "";

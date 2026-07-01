@@ -54,6 +54,7 @@ function fc_ht_vente(facture) {
 }
 
 function fc_tva_vente(facture) {
+  if (facture.Type !== "Facture de vente") return 0;
   return (
     ((toSafeNumber(fc_ht_vente(facture)) + toSafeNumber(facture.MTFODEC) + toSafeNumber(facture.MTDC)) *
       toSafeNumber(facture.tva)) /
@@ -75,16 +76,14 @@ function fc_ht_chat(facture) {
   return 0;
 }
 function fc_tva_achat(facture) {
-  if (facture.Type === "Facture d'achat") {
-    return (
-      ((toSafeNumber(facture.TotalHT) +
-        toSafeNumber(facture.MTFODEC) +
-        toSafeNumber(facture.MTDC)) *
-        toSafeNumber(facture.tva)) /
-      100
-    );
-  }
-  return 0;
+  if (facture.Type !== "Facture d'achat") return 0;
+  return (
+    ((toSafeNumber(fc_ht_chat(facture)) +
+      toSafeNumber(facture.MTFODEC) +
+      toSafeNumber(facture.MTDC)) *
+      toSafeNumber(facture.tva)) /
+    100
+  );
 }
 
 function getTauxRetenue1000(facture, default_nature, default_regime) {
