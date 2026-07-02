@@ -1056,7 +1056,9 @@ const Gerer = () => {
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Veuillez remplir le Total HT
+                                      {factures[index]?.TotalHT == null || factures[index]?.TotalHT === ""
+                                        ? "Veuillez remplir le Total HT"
+                                        : "Le Total HT ne doit pas être nul"}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1123,7 +1125,9 @@ const Gerer = () => {
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Le montant du timbre ne doit pas être nul
+                                      {factures[index]?.Timbre == null || factures[index]?.Timbre === ""
+                                        ? "Veuillez remplir le montant de timbre"
+                                        : "Le montant du timbre ne doit pas être nul"}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1257,7 +1261,9 @@ const Gerer = () => {
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Veuillez remplir le Total TTC
+                                      {factures[index]?.TotalTTC == null || factures[index]?.TotalTTC === ""
+                                        ? "Veuillez remplir le Total TTC"
+                                        : "Le Total TTC ne doit pas être nul"}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1536,7 +1542,9 @@ const Gerer = () => {
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Veuillez remplir le salaire Brut
+                                      {paie[index]?.salaireBrut == null || paie[index]?.salaireBrut === ""
+                                        ? "Veuillez remplir le salaire Brut"
+                                        : "Le salaire brut ne doit pas être nul"}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1767,7 +1775,9 @@ const Gerer = () => {
                                     className="feedback"
                                     type="invalid"
                                   >
-                                    Veuillez remplir le montant HT
+                                    {retenue[index]?.montantHT == null || retenue[index]?.montantHT === ""
+                                      ? "Veuillez remplir le montant HT"
+                                      : "Le montant HT ne doit pas être nul"}
                                   </Form.Control.Feedback>
                                 </td>
 
@@ -1828,7 +1838,9 @@ const Gerer = () => {
                                     className="feedback"
                                     type="invalid"
                                   >
-                                    Veuillez remplir le montant TTC
+                                    {retenue[index]?.montantTTC == null || retenue[index]?.montantTTC === ""
+                                      ? "Veuillez remplir le montant TTC"
+                                      : "Le montant TTC ne doit pas être nul"}
                                   </Form.Control.Feedback>
                                 </td>
                                 <td style={hiddenStyle}>
