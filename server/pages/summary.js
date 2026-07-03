@@ -36,9 +36,9 @@ handlebars.registerHelper("fr", function (value) {
 
 
 function getTauxRetenue1000(facture, default_nature, default_regime) {
-  // On utilise les données de la facture si présentes, sinon les valeurs par défaut passées
-  const nature = facture.nature_entite || default_nature;
-  const regime = facture.details_regime || default_regime;
+  // Priorité aux données du bénéficiaire saisies dans la facture, sinon profil client
+  const nature = facture.nature_beneficiaire || default_nature;
+  const regime = facture.regime_beneficiaire || default_regime;
 
   if (nature === 'PP') return 0.015;
   if (nature === 'PM') {
@@ -52,6 +52,8 @@ function getTauxRetenue1000(facture, default_nature, default_regime) {
 function calculateRetenueAchat1000(facture, default_nature, default_regime) {
   const ttc = Number(facture.ttc);
   if (facture.type === "Facture d'achat" && !isNaN(ttc) && ttc >= 1000) {
+    const mtManuel = facture.montant_retenue_calcule;
+    if (mtManuel != null && mtManuel !== '') return Number(mtManuel);
     return ttc * getTauxRetenue1000(facture, default_nature, default_regime);
   }
   return 0;
@@ -226,18 +228,13 @@ exports.print_doc = async (req, res) => {
     tot_irpp_m += html_data.paie[i].irpp_m;
   }
   html_data.tot_irpp_m = tot_irpp_m;
-  let total_brut_type1 = 0;
+  const secteur = html_data.secteur || 'Type 2';
+  let total_brut = 0;
   for (let i = 0; i < html_data.paie.length; i++) {
-    if (html_data.paie[i].secteur === "Type 1") {
-      total_brut_type1 += html_data.paie[i].brut;
-    }
+    total_brut += html_data.paie[i].brut;
   }
-  let total_brut_type2 = 0;
-  for (let i = 0; i < html_data.paie.length; i++) {
-    if (html_data.paie[i].secteur === "Type 2") {
-      total_brut_type2 += html_data.paie[i].brut;
-    }
-  }
+  let total_brut_type1 = secteur === "Type 1" ? total_brut : 0;
+  let total_brut_type2 = secteur === "Type 2" ? total_brut : 0;
   html_data.total_brut_type2 = total_brut_type2;
   html_data.total_brut_type2_2 = total_brut_type2 * 0.02;
   html_data.total_brut_type1 = total_brut_type1;
@@ -458,7 +455,7 @@ exports.print_doc = async (req, res) => {
 
   for (let i = 0; i < html_data.factures.length; i++) {
     const f = html_data.factures[i];
-    // On passe nature_entite et details_regime du client comme secours pour le test
+    // On passe la nature et le régime du client comme secours (priorité aux données bénéficiaire de la facture)
     f.retenue_1000 = calculateRetenueAchat1000(f, html_data.nature_entite, html_data.details_regime);
     tot_retenue_1000 += f.retenue_1000;
 
@@ -467,7 +464,7 @@ exports.print_doc = async (req, res) => {
       // On détermine le taux effectif utilisé
       const taux = getTauxRetenue1000(f, html_data.nature_entite, html_data.details_regime);
 
-      const nature_eff = f.nature_entite || html_data.nature_entite;
+      const nature_eff = f.nature_beneficiaire || html_data.nature_entite;
       if (nature_eff === 'PP') {
         tot_retenue_1000_pp += f.retenue_1000;
         tot_achat_ttc_1000_pp += ttc;
@@ -504,6 +501,10 @@ exports.print_doc = async (req, res) => {
   // Cas PM + IS 10% (0,5%)
   html_data.tot_retenue_1000_pm_05 = tot_retenue_1000_pm_05;
   html_data.tot_achat_ttc_1000_pm_05 = tot_achat_ttc_1000_pm_05;
+
+  // Combined 1.5% (PP + PM-15)
+  html_data.tot_retenue_1000_1_5 = tot_retenue_1000_pp + tot_retenue_1000_pm_15;
+  html_data.tot_achat_ttc_1000_1_5 = tot_achat_ttc_1000_pp + tot_achat_ttc_1000_pm_15;
 
   html_data.mouwared =
     html_data.tot_irpp_m + html_data.total_css + html_data.tot_loyer_val + html_data.tot_honoraires_pp_forfaitaire_val + html_data.tot_honoraires_pp_reel_pm_val + html_data.tot_retenue_1000;

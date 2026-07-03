@@ -79,6 +79,7 @@ const Connexion = ({ setIsLoggedIn }) => {
           localStorage.setItem("cessation_annee", date.getFullYear());
           localStorage.setItem("nature_entite", response.data.user_data.nature_entite || "");
           localStorage.setItem("details_regime", response.data.user_data.details_regime || "");
+          localStorage.setItem("secteur", response.data.user_data.secteur || "");
           setIsLoggedIn(true);
           navigate("/welcome");
         }

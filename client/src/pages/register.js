@@ -30,6 +30,7 @@ const Inscription = () => {
     email: "",
     nature_entite: "",
     details_regime: "",
+    secteur: "",
   });
   const [alert, setAlert] = useState({ message: "", type: "" });
 
@@ -57,7 +58,8 @@ const Inscription = () => {
         cessation_mois: form_Data.cessation_mois,
         cessation_annee: form_Data.cessation_annee,
         nature_entite: form_Data.nature_entite,
-        details_regime: form_Data.details_regime
+        details_regime: form_Data.details_regime,
+        secteur: form_Data.secteur
       };
       axios.post("http://localhost:5002/register", data).then((response) => {
         console.log("[gg] register data send to the server");
@@ -383,6 +385,21 @@ const Inscription = () => {
                 </Form.Group>
               </Col>
             )}
+          </Row>
+          <Row className="main-user-info">
+            <Col md={6}>
+              <Form.Group controlId="secteur" className="form-group required">
+                <Form.Label className="control-label">Secteur d'activité :</Form.Label>
+                <Form.Select name="secteur" value={form_Data.secteur} onChange={chngFn} required>
+                  <option value="">Sélectionnez le secteur...</option>
+                  <option value="Type 1">Industriel</option>
+                  <option value="Type 2">Autre</option>
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  Veuillez sélectionner le secteur d'activité.
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
           </Row>
 
           <div className="section_title">Identification :</div>

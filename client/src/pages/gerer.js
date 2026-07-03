@@ -112,6 +112,9 @@ const Gerer = () => {
             TauxDC: response.data.send_data.factures[i].tauxdc || "",
             MTDC: response.data.send_data.factures[i].mtdc || "",
             TotalTTC: response.data.send_data.factures[i].ttc,
+            natureBeneficiaire: response.data.send_data.factures[i].natureBeneficiaire || "",
+            regimeBeneficiaire: response.data.send_data.factures[i].regimeBeneficiaire || "",
+            montantRetenueCalcule: response.data.send_data.factures[i].montantRetenueCalcule ?? "",
             id: response.data.send_data.factures[i].id,
             selected: false,
           });
@@ -123,7 +126,6 @@ const Gerer = () => {
         for (let i = 0; i < response.data.send_data.paie.length; i++) {
           pnewRows.push({
             Salarier: response.data.send_data.paie[i].salarier,
-            typepaie: response.data.send_data.paie[i].secteur,
             chef: response.data.send_data.paie[i].famille,
             enfants: response.data.send_data.paie[i].famille === "Oui" ? response.data.send_data.paie[i].num_kids : "",
             salaireBrut: response.data.send_data.paie[i].brut,
@@ -228,6 +230,9 @@ const Gerer = () => {
           TotalTTC: "",
           Timbre: "",
           tva: "",
+          natureBeneficiaire: "",
+          regimeBeneficiaire: "",
+          montantRetenueCalcule: "",
           selected: false,
           inputSource: null, // Default value, will be set when the user starts typing
         },
@@ -690,6 +695,30 @@ const Gerer = () => {
     return tvaString / 100;
   };
 
+  const getRetenueTaux1000 = (nature, regime) => {
+    if (nature === 'PP') return 0.015;
+    if (nature === 'PM') {
+      if (regime === 'IS_10') return 0.005;
+      if (regime === 'IS_20') return 0.010;
+      return 0.015;
+    }
+    return 0;
+  };
+
+  const getMontantRetenueCalcule = (facture) => {
+    const ttc = parseFloat(facture.TotalTTC) || 0;
+    if (facture.Type === "Facture d'achat" && ttc >= 1000 && facture.natureBeneficiaire && facture.regimeBeneficiaire) {
+      const taux = getRetenueTaux1000(facture.natureBeneficiaire, facture.regimeBeneficiaire);
+      return (ttc * taux).toFixed(3);
+    }
+    return "";
+  };
+
+  const showRetenueColumns = (facture) => {
+    const ttc = parseFloat(facture.TotalTTC) || 0;
+    return facture.Type === "Facture d'achat" && ttc >= 1000;
+  };
+
   useEffect(() => {
     const openedByData = getOpenedAccordions();
 
@@ -884,6 +913,15 @@ const Gerer = () => {
                             <th className="thmt">
                               Total TTC <span className="text-danger">*</span>
                             </th>
+                            <th className="thmt" style={{ whiteSpace: 'nowrap' }}>
+                              Nature Bénéficiaire
+                            </th>
+                            <th className="thmt" style={{ whiteSpace: 'nowrap' }}>
+                              Régime Bénéficiaire
+                            </th>
+                            <th className="thmt" style={{ whiteSpace: 'nowrap' }}>
+                              Montant Retenue
+                            </th>
                             <th style={hiddenStyle}>id</th>
                           </tr>
                         </thead>
@@ -891,7 +929,7 @@ const Gerer = () => {
                           {factures.length === 0 ? (
                             <tr>
                               <td
-                                colSpan={15}
+                                colSpan={18}
                                 className="text-start text-muted py-3 ps-5"
                               >
                                 La table des factures est vide
@@ -1268,6 +1306,87 @@ const Gerer = () => {
                                   </Form.Group>
                                 </td>
 
+                                {showRetenueColumns(facture) && (
+                                  <>
+                                    <td style={{ minWidth: '140px' }}>
+                                      <Form.Select
+                                        aria-label="Nature Bénéficiaire"
+                                        value={facture.natureBeneficiaire || ""}
+                                        onChange={(e) => {
+                                          const newNature = e.target.value;
+                                          const updatedFacture = {
+                                            ...facture,
+                                            natureBeneficiaire: newNature,
+                                            regimeBeneficiaire: newNature !== facture.natureBeneficiaire ? "" : facture.regimeBeneficiaire,
+                                          };
+                                          updatedFacture.montantRetenueCalcule = getMontantRetenueCalcule(updatedFacture);
+                                          chngFn(index, updatedFacture);
+                                        }}
+                                        required
+                                        isInvalid={validated && !facture.natureBeneficiaire}
+                                      >
+                                        <option value="">Nature Bénéficiaire</option>
+                                        <option value="PM">Société / Personne Morale</option>
+                                        <option value="PP">Indépendant / Personne Physique</option>
+                                      </Form.Select>
+                                      <Form.Control.Feedback className="feedback" type="invalid">
+                                        Veuillez sélectionner la nature
+                                      </Form.Control.Feedback>
+                                    </td>
+                                    <td style={{ minWidth: '140px' }}>
+                                      {facture.natureBeneficiaire && (
+                                        <Form.Select
+                                          aria-label="Régime Bénéficiaire"
+                                          value={facture.regimeBeneficiaire || ""}
+                                          onChange={(e) => {
+                                            const updatedFacture = {
+                                              ...facture,
+                                              regimeBeneficiaire: e.target.value,
+                                            };
+                                            updatedFacture.montantRetenueCalcule = getMontantRetenueCalcule(updatedFacture);
+                                            chngFn(index, updatedFacture);
+                                          }}
+                                          required
+                                          isInvalid={validated && !facture.regimeBeneficiaire}
+                                        >
+                                          <option value="">Régime Bénéficiaire</option>
+                                          {facture.natureBeneficiaire === 'PM' && (
+                                            <>
+                                              <option value="IS_10">IS 10%</option>
+                                              <option value="IS_20">IS 20%</option>
+                                              <option value="IS_35">IS 35%</option>
+                                            </>
+                                          )}
+                                          {facture.natureBeneficiaire === 'PP' && (
+                                            <>
+                                              <option value="REEL_3">Régime Réel</option>
+                                              <option value="FORFAITAIRE_10">Régime Forfaitaire</option>
+                                            </>
+                                          )}
+                                        </Form.Select>
+                                      )}
+                                      <Form.Control.Feedback className="feedback" type="invalid">
+                                        Veuillez sélectionner le régime
+                                      </Form.Control.Feedback>
+                                    </td>
+                                    <td style={{ minWidth: '120px' }}>
+                                      <Form.Control
+                                        type="number"
+                                        min="0"
+                                        step="0.001"
+                                        placeholder="Montant Retenue"
+                                        value={facture.montantRetenueCalcule ?? ""}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          if (val === "" || parseFloat(val) >= 0) {
+                                            chngFn(index, { ...facture, montantRetenueCalcule: val });
+                                          }
+                                        }}
+                                      />
+                                    </td>
+                                  </>
+                                )}
+
                                 <td style={hiddenStyle}>
                                   <Form.Group
                                     className="textadj"
@@ -1347,10 +1466,6 @@ const Gerer = () => {
                               Salarier <span className="text-danger">*</span>
                             </th>
                             <th id="custome_th">
-                              Secteur d'activité{" "}
-                              <span className="text-danger">*</span>
-                            </th>
-                            <th id="custome_th">
                               Chef de famille{" "}
                               <span className="text-danger">*</span>
                             </th>
@@ -1369,7 +1484,7 @@ const Gerer = () => {
                           {paie.length === 0 ? (
                             <tr>
                               <td
-                                colSpan={6}
+                                colSpan={5}
                                 className="text-start text-muted py-3 ps-5"
                               >
                                 La table des paies est vide
@@ -1415,37 +1530,7 @@ const Gerer = () => {
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
-                                <td>
-                                  <Form.Group controlId={`type-paie-${index}`}>
-                                    <Form.Select
-                                      aria-label="Secteur d'activité"
-                                      className="form-select"
-                                      value={paie[index]?.typepaie ?? ""} // Ensure correct access to the row's value
-                                      onChange={(e) =>
-                                        chngFn1(index, {
-                                          ...paie[index], // Copy the existing data of the row
-                                          typepaie: e.target.value, // Update only the typepaie field
-                                        })
-                                      }
-                                      required
-                                      isInvalid={
-                                        validated && !paie[index]?.typepaie
-                                      } // Check the specific row's typepaie field for validation
-                                    >
-                                      <option value="">
-                                        Secteur d'activité
-                                      </option>
-                                      <option value="Type 1">Industriel</option>
-                                      <option value="Type 2">Autre</option>
-                                    </Form.Select>
-                                    <Form.Control.Feedback
-                                      className="feedback"
-                                      type="invalid"
-                                    >
-                                      Veuillez sélectionner le type d'activité
-                                    </Form.Control.Feedback>
-                                  </Form.Group>
-                                </td>
+
 
                                 <td>
                                   <Form.Group controlId={`chef-paie-${index}`}>
@@ -1714,8 +1799,8 @@ const Gerer = () => {
                                         isInvalid={validated && !retenue[index]?.natureBeneficiaire}
                                       >
                                         <option value="">Nature Bénéficiaire</option>
-                                        <option value="PP">Personne Physique (PP)</option>
-                                        <option value="PM">Personne Morale (PM)</option>
+                                        <option value="PP">Personne Physique</option>
+                                        <option value="PM">Société / Personne Morale</option>
                                       </Form.Select>
                                       <Form.Control.Feedback className="feedback" type="invalid">
                                         Veuillez sélectionner la nature du bénéficiaire

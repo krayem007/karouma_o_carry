@@ -46,7 +46,8 @@ const Moncompte = ({ setIsLoggedIn }) => {
     cessation_mois: localStorage.getItem("cessation_mois"),
     cessation_annee: localStorage.getItem("cessation_annee"),
     nature_entite: localStorage.getItem("nature_entite") || "",
-    details_regime: localStorage.getItem("details_regime") || ""
+    details_regime: localStorage.getItem("details_regime") || "",
+    secteur: localStorage.getItem("secteur") || ""
   };
   console.log("data : ", data);
   const [validated, set_Validated] = useState(false);
@@ -70,6 +71,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
     cessation_jour: data.cessation_jour,
     nature_entite: data.nature_entite,
     details_regime: data.details_regime,
+    secteur: data.secteur,
   });
 
   console.log("form_data: ", form_Data)
@@ -151,6 +153,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         activite_date: form_Data.cessation_annee.toString() + '-' + form_Data.cessation_mois.toString() + '-' + form_Data.cessation_jour.toString(),
         nature_entite: form_Data.nature_entite,
         details_regime: form_Data.details_regime,
+        secteur: form_Data.secteur,
         email: localStorage.getItem("email")
       };
       console.log("changed data : ", changed_data)
@@ -171,6 +174,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
           localStorage.setItem("cessation_annee", form_Data.cessation_annee);
           localStorage.setItem("nature_entite", form_Data.nature_entite);
           localStorage.setItem("details_regime", form_Data.details_regime);
+          localStorage.setItem("secteur", form_Data.secteur);
           setAlert({
             message:
               "Vos informations personnelles ont été mises à jour avec succès.",
@@ -613,6 +617,21 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       </Form.Group>
                     </Col>
                   )}
+                </Row>
+                <Row className="main-user-info">
+                  <Col md={6}>
+                    <Form.Group controlId="secteur" className="form-group required">
+                      <Form.Label className="control-label">Secteur d'activité :</Form.Label>
+                      <Form.Select name="secteur" value={form_Data.secteur} onChange={chngFn} required>
+                        <option value="">Sélectionnez le secteur...</option>
+                        <option value="Type 1">Industriel</option>
+                        <option value="Type 2">Autre</option>
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        Veuillez sélectionner le secteur d'activité.
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
                 </Row>
 
                 <div className="boutons">

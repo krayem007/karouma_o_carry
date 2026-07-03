@@ -87,9 +87,9 @@ function fc_tva_achat(facture) {
 }
 
 function getTauxRetenue1000(facture, default_nature, default_regime) {
-  // Priorité aux données de la facture (fournisseur), sinon vide (0)
-  const nature = facture.nature_entite || default_nature;
-  const regime = facture.details_regime || default_regime;
+  // Priorité aux données du bénéficiaire saisies dans la facture, sinon profil client
+  const nature = facture.nature_beneficiaire || default_nature;
+  const regime = facture.regime_beneficiaire || default_regime;
 
   if (nature === 'PP') return 0.015;
   if (nature === 'PM') {
@@ -103,6 +103,8 @@ function getTauxRetenue1000(facture, default_nature, default_regime) {
 function fc_retenue_1000(facture, default_nature, default_regime) {
   const ttc = toSafeNumber(facture.TotalTTC);
   if (facture.Type === "Facture d'achat" && ttc >= 1000) {
+    const mtManuel = facture.montantRetenueCalcule;
+    if (mtManuel != null && mtManuel !== '') return toSafeNumber(mtManuel);
     return ttc * getTauxRetenue1000(facture, default_nature, default_regime);
   }
   return 0;
@@ -398,10 +400,14 @@ exports.post_dec = async (req, res) => {
       smm_tcl = smm_tcl + toSafeNumber(fc_ttc_vente(f)) / 500;
       console.log("gggg fuck me [", i, "] id: ", f.id);
 
+      let nature_benef = f.natureBeneficiaire || null;
+      let regime_benef = f.regimeBeneficiaire || null;
+      let mt_retenue_calcule = f.montantRetenueCalcule != null && f.montantRetenueCalcule !== '' ? toSafeNumber(f.montantRetenueCalcule) : null;
+
       if (f.id > 0) {
         const sql = `
           UPDATE factures 
-            SET date = ?, type = ?,type_achat_vente = ?, ref = ?, ht = ?, tva = ?, timber = ?,fodec = ?, mtfodec = ?, tauxdc = ?, mtdc = ?, ttc = ?, ttc_vente = ?, ht_vente = ?, tva_vente = ?, ht_chat = ?, tva_achat = ?
+            SET date = ?, type = ?,type_achat_vente = ?, ref = ?, ht = ?, tva = ?, timber = ?,fodec = ?, mtfodec = ?, tauxdc = ?, mtdc = ?, ttc = ?, ttc_vente = ?, ht_vente = ?, tva_vente = ?, ht_chat = ?, tva_achat = ?, nature_beneficiaire = ?, regime_beneficiaire = ?, montant_retenue_calcule = ?
           WHERE id = ? AND client_id = ?`;
         const vals = [
           f.Date,
@@ -421,6 +427,9 @@ exports.post_dec = async (req, res) => {
           tva_vente,
           ht_chat,
           tva_achat,
+          nature_benef,
+          regime_benef,
+          mt_retenue_calcule,
           f.id,
           client_id,
         ];
@@ -444,6 +453,9 @@ exports.post_dec = async (req, res) => {
           tva_vente: tva_vente,
           ht_chat: ht_chat,
           tva_achat: tva_achat,
+          nature_beneficiaire: nature_benef,
+          regime_beneficiaire: regime_benef,
+          montant_retenue_calcule: mt_retenue_calcule,
           decla_id: dec_id,
           client_id,
         };
@@ -454,11 +466,12 @@ exports.post_dec = async (req, res) => {
     let smm_foprolos = 0;
     let smm_tfp_part1 = 0;
     // Paie
+    const secteur = users[0].secteur || 'Type 2';
     req.body.paie.forEach((p, i) => {
       let brut = toSafeNumber(p.salaireBrut);
       let num_kids = toSafeNumber(p.enfants);
 
-      if ("Type 2" == p.typepaie) smm_tfp_part1 = brut / 50;
+      if ("Type 2" == secteur) smm_tfp_part1 = brut / 50;
       else smm_tfp_part1 = brut / 100;
 
       smm_tfp = smm_tfp + smm_tfp_part1;
@@ -472,10 +485,9 @@ exports.post_dec = async (req, res) => {
 
       if (p.id > 0) {
         const sql = `
-          UPDATE paie SET secteur = ?, salarier = ?, famille = ?, num_kids = ?, brut = ?, net = ?, irpp_a = ?, irpp_m = ?, css = ?
+          UPDATE paie SET salarier = ?, famille = ?, num_kids = ?, brut = ?, net = ?, irpp_a = ?, irpp_m = ?, css = ?
           WHERE id = ? AND client_id = ?`;
         const vals = [
-          p.typepaie,
           p.Salarier,
           p.chef,
           num_kids,
@@ -490,7 +502,6 @@ exports.post_dec = async (req, res) => {
         ops.push(dbQuery(sql, vals));
       } else {
         const row = {
-          secteur: p.typepaie,
           salarier: p.Salarier,
           famille: p.chef,
           num_kids: num_kids,
@@ -695,7 +706,18 @@ exports.get_dec = async (req, res) => {
       regimeFiscal: r.regime_fiscal,
     }));
 
-    return res.json({ send_data: { reporttva, factures, paie, retenue: mappedRetenue }, dec: true });
+    const mappedFactures = factures.map(f => ({
+      ...f,
+      natureBeneficiaire: f.nature_beneficiaire || "",
+      regimeBeneficiaire: f.regime_beneficiaire || "",
+      montantRetenueCalcule: f.montant_retenue_calcule || "",
+    }));
+
+    const mappedPaie = paie.map(p => ({
+      ...p,
+    }));
+
+    return res.json({ send_data: { reporttva, factures: mappedFactures, paie: mappedPaie, retenue: mappedRetenue }, dec: true });
 
   } catch (err) {
     console.log("data base error in catch");

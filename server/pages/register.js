@@ -30,7 +30,8 @@ exports.save = async (req, res) => {
             cessation_mois,
             cessation_annee,
             nature_entite,
-            details_regime} = req.body;
+            details_regime,
+            secteur} = req.body;
             if (nombre_filial > 0)
                 console.log("k");
             else
@@ -64,7 +65,8 @@ exports.save = async (req, res) => {
                 email : email, 
                 password : hashedPassword,
                 nature_entite: nature_entite,
-                details_regime: details_regime}, (error, results) => {
+                details_regime: details_regime,
+                secteur: secteur}, (error, results) => {
                     if(error)
                     {
                         console.log("couldn,t save the user in the data base : ", error);

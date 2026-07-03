@@ -25,6 +25,7 @@ exports.change_my_account_data = (req, res) => {
     activite_date,
     nature_entite,
     details_regime,
+    secteur,
     email } = req.body;
   const values = [code_acte,
     identifiant_fiscal,
@@ -38,13 +39,14 @@ exports.change_my_account_data = (req, res) => {
     activite_date,
     nature_entite,
     details_regime,
+    secteur,
     email];
   if (req.session.authorized != true) {
     console.error('not authoraised');
     return res.status(500).json({ error: 'not authoraised' });
   }
 
-  const sql = 'UPDATE accounts SET code_acte = ?, identifiant_fiscal = ?, identifiant_tva = ?, code_categorie = ?, nombre_filiale = ?, raison_sociale = ?, address = ?, code_postal = ?, activite = ?, activite_date = ?, nature_entite = ?, details_regime = ? WHERE email = ?';
+  const sql = 'UPDATE accounts SET code_acte = ?, identifiant_fiscal = ?, identifiant_tva = ?, code_categorie = ?, nombre_filiale = ?, raison_sociale = ?, address = ?, code_postal = ?, activite = ?, activite_date = ?, nature_entite = ?, details_regime = ?, secteur = ? WHERE email = ?';
 
   db.query(sql, values, (err, result) => {
     if (err) {
