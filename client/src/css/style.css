@@ -8,6 +8,36 @@
   scroll-behavior: smooth;
 }
 
+/* Champ valide */
+.form-control.is-valid,
+.was-validated .form-control:valid {
+  border-color: #ced4da !important;
+  /* couleur normale */
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+/* Champ invalide */
+.form-control.is-invalid,
+.was-validated .form-control:invalid {
+  border-color: #ced4da !important;
+  /* couleur normale */
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+/* SUPPRIMER validation Bootstrap (vert/rouge) */
+.form-select.is-valid,
+.form-select.is-invalid,
+.was-validated .form-select:valid,
+.was-validated .form-select:invalid {
+  border-color: #ced4da !important;
+  box-shadow: none !important;
+  background-image: none !important;
+  /* supprime icône validation */
+}
+
+
 /* Chrome, Safari, Edge, Opera hiden arrow of input type number */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -1010,6 +1040,14 @@ td .feedback {
   color: red;
 }
 
+.td-retenue-nature {
+  min-width: 140px;
+}
+
+.td-retenue-montant {
+  min-width: 120px;
+}
+
 /* welcome */
 
 #clic {
@@ -1172,33 +1210,4 @@ form .feedw {
 
 .password-toggle-icon {
   color: #6c757d;
-}
-
-/* Champ valide */
-.form-control.is-valid,
-.was-validated .form-control:valid {
-  border-color: #ced4da !important;
-  /* couleur normale */
-  box-shadow: none !important;
-  background-image: none !important;
-}
-
-/* Champ invalide */
-.form-control.is-invalid,
-.was-validated .form-control:invalid {
-  border-color: #ced4da !important;
-  /* couleur normale */
-  box-shadow: none !important;
-  background-image: none !important;
-}
-
-/* SUPPRIMER validation Bootstrap (vert/rouge) */
-.form-select.is-valid,
-.form-select.is-invalid,
-.was-validated .form-select:valid,
-.was-validated .form-select:invalid {
-  border-color: #ced4da !important;
-  box-shadow: none !important;
-  background-image: none !important;
-  /* supprime icône validation */
 }

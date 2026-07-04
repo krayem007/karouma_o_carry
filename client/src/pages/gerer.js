@@ -27,10 +27,6 @@ const TITLE = "Gérer mes déclarations | " + Config.SITE_TITLE;
 const DESC = "Gérer mes déclarations ";
 const CANONICAL = Config.SITE_DOMAIN + "/gerer";
 
-const hiddenStyle = {
-  display: "none",
-};
-
 const Gerer = () => {
   // State to manage rows
   const [deleteFactureIds, setDeleteFactureIds] = useState([]);
@@ -913,16 +909,16 @@ const Gerer = () => {
                             <th className="thmt">
                               Total TTC <span className="text-danger">*</span>
                             </th>
-                            <th className="thmt" style={{ whiteSpace: 'nowrap' }}>
+                            <th className="thmt text-nowrap">
                               Nature Bénéficiaire
                             </th>
-                            <th className="thmt" style={{ whiteSpace: 'nowrap' }}>
+                            <th className="thmt text-nowrap">
                               Régime Bénéficiaire
                             </th>
-                            <th className="thmt" style={{ whiteSpace: 'nowrap' }}>
+                            <th className="thmt text-nowrap">
                               Montant Retenue
                             </th>
-                            <th style={hiddenStyle}>id</th>
+                            <th className="d-none">id</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1308,7 +1304,7 @@ const Gerer = () => {
 
                                 {showRetenueColumns(facture) && (
                                   <>
-                                    <td style={{ minWidth: '140px' }}>
+                                    <td className="td-retenue-nature">
                                       <Form.Select
                                         aria-label="Nature Bénéficiaire"
                                         value={facture.natureBeneficiaire || ""}
@@ -1333,7 +1329,7 @@ const Gerer = () => {
                                         Veuillez sélectionner la nature
                                       </Form.Control.Feedback>
                                     </td>
-                                    <td style={{ minWidth: '140px' }}>
+                                    <td className="td-retenue-nature">
                                       {facture.natureBeneficiaire && (
                                         <Form.Select
                                           aria-label="Régime Bénéficiaire"
@@ -1369,7 +1365,7 @@ const Gerer = () => {
                                         Veuillez sélectionner le régime
                                       </Form.Control.Feedback>
                                     </td>
-                                    <td style={{ minWidth: '120px' }}>
+                                    <td className="td-retenue-montant">
                                       <Form.Control
                                         type="number"
                                         min="0"
@@ -1387,7 +1383,7 @@ const Gerer = () => {
                                   </>
                                 )}
 
-                                <td style={hiddenStyle}>
+                                <td className="d-none">
                                   <Form.Group
                                     className="textadj"
                                     type="number"
@@ -1477,7 +1473,7 @@ const Gerer = () => {
                               Salaire Brut{" "}
                               <span className="text-danger">*</span>
                             </th>
-                            <th style={hiddenStyle}>id</th>
+                            <th className="d-none">id</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1633,7 +1629,7 @@ const Gerer = () => {
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
-                                <td style={hiddenStyle}>
+                                <td className="d-none">
                                   <Form.Group
                                     className="textadj"
                                     type="number"
@@ -1723,7 +1719,7 @@ const Gerer = () => {
                             <th>
                               Montant TTC <span className="text-danger">*</span>
                             </th>
-                            <th style={hiddenStyle}>id</th>
+                            <th className="d-none">id</th>
                           </tr>
                         </thead>
                         <tbody id="Retenue">
@@ -1928,7 +1924,7 @@ const Gerer = () => {
                                       : "Le montant TTC ne doit pas être nul"}
                                   </Form.Control.Feedback>
                                 </td>
-                                <td style={hiddenStyle}>
+                                <td className="d-none">
                                   <Form.Group
                                     className="textadj"
                                     type="number"
@@ -1948,7 +1944,7 @@ const Gerer = () => {
                                   ></Form.Group>
                                 </td>
                                 {/* ID caché */}
-                                <td style={{ display: "none" }}>
+                                <td className="d-none">
                                   <Form.Control
                                     type="hidden"
                                     value={row.id ?? -1}
