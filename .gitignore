@@ -2,6 +2,6 @@
 client/node_modules/
 server/node_modules/
 
-# Build artifacts
+# Build
 client/build/
 
