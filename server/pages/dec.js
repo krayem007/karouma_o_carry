@@ -88,8 +88,8 @@ function fc_tva_achat(facture) {
 
 function getTauxRetenue1000(facture, default_nature, default_regime) {
   // Priorité aux données du bénéficiaire saisies dans la facture, sinon profil client
-  const nature = facture.nature_beneficiaire || default_nature;
-  const regime = facture.regime_beneficiaire || default_regime;
+  const nature = facture.nature_beneficiaire || facture.natureBeneficiaire || default_nature;
+  const regime = facture.regime_beneficiaire || facture.regimeBeneficiaire || default_regime;
 
   if (nature === 'PP') return 0.015;
   if (nature === 'PM') {
@@ -586,20 +586,20 @@ exports.post_dec = async (req, res) => {
     // Maintenant tu peux calculer ton total final
     const smm_tt_dec =
       Math.round(
-        (smm_tva +
-          smm_tfp +
-          smm_tcl +
-          smm_ttrs +
-          smm_foprolos +
-          smm_droite_t +
-          total_mtdc +
-          total_fodec) *
+        (Math.round(smm_tva * 1000) / 1000 +
+          Math.round(smm_tfp * 1000) / 1000 +
+          Math.round(smm_tcl * 1000) / 1000 +
+          Math.round(smm_ttrs * 1000) / 1000 +
+          Math.round(smm_foprolos * 1000) / 1000 +
+          Math.round(smm_droite_t * 1000) / 1000 +
+          Math.round(total_mtdc * 1000) / 1000 +
+          Math.round(total_fodec * 1000) / 1000) *
         1000,
       ) / 1000;
 
     const row = {
       date: date,
-      ttrs: smm_ttrs,
+      ttrs: Math.round(smm_ttrs * 1000) / 1000,
       tfp: smm_tfp,
       foprolos: smm_foprolos,
       droit: total_mtdc,
@@ -614,7 +614,7 @@ exports.post_dec = async (req, res) => {
     };
 
     const vals = [
-      smm_ttrs,
+      Math.round(smm_ttrs * 1000) / 1000,
       smm_tfp,
       smm_foprolos,
       total_mtdc,

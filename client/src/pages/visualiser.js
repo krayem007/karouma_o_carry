@@ -58,18 +58,32 @@ const Visualiser = () => {
         let [year, month] = ["0000", "00"];
         for (let i = 0; i < response.data.summary.length; i++) {
           [year, month] = response.data.summary[i].date.split("-");
+          const s = response.data.summary[i];
+          const totalRS = (Number(s.ttrs) || 0).toFixed(3);
+          const tfp = (Number(s.tfp) || 0).toFixed(3);
+          const foprolos = (Number(s.foprolos) || 0).toFixed(3);
+          const droitConsommation = (Number(s.droit) || 0).toFixed(3);
+          const fodec = (Number(s.fodec) || 0).toFixed(3);
+          const tva = (Number(s.tva) || 0).toFixed(3);
+          const droitTimbreFiscal = (Number(s.dtf) || 0).toFixed(3);
+          const tcl = (Number(s.tcl) || 0).toFixed(3);
+          const totalDeclarer = (
+            Number(totalRS) + Number(tfp) + Number(foprolos) +
+            Number(droitConsommation) + Number(fodec) + Number(tva) +
+            Number(droitTimbreFiscal) + Number(tcl)
+          ).toFixed(3);
           fnewRows.push({
             mois: month,
             Anne: year,
-            totalRS: (Number(response.data.summary[i].ttrs) || 0).toFixed(3),
-            tfp: (Number(response.data.summary[i].tfp) || 0).toFixed(3),
-            foprolos: (Number(response.data.summary[i].foprolos) || 0).toFixed(3),
-            droitConsommation: (Number(response.data.summary[i].droit) || 0).toFixed(3),
-            fodec: (Number(response.data.summary[i].fodec) || 0).toFixed(3),
-            tva: (Number(response.data.summary[i].tva) || 0).toFixed(3),
-            droitTimbreFiscal: (Number(response.data.summary[i].dtf) || 0).toFixed(3),
-            tcl: (Number(response.data.summary[i].tcl) || 0).toFixed(3),
-            totalDeclarer: (Number(response.data.summary[i].ttdec) || 0).toFixed(3),
+            totalRS,
+            tfp,
+            foprolos,
+            droitConsommation,
+            fodec,
+            tva,
+            droitTimbreFiscal,
+            tcl,
+            totalDeclarer,
             selected: false,
           });
         }
