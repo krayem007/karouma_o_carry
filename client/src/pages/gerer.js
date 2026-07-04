@@ -424,6 +424,14 @@ const Gerer = () => {
           delete cleaned.MTDC;
         }
 
+        cleaned.natureBeneficiaire = f.natureBeneficiaire || "";
+        cleaned.regimeBeneficiaire = f.regimeBeneficiaire || "";
+        if (f.montantRetenueCalcule !== undefined && f.montantRetenueCalcule !== '') {
+          cleaned.montantRetenueCalcule = toSafeNumber(f.montantRetenueCalcule);
+        } else {
+          delete cleaned.montantRetenueCalcule;
+        }
+
         return cleaned;
       });
 
@@ -526,10 +534,8 @@ const Gerer = () => {
       currentFacture.TotalHT = "";
       currentFacture.TotalTTC = "";
       currentFacture.MTDC = "";
-      currentFacture.TauxDC = "";
-      currentFacture.Timbre = "";
       currentFacture.MTFODEC = "";
-      currentFacture.FODEC = "";
+      currentFacture.montantRetenueCalcule = "";
       currentFacture.inputSource = null;
       currentFacture.dcSource = null;
 
@@ -562,11 +568,21 @@ const Gerer = () => {
     if (fieldChanged === "TTC_BLUR" && currentFacture.TotalTTC !== "") {
       currentFacture.inputSource = "TTC";
     }
-    if (fieldChanged === "TauxDC" && currentFacture.TauxDC !== "") {
-      currentFacture.dcSource = "TauxDC";
+    if (fieldChanged === "TauxDC") {
+      if (currentFacture.TauxDC !== "") {
+        currentFacture.dcSource = "TauxDC";
+      } else {
+        currentFacture.dcSource = null;
+        currentFacture.MTDC = "";
+      }
     }
-    if (fieldChanged === "MTDC" && currentFacture.MTDC !== "") {
-      currentFacture.dcSource = "MTDC";
+    if (fieldChanged === "MTDC") {
+      if (currentFacture.MTDC !== "") {
+        currentFacture.dcSource = "MTDC";
+      } else {
+        currentFacture.dcSource = null;
+        currentFacture.TauxDC = "";
+      }
     }
 
     const isFodec = currentFacture.FODEC === "Oui";
@@ -634,6 +650,21 @@ const Gerer = () => {
       };
 
       recalc(htBase);
+    }
+
+    if (fieldChanged !== "montantRetenueCalcule") {
+      const finalTtc = parseFloat(currentFacture.TotalTTC) || 0;
+      if (
+        currentFacture.Type === "Facture d'achat" &&
+        finalTtc >= 1000 &&
+        currentFacture.natureBeneficiaire &&
+        currentFacture.regimeBeneficiaire
+      ) {
+        const taux = getRetenueTaux1000(currentFacture.natureBeneficiaire, currentFacture.regimeBeneficiaire);
+        currentFacture.montantRetenueCalcule = (finalTtc * taux).toFixed(3);
+      } else if (currentFacture.montantRetenueCalcule !== "") {
+        currentFacture.montantRetenueCalcule = "";
+      }
     }
 
     newFactures[index] = currentFacture;
@@ -910,13 +941,13 @@ const Gerer = () => {
                               Total TTC <span className="text-danger">*</span>
                             </th>
                             <th className="thmt text-nowrap">
-                              Nature Bénéficiaire
+                              Nature Bénéficiaire <span className="text-danger">*</span>
                             </th>
                             <th className="thmt text-nowrap">
-                              Régime Bénéficiaire
+                              Régime Bénéficiaire <span className="text-danger">*</span>
                             </th>
                             <th className="thmt text-nowrap">
-                              Montant Retenue
+                              Montant Retenue <span className="text-danger">*</span>
                             </th>
                             <th className="d-none">id</th>
                           </tr>
@@ -1375,10 +1406,19 @@ const Gerer = () => {
                                         onChange={(e) => {
                                           const val = e.target.value;
                                           if (val === "" || parseFloat(val) >= 0) {
-                                            chngFn(index, { ...facture, montantRetenueCalcule: val });
+                                            chngFn(index, { ...facture, montantRetenueCalcule: val }, "montantRetenueCalcule");
                                           }
                                         }}
+                                        required
+                                        isInvalid={
+                                          validated &&
+                                          showRetenueColumns(facture) &&
+                                          !facture.montantRetenueCalcule
+                                        }
                                       />
+                                      <Form.Control.Feedback className="feedback" type="invalid">
+                                        Veuillez saisir le montant retenue
+                                      </Form.Control.Feedback>
                                     </td>
                                   </>
                                 )}
