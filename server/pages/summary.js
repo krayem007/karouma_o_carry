@@ -54,7 +54,7 @@ function calculateRetenueAchat1000(facture, default_nature, default_regime) {
   if (facture.type === "Facture d'achat" && !isNaN(ttc) && ttc >= 1000) {
     const mtManuel = facture.montant_retenue_calcule;
     if (mtManuel != null && mtManuel !== '') return Number(mtManuel);
-    return ttc * getTauxRetenue1000(facture, default_nature, default_regime);
+    return Math.round(ttc * getTauxRetenue1000(facture, default_nature, default_regime) * 1000) / 1000;
   }
   return 0;
 }

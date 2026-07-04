@@ -105,7 +105,7 @@ function fc_retenue_1000(facture, default_nature, default_regime) {
   if (facture.Type === "Facture d'achat" && ttc >= 1000) {
     const mtManuel = facture.montantRetenueCalcule;
     if (mtManuel != null && mtManuel !== '') return toSafeNumber(mtManuel);
-    return ttc * getTauxRetenue1000(facture, default_nature, default_regime);
+    return Math.round(ttc * getTauxRetenue1000(facture, default_nature, default_regime) * 1000) / 1000;
   }
   return 0;
 }
