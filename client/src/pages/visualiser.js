@@ -11,6 +11,8 @@ import {
   Table,
   Form,
   Spinner,
+  Modal,
+  Col,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -32,6 +34,69 @@ const Visualiser = () => {
   const [selectAllRows, setSelectAllRows] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
   const navigate = useNavigate(); // Initialize navigate hook
+
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [searchFilters, setSearchFilters] = useState({
+    mois: "", Anne: "", totalRS: "", tfp: "", foprolos: "",
+    droitConsommation: "", fodec: "", tva: "", droitTimbreFiscal: "",
+    tcl: "", totalDeclarer: "",
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const getSortedRows = (rowsToSort) => {
+    const { key, direction } = sortConfig;
+    if (!key) return rowsToSort;
+    return [...rowsToSort].sort((a, b) => {
+      let aVal = a[key];
+      let bVal = b[key];
+      if (typeof aVal === "string" && !isNaN(Number(aVal))) {
+        aVal = parseFloat(aVal);
+        bVal = parseFloat(bVal);
+      }
+      if (aVal == null) aVal = "";
+      if (bVal == null) bVal = "";
+      if (aVal < bVal) return direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key !== key) return "";
+    return sortConfig.direction === "asc" ? " ▲" : " ▼";
+  };
+
+  const handleSearchChange = (key, value) => {
+    setSearchFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleDelete = async () => {
+    const selectedDecIds = rows
+      .filter((row) => row.selected && row.dec_id)
+      .map((row) => row.dec_id);
+    if (selectedDecIds.length === 0) return;
+    setIsDeleting(true);
+    try {
+      const response = await instance.post("/delete_declarations", { decIds: selectedDecIds });
+      if (response.data.deleted) {
+        setRows((prev) => prev.filter((row) => !row.selected));
+        setSelectAllRows(false);
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+    setIsDeleting(false);
+    setShowDeleteModal(false);
+  };
 
   const handleSelectAllRows = () => {
     setSelectAllRows(!selectAllRows);
@@ -84,6 +149,7 @@ const Visualiser = () => {
             droitTimbreFiscal,
             tcl,
             totalDeclarer,
+            dec_id: s.dec_id,
             selected: false,
           });
         }
@@ -169,6 +235,8 @@ const print_doc = () => {
     setIsPrinting(false);
   };
 
+  const hasSelected = rows.some((row) => row.selected);
+
   return (
     <>
       <Helmet>
@@ -213,31 +281,75 @@ const print_doc = () => {
                       required
                     />
                   </th>
-                  <th>Mois</th>
-                  <th>Année</th>
-                  <th>Total R.S</th>
-                  <th>TFP</th>
-                  <th>FOPROLOS</th>
-                  <th>Droit de Consommation</th>
-                  <th>FODEC</th>
-                  <th>TVA</th>
-                  <th>Droit de timbre fiscal</th>
-                  <th>TCL</th>
-                  <th>Total à déclarer</th>
+                  <th className="sortable" onClick={() => requestSort("mois")}>
+                    Mois<span className="sort-indicator">{getSortIndicator("mois")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.mois} onChange={(e) => handleSearchChange("mois", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("Anne")}>
+                    Année<span className="sort-indicator">{getSortIndicator("Anne")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.Anne} onChange={(e) => handleSearchChange("Anne", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("totalRS")}>
+                    Total R.S<span className="sort-indicator">{getSortIndicator("totalRS")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.totalRS} onChange={(e) => handleSearchChange("totalRS", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("tfp")}>
+                    TFP<span className="sort-indicator">{getSortIndicator("tfp")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.tfp} onChange={(e) => handleSearchChange("tfp", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("foprolos")}>
+                    FOPROLOS<span className="sort-indicator">{getSortIndicator("foprolos")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.foprolos} onChange={(e) => handleSearchChange("foprolos", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("droitConsommation")}>
+                    DC<span className="sort-indicator">{getSortIndicator("droitConsommation")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.droitConsommation} onChange={(e) => handleSearchChange("droitConsommation", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("fodec")}>
+                    FODEC<span className="sort-indicator">{getSortIndicator("fodec")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.fodec} onChange={(e) => handleSearchChange("fodec", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("tva")}>
+                    TVA<span className="sort-indicator">{getSortIndicator("tva")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.tva} onChange={(e) => handleSearchChange("tva", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("droitTimbreFiscal")}>
+                    Timbre<span className="sort-indicator">{getSortIndicator("droitTimbreFiscal")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.droitTimbreFiscal} onChange={(e) => handleSearchChange("droitTimbreFiscal", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable" onClick={() => requestSort("tcl")}>
+                    TCL<span className="sort-indicator">{getSortIndicator("tcl")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.tcl} onChange={(e) => handleSearchChange("tcl", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
+                  <th className="sortable th-total" onClick={() => requestSort("totalDeclarer")}>
+                    Total à déclarer<span className="sort-indicator">{getSortIndicator("totalDeclarer")}</span>
+                    <Form.Control type="text" size="sm" value={searchFilters.totalDeclarer} onChange={(e) => handleSearchChange("totalDeclarer", e.target.value)} onClick={(e) => e.stopPropagation()} />
+                  </th>
                   <th style={hiddenStyle}>id</th>
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row, index) => (
-                  <tr key={index}>
+                {getSortedRows(rows.filter((row) => {
+                  return Object.keys(searchFilters).every((key) => {
+                    const filterVal = searchFilters[key].toLowerCase();
+                    if (!filterVal) return true;
+                    const rowVal = String(row[key] ?? "").toLowerCase();
+                    return rowVal.includes(filterVal);
+                  });
+                })).map((row, index) => (
+                  <tr key={row.dec_id || index}>
                     <td className="checkbox">
                       <input
                         type="checkbox"
                         checked={row.selected || false}
                         onChange={() => {
-                          const updated = [...rows];
-                          updated[index].selected = !updated[index].selected;
-                          setRows(updated);
+                          setRows((prev) =>
+                            prev.map((r) =>
+                              r.dec_id === row.dec_id
+                                ? { ...r, selected: !r.selected }
+                                : r
+                            )
+                          );
                         }}
                       />
                     </td>
@@ -364,9 +476,38 @@ const print_doc = () => {
                 "Imprimer"
               )}
             </Button>
+            <Button
+              variant="secondary"
+              className="custom-secondary"
+              onClick={() => {
+                if (!hasSelected) return;
+                setShowDeleteModal(true);
+              }}
+disabled={isDeleting || !hasSelected}
+            >
+              <i className="fas fa-trash me-1"></i>
+              {isDeleting ? "Suppression..." : "Supprimer"}
+            </Button>
           </div>
         </Row>
       </Container>
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmer la suppression</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Êtes-vous sûr de vouloir supprimer les déclarations sélectionnées ?
+          Cette action est irréversible.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Annuler
+          </Button>
+          <Button variant="danger" onClick={handleDelete} disabled={isDeleting}>
+            {isDeleting ? "Suppression..." : "Supprimer"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

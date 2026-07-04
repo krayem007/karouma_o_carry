@@ -915,7 +915,7 @@ table {
 
 th,
 td {
-  width: 100px;
+  width: 110px;
   /* Or use percentages like 20% */
 }
 
@@ -1210,4 +1210,68 @@ form .feedw {
 
 .password-toggle-icon {
   color: #6c757d;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.sortable:hover {
+  background-color: #e9ecef;
+}
+
+.sort-indicator {
+  font-size: 0.7em;
+  margin-left: 2px;
+}
+
+/* ========== visualiser page specific ========== */
+
+.visualiser-page .table-custom th {
+  white-space: normal;
+  word-break: break-word;
+  vertical-align: top;
+  padding: 8px 6px;
+}
+
+.visualiser-page .th-total {
+  width: 120px;
+}
+
+.visualiser-page .sortable {
+  height: 75px;
+  overflow: visible;
+}
+
+.visualiser-page .sortable .form-control-sm {
+  display: block;
+  margin: 6px auto 0 auto;
+  width: 90%;
+  text-align: center;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  height: auto;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #333;
+}
+
+.visualiser-page .sortable .form-control-sm:focus {
+  background-color: #fff;
+  border-color: #1abc9c;
+  box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+}
+
+.visualiser-page .table-custom td {
+  vertical-align: middle !important;
+}
+
+.visualiser-page .textadj1 {
+  text-align: center !important;
+}
+
+.visualiser-page .checkbox-column {
+  vertical-align: middle !important;
 }

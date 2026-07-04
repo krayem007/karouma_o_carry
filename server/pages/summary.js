@@ -70,7 +70,7 @@ exports.welcome = async (req, res) => {
   if (req.session.authorized == true) {
     //res.json({"authorized" : "true" })
     const query = `
-        SELECT date, ttrs, tfp, foprolos, droit,fodec, tva, dtf, tcl, ttdec FROM summary
+        SELECT date, ttrs, tfp, foprolos, droit,fodec, tva, dtf, tcl, ttdec, dec_id FROM summary
         WHERE client_id = ? `;
     db.query(query, req.session.user, (err, results) => {
       if (err) {

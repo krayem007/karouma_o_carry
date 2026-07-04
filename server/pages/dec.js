@@ -742,3 +742,29 @@ exports.calculate_net = async (req, res) => {
     return res.status(500).json({ message: "Erreur de calcul", error: error.message });
   }
 };
+
+exports.delete_declarations = async (req, res) => {
+  try {
+    const client_id = req.session.user;
+    if (!client_id) {
+      return res.status(401).json({ message: "Non autorisé", deleted: false });
+    }
+    const decIds = req.body.decIds;
+    if (!decIds || decIds.length === 0) {
+      return res.status(400).json({ message: "Aucune déclaration sélectionnée", deleted: false });
+    }
+    const ops = [];
+    for (const dec_id of decIds) {
+      ops.push(dbQuery("DELETE FROM summary WHERE dec_id = ? AND client_id = ?", [dec_id, client_id]));
+      ops.push(dbQuery("DELETE FROM factures WHERE decla_id = ? AND client_id = ?", [dec_id, client_id]));
+      ops.push(dbQuery("DELETE FROM paie WHERE decla_id = ? AND client_id = ?", [dec_id, client_id]));
+      ops.push(dbQuery("DELETE FROM retenue WHERE decla_id = ? AND client_id = ?", [dec_id, client_id]));
+      ops.push(dbQuery("DELETE FROM declarations WHERE id = ? AND client_id = ?", [dec_id, client_id]));
+    }
+    await Promise.all(ops);
+    return res.status(200).json({ message: "Déclaration(s) supprimée(s)", deleted: true });
+  } catch (error) {
+    console.error("Delete declarations error:", error);
+    return res.status(500).json({ message: "Erreur de suppression", deleted: false });
+  }
+};
