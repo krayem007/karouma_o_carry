@@ -338,6 +338,12 @@ const Gerer = () => {
     return num;
   };
 
+  const formatAmount = (val) => {
+    if (val === "" || val == null) return "";
+    const num = parseFloat(val);
+    return isNaN(num) ? "" : num.toFixed(3);
+  };
+
   const toSafeBoolean = (value) => {
     if (value === null || value === undefined || value === '') return false;
     if (value === 'Oui' || value === true || value === 'true') return true;
@@ -1179,6 +1185,12 @@ const Gerer = () => {
                                           chngFn(index, { ...facture, Timbre: val }, "Timbre");
                                         }
                                       }}
+                                      onBlur={() => {
+                                        const formatted = formatAmount(facture.Timbre);
+                                        if (formatted !== facture.Timbre) {
+                                          chngFn(index, { ...facture, Timbre: formatted }, "Timbre");
+                                        }
+                                      }}
                                       required
                                       isInvalid={
                                         validated &&
@@ -1258,6 +1270,12 @@ const Gerer = () => {
                                           chngFn(index, { ...facture, TauxDC: val }, "TauxDC");
                                         }
                                       }}
+                                      onBlur={() => {
+                                        const formatted = formatAmount(facture.TauxDC);
+                                        if (formatted !== facture.TauxDC) {
+                                          chngFn(index, { ...facture, TauxDC: formatted }, "TauxDC");
+                                        }
+                                      }}
                                       isInvalid={
                                         validated &&
                                         facture.TauxDC !== "" &&
@@ -1284,6 +1302,12 @@ const Gerer = () => {
                                         const val = e.target.value;
                                         if (val === "" || parseFloat(val) >= 0) {
                                           chngFn(index, { ...facture, MTDC: val }, "MTDC");
+                                        }
+                                      }}
+                                      onBlur={() => {
+                                        const formatted = formatAmount(facture.MTDC);
+                                        if (formatted !== facture.MTDC) {
+                                          chngFn(index, { ...facture, MTDC: formatted }, "MTDC");
                                         }
                                       }}
                                       isInvalid={
@@ -1407,6 +1431,12 @@ const Gerer = () => {
                                           const val = e.target.value;
                                           if (val === "" || parseFloat(val) >= 0) {
                                             chngFn(index, { ...facture, montantRetenueCalcule: val }, "montantRetenueCalcule");
+                                          }
+                                        }}
+                                        onBlur={() => {
+                                          const formatted = formatAmount(facture.montantRetenueCalcule);
+                                          if (formatted !== facture.montantRetenueCalcule) {
+                                            chngFn(index, { ...facture, montantRetenueCalcule: formatted }, "montantRetenueCalcule");
                                           }
                                         }}
                                         required
@@ -1652,6 +1682,13 @@ const Gerer = () => {
                                           chngFn1(index, { ...paie[index], salaireBrut: val });
                                         }
                                       }}
+                                      onBlur={() => {
+                                        const current = paie[index]?.salaireBrut;
+                                        const formatted = formatAmount(current);
+                                        if (formatted !== current) {
+                                          chngFn1(index, { ...paie[index], salaireBrut: formatted });
+                                        }
+                                      }}
                                       required
                                       isInvalid={
                                         validated &&
@@ -1885,6 +1922,13 @@ const Gerer = () => {
                                         chngFn2(index, { ...retenue[index], montantHT: val }, "montantHT");
                                       }
                                     }}
+                                    onBlur={() => {
+                                      const current = retenue[index]?.montantHT;
+                                      const formatted = formatAmount(current);
+                                      if (formatted !== current) {
+                                        chngFn2(index, { ...retenue[index], montantHT: formatted }, "montantHT");
+                                      }
+                                    }}
                                     required
                                     isInvalid={
                                       validated &&
@@ -1946,6 +1990,13 @@ const Gerer = () => {
                                       const val = e.target.value;
                                       if (val === "" || parseFloat(val) >= 0) {
                                         chngFn2(index, { ...retenue[index], montantTTC: val }, "montantTTC");
+                                      }
+                                    }}
+                                    onBlur={() => {
+                                      const current = retenue[index]?.montantTTC;
+                                      const formatted = formatAmount(current);
+                                      if (formatted !== current) {
+                                        chngFn2(index, { ...retenue[index], montantTTC: formatted }, "montantTTC");
                                       }
                                     }}
                                     required
