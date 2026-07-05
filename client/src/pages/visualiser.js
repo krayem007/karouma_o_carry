@@ -13,6 +13,7 @@ import {
   Spinner,
   Modal,
   Col,
+  Alert,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -32,6 +33,7 @@ const hiddenStyle = {
 const Visualiser = () => {
   const [rows, setRows] = useState([]);
   const [selectAllRows, setSelectAllRows] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(null);
   const [isPrinting, setIsPrinting] = useState(false);
   const navigate = useNavigate(); // Initialize navigate hook
 
@@ -98,9 +100,37 @@ const Visualiser = () => {
     setShowDeleteModal(false);
   };
 
+  useEffect(() => {
+    setRows((prev) =>
+      prev.map((row) => {
+        const matches = Object.keys(searchFilters).every((key) => {
+          const fv = searchFilters[key].toLowerCase();
+          if (!fv) return true;
+          return String(row[key] ?? "").toLowerCase().includes(fv);
+        });
+        return matches ? row : { ...row, selected: false };
+      })
+    );
+    setSelectAllRows(false);
+  }, [searchFilters]);
+
   const handleSelectAllRows = () => {
-    setSelectAllRows(!selectAllRows);
-    setRows(rows.map((row) => ({ ...row, selected: !selectAllRows })));
+    const newSelectAll = !selectAllRows;
+    setSelectAllRows(newSelectAll);
+    const filtered = rows.filter((row) => {
+      return Object.keys(searchFilters).every((key) => {
+        const filterVal = searchFilters[key].toLowerCase();
+        if (!filterVal) return true;
+        const rowVal = String(row[key] ?? "").toLowerCase();
+        return rowVal.includes(filterVal);
+      });
+    });
+    const filteredDecIds = new Set(filtered.map((r) => r.dec_id));
+    setRows((prev) =>
+      prev.map((row) =>
+        filteredDecIds.has(row.dec_id) ? { ...row, selected: newSelectAll } : row
+      )
+    );
   };
 
   const getSelectedDates = () => {
@@ -201,7 +231,11 @@ const print_doc = () => {
 
   const print_doc = async () => {
     const selectedDates = getSelectedDates();
-    if (selectedDates.length === 0) return;
+    if (selectedDates.length === 0) {
+      setAlertMessage("Veuillez sélectionner une ou plusieurs déclarations à imprimer.");
+      setTimeout(() => setAlertMessage(null), 3000);
+      return;
+    }
 
     setIsPrinting(true);
     console.log("🗓️ Selected dates:", selectedDates);
@@ -451,6 +485,13 @@ const print_doc = () => {
             </Table>
           </Container>
         </Row>
+        {alertMessage && (
+          <Row>
+            <Alert className="custom-alert text-center mb-0" onClick={() => setAlertMessage(null)} style={{ cursor: 'pointer' }}>
+              {alertMessage}
+            </Alert>
+          </Row>
+        )}
         <Row>
           <div className="boutons">
             <Button
@@ -477,13 +518,16 @@ const print_doc = () => {
               )}
             </Button>
             <Button
-              variant="secondary"
-              className="custom-secondary"
+              variant="primary"
+              className="custom-btn-danger"
               onClick={() => {
-                if (!hasSelected) return;
+                if (!hasSelected) {
+                  setAlertMessage("Veuillez sélectionner une ou plusieurs déclarations à supprimer.");
+                  setTimeout(() => setAlertMessage(null), 3000);
+                  return;
+                }
                 setShowDeleteModal(true);
               }}
-disabled={isDeleting || !hasSelected}
             >
               <i className="fas fa-trash me-1"></i>
               {isDeleting ? "Suppression..." : "Supprimer"}
@@ -497,6 +541,7 @@ disabled={isDeleting || !hasSelected}
         </Modal.Header>
         <Modal.Body>
           Êtes-vous sûr de vouloir supprimer les déclarations sélectionnées ?
+          Cette action supprimera également toutes les données liées (factures, paie, retenue) dans la page Gérer.
           Cette action est irréversible.
         </Modal.Body>
         <Modal.Footer>

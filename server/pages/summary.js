@@ -415,7 +415,7 @@ exports.print_doc = async (req, res) => {
   } else {
     html_data.total_tva = difference;
   }
-  html_data.total_tva_PR = difference >= 0 ? "P" : "R";
+  html_data.total_tva_PR = difference > 0 ? "P" : "R";
 
   const reporttva = html_data.reporttva;
 
@@ -426,7 +426,7 @@ exports.print_doc = async (req, res) => {
   } else {
     html_data.total_tva_fin = differencefin;
   }
-  html_data.total_tva_fin_PR = differencefin >= 0 ? "P" : "R";
+  html_data.total_tva_fin_PR = differencefin > 0 ? "P" : "R";
   if (differencefin <= 0) {
     html_data.total_tva_sum = 0;
   } else {
