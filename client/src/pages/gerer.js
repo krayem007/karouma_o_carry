@@ -200,6 +200,7 @@ const Gerer = () => {
 
   // Check if both fields are filled
   const isFormValid = annee !== "" && mois !== "" && mois !== "Mois";
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     instance.get("/welcome").then((response) => {
@@ -828,11 +829,24 @@ const Gerer = () => {
                   name="annee"
                   value={annee}
                   readOnly={isSaisieClicked}
-                  min="1900"
-                  max="2200"
+                  min="2000"
+                  max={currentYear + 100}
                   placeholder="Année:"
                   className="form-labelannee"
-                  onChange={(e) => setAnnee(e.target.value.slice(0, 4))}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    const digits = raw.replace(/\D/g, "").slice(0, 4);
+                    if (digits.length < 4) {
+                      setAnnee(digits);
+                    } else {
+                      const num = Number(digits);
+                      if (num >= 2000 && num <= currentYear + 100) {
+                        setAnnee(digits);
+                      } else {
+                        setAnnee("");
+                      }
+                    }
+                  }}
                 />
               </Form.Group>
             </Col>
