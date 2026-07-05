@@ -1150,14 +1150,15 @@ td .feedback {
 }
 
 .QES {
-  color: black !important;
+  color: #2c3e50 !important;
+  font-size: 18px !important;
   text-decoration: none !important;
   padding-bottom: 5px !important;
 }
 
 #collapse-item {
-  font-size: 14px !important;
-  color: #535557 !important;
+  font-size: 16px !important;
+  color: #2c3e50 !important;
   padding-bottom: 5px !important;
 }
 
