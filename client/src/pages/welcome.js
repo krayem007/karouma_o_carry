@@ -111,7 +111,7 @@ const Welcome = () => {
             </Col>
 
             <Col xs={12} sm="auto">
-              <Link to="/visualiser" className="modern-card-link">
+              <Link to="/declaration" className="modern-card-link">
                 <div className="icon-wrapper">
                   <i className="fa-solid fa-print"></i>
                 </div>

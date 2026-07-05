@@ -25,7 +25,7 @@ const instance = axios.create({
 
 const TITLE = "Mes déclarations | " + Config.SITE_TITLE;
 const DESC = "Mes déclarations";
-const CANONICAL = Config.SITE_DOMAIN + "/visualiser";
+const CANONICAL = Config.SITE_DOMAIN + "/declaration";
 const hiddenStyle = {
   display: "none",
 };

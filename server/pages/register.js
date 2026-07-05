@@ -46,7 +46,7 @@ exports.save = async (req, res) => {
         }
         else if (results.length > 0) {
             console.log("that email is already in use");
-            return res;
+            return res.json({ error: true, message: "Un compte existe déjà avec cet email" });
         }
         else{
             let hashedPassword = await bcrypt.hash(password, 12);
@@ -72,7 +72,7 @@ exports.save = async (req, res) => {
                         console.log("couldn,t save the user in the data base : ", error);
                     }else{
                         console.log("user registered : ", results);
-                        return res;
+                        return res.json({ success: true });
                     }
                 })
         }

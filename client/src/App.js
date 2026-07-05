@@ -16,8 +16,8 @@ import Propos from "./pages/propos";
 import Conditions from "./pages/condition";
 import Reinitialisation from "./pages/reinitialisation";
 import ResetPassword from "./pages/resetpassword";
-import axios from  "axios";
-import {useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const instance = axios.create({
   baseURL: 'http://localhost:5002', // Base URL of the Express backend
@@ -28,24 +28,21 @@ const instance = axios.create({
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State for logged in status
   useEffect(() => {
-    
-    instance.get("/welcome").then((response) => 
-      {
+
+    instance.get("/welcome").then((response) => {
         /*gg test*/console.log(response.data);
-        if (response.data.authorized == "true")
-        {
-          console.log("authorized client");
-          setIsLoggedIn(true);
-          //navigate("/welcome");
-        }
-        else
-        {
-          console.log("not authorized client");
-          setIsLoggedIn(false);
-          //neet to logging first
-        }
-      });
-    }, []);
+      if (response.data.authorized == "true") {
+        console.log("authorized client");
+        setIsLoggedIn(true);
+        //navigate("/welcome");
+      }
+      else {
+        console.log("not authorized client");
+        setIsLoggedIn(false);
+        //neet to logging first
+      }
+    });
+  }, []);
 
   return (
     <div>
@@ -67,7 +64,7 @@ function App() {
           />
           <Route path="/gerer" element={<Gerer />} />
           <Route path="/welcome" element={<Welcome />} />
-          <Route path="/visualiser" element={<Visualiser />} />
+          <Route path="/declaration" element={<Visualiser />} />
           <Route path="/test_print" element={<handleDownload />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<Faq />} />

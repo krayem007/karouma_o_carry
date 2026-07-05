@@ -15,15 +15,15 @@ import {
   Tab,
   Tabs,
   Toast,
+  Modal,
 } from "react-bootstrap";
 
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5002', // Base URL of the Express backend
-  withCredentials: true, // Allow sending cookies with requests
+  baseURL: 'http://localhost:5002',
+  withCredentials: true,
 });
-const bcrypt = require('bcryptjs');
 
 const TITLE = "Mon Compte | " + Config.SITE_TITLE;
 const DESC = "Mon Compte ";
@@ -93,16 +93,11 @@ const Moncompte = ({ setIsLoggedIn }) => {
 
   const [alert, setAlert] = useState(null);
   const [deleteError, setDeleteError] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   let OldPasswordCheck = true; // ******Gassouna Change this to true or false *******
 
-  const handleRemoveItem = () => {
-    if (!form_Data.anpassword) {
-      setDeleteError(true);
-      return;
-    }
-    //const res = window.confirm(
-    //  "Êtes-vous sûr de vouloir supprimer définitivement votre compte ?"
-    //);
+  const confirmDelete = () => {
+    setShowDeleteConfirm(false);
     const data_del = { email: form_Data.email, password: form_Data.anpassword };
     instance.post("/delete_account", data_del).then((response) => {
       if (response.data.del == true) {
@@ -131,13 +126,47 @@ const Moncompte = ({ setIsLoggedIn }) => {
           setAlert(null);
         }, 3000);
       }
+    }).catch((err) => {
+      const msg = err.response?.data?.error || "Erreur lors de la suppression.";
+      setAlert({ message: msg, type: "error" });
+      setTimeout(() => setAlert(null), 3000);
     });
   };
 
+  const handleRemoveItem = () => {
+    if (!form_Data.anpassword) {
+      set_Validated1(false);
+      set_Validated(false);
+      setDeleteError(true);
+      return;
+    }
+    setShowDeleteConfirm(true);
+  };
+
   const submitFn = (event) => {
-    event.preventDefault(); // Prevent default form submission
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
+    event.preventDefault();
+    const cessationValid = !cessationPartiallyFilled || (
+      /^(?:0[1-9]|[12][0-9]|3[01])$/.test(form_Data.cessation_jour) &&
+      /^(?:0[1-9]|1[0-2])$/.test(form_Data.cessation_mois) &&
+      /^[0-9]{4}$/.test(form_Data.cessation_annee) &&
+      Number(form_Data.cessation_annee) >= 1900 && Number(form_Data.cessation_annee) <= currentYear + 1 &&
+      isValidDate(form_Data.cessation_jour, form_Data.cessation_mois, form_Data.cessation_annee)
+    );
+    const isValid =
+      /^[A-Z0-9_]{3,20}$/.test(form_Data.code_acte) &&
+      /^[0-9]{7}$/.test(form_Data.identifiant_fiscal) &&
+      /^[A-Z]$/.test(form_Data.identifiant_tva) &&
+      /^[A-Z]$/.test(form_Data.code_categorie) &&
+      /^[0-9]{3}$/.test(form_Data.nombre_filial) &&
+      /^.{2,120}$/.test(form_Data.nom_prenom_raison) &&
+      /^.{5,255}$/.test(form_Data.adresse) &&
+      /^[0-9]{4}$/.test(form_Data.code_postal) &&
+      /^.{2,100}$/.test(form_Data.activite) &&
+      form_Data.nature_entite &&
+      form_Data.details_regime &&
+      form_Data.secteur &&
+      cessationValid;
+    if (!isValid) {
       event.stopPropagation();
     } else {
       const changed_data = {
@@ -150,7 +179,9 @@ const Moncompte = ({ setIsLoggedIn }) => {
         address: form_Data.adresse,
         code_postal: form_Data.code_postal,
         activite: form_Data.activite,
-        activite_date: form_Data.cessation_annee.toString() + '-' + form_Data.cessation_mois.toString() + '-' + form_Data.cessation_jour.toString(),
+        activite_date: form_Data.cessation_jour && form_Data.cessation_mois && form_Data.cessation_annee
+          ? form_Data.cessation_annee + '-' + form_Data.cessation_mois + '-' + form_Data.cessation_jour
+          : '',
         nature_entite: form_Data.nature_entite,
         details_regime: form_Data.details_regime,
         secteur: form_Data.secteur,
@@ -186,12 +217,16 @@ const Moncompte = ({ setIsLoggedIn }) => {
             setAlert(null);
           }, 3000);
         }
+      }).catch((err) => {
+        const msg = err.response?.data?.error || "Erreur lors de la mise à jour.";
+        setAlert({ message: msg, type: "error" });
+        setTimeout(() => setAlert(null), 3000);
       });
     }
     set_Validated(true);
   };
 
-  const submitFn1 = async (event) => {
+  const submitFn1 = (event) => {
     event.preventDefault(); // Prevent default form submission
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -201,7 +236,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         const psspssdata = {
           email: form_Data.email,
           oldPassword: form_Data.anpassword,
-          newPassword: await bcrypt.hash(form_Data.nvpassword, 8)
+          newPassword: form_Data.nvpassword
         };
         instance.post("/spiderPUSS", psspssdata).then((response) => {
           if (response.data.pssdate == true) {
@@ -247,6 +282,16 @@ const Moncompte = ({ setIsLoggedIn }) => {
     set_Validated1(false);
     set_Validated(false);
     setDeleteError(false);
+  };
+
+  const currentYear = new Date().getFullYear();
+  const cessationPartiallyFilled =
+    form_Data.cessation_jour || form_Data.cessation_mois || form_Data.cessation_annee;
+
+  const isValidDate = (j, m, a) => {
+    if (!j || !m || !a) return true;
+    const d = new Date(Number(a), Number(m) - 1, Number(j));
+    return d.getFullYear() === Number(a) && d.getMonth() === Number(m) - 1 && d.getDate() === Number(j);
   };
 
   return (
@@ -317,12 +362,17 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="code_acte"
-                        defaultValue={data.code_acte}
-                        onChange={chngFn}
+                        value={form_Data.code_acte}
+                        pattern="[A-Z0-9_]{3,20}"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^a-zA-Z0-9_]/g, "").toUpperCase().slice(0, 20);
+                          chngFn({ target: { name: "code_acte", value: val } });
+                        }}
                         required
+                        isInvalid={validated && !/^[A-Z0-9_]{3,20}$/.test(form_Data.code_acte)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Veuillez remplir le code acte
+                        Code acte invalide (3-20 caractères)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -340,12 +390,17 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="identifiant_fiscal"
-                        defaultValue={data.identifiant_fiscal}
-                        onChange={chngFn}
+                        value={form_Data.identifiant_fiscal}
+                        pattern="[0-9]{7}"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 7);
+                          chngFn({ target: { name: "identifiant_fiscal", value: val } });
+                        }}
                         required
+                        isInvalid={validated && !/^[0-9]{7}$/.test(form_Data.identifiant_fiscal)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Veuillez remplir l'identifiant fiscal
+                        Identifiant fiscal invalide (7 chiffres requis)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -361,12 +416,17 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="identifiant_tva"
-                        defaultValue={data.identifiant_tva}
-                        onChange={chngFn}
+                        value={form_Data.identifiant_tva}
+                        pattern="[A-Z]"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 1);
+                          chngFn({ target: { name: "identifiant_tva", value: val } });
+                        }}
                         required
+                        isInvalid={validated && !/^[A-Z]$/.test(form_Data.identifiant_tva)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Veuillez remplir l'identifiant TVA
+                        Code TVA invalide (1 lettre majuscule)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -382,29 +442,41 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="code_categorie"
-                        defaultValue={data.code_categorie}
-                        onChange={chngFn}
+                        value={form_Data.code_categorie}
+                        pattern="[A-Z]"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 1);
+                          chngFn({ target: { name: "code_categorie", value: val } });
+                        }}
                         required
+                        isInvalid={validated && !/^[A-Z]$/.test(form_Data.code_categorie)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Veuillez remplir le Code catégorie
+                        Code catégorie invalide (1 lettre majuscule)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                   <Col md={3}>
                     <Form.Group
                       controlId="nombre_filial"
-                      className="form-group"
+                      className="form-group required"
                     >
-                      <Form.Label>Nombre de filiale (2) :</Form.Label>
+                      <Form.Label className="control-label">Nombre de filiale (2) :</Form.Label>
                       <Form.Control
-                        type="number"
+                        type="text"
                         name="nombre_filial"
-                        onChange={chngFn}
-                        defaultValue={data.nombre_filial}
+                        value={form_Data.nombre_filial}
+                        pattern="[0-9]{3}"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 3);
+                          chngFn({ target: { name: "nombre_filial", value: val } });
+                        }}
                         required
-                        min="0"
+                        isInvalid={validated && !/^[0-9]{3}$/.test(form_Data.nombre_filial)}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Nombre de filiales doit être sur 3 chiffres
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -420,16 +492,21 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="nom_prenom_raison"
-                        defaultValue={data.nom_prenom_raison}
+                        value={form_Data.nom_prenom_raison}
                         className="long1"
-                        onChange={chngFn}
+                        pattern=".{2,120}"
+                        onChange={(e) => {
+                          const val = e.target.value.slice(0, 120);
+                          chngFn({ target: { name: "nom_prenom_raison", value: val } });
+                        }}
                         required
+                        isInvalid={validated && !/^.{2,120}$/.test(form_Data.nom_prenom_raison)}
                       />
                       <Form.Control.Feedback
                         type="invalid"
                         className="form-group"
                       >
-                        Veuillez remplir le Nom et Prénom ou Raison sociale
+                        Nom / Raison sociale invalide (2 à 120 caractères)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -446,13 +523,18 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="adresse"
-                        defaultValue={data.adresse}
+                        value={form_Data.adresse}
                         className="long2"
-                        onChange={chngFn}
+                        pattern=".{5,255}"
+                        onChange={(e) => {
+                          const val = e.target.value.slice(0, 255);
+                          chngFn({ target: { name: "adresse", value: val } });
+                        }}
                         required
+                        isInvalid={validated && !/^.{5,255}$/.test(form_Data.adresse)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Veuillez remplir l'adresse ou siège social
+                        Adresse invalide (5 à 255 caractères)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -468,17 +550,18 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="code_postal"
-                        defaultValue={data.code_postal}
-                        min="0000"
-                        max="9999"
-                        onInput={(e) =>
-                          (e.target.value = e.target.value.slice(0, 4))
-                        }
-                        onChange={chngFn}
+                        value={form_Data.code_postal}
+                        pattern="[0-9]{4}"
+                        placeholder="Code postal"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+                          chngFn({ target: { name: "code_postal", value: val } });
+                        }}
                         required
+                        isInvalid={validated && !/^[0-9]{4}$/.test(form_Data.code_postal)}
                       />
                       <Form.Control.Feedback type="invalid" id="maxwidthfeed">
-                        Veuillez remplir le code postal
+                        Code postal doit contenir 4 chiffres
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -495,12 +578,17 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="activite"
-                        defaultValue={data.activite}
-                        onChange={chngFn}
+                        value={form_Data.activite}
+                        pattern=".{2,100}"
+                        onChange={(e) => {
+                          const val = e.target.value.slice(0, 100);
+                          chngFn({ target: { name: "activite", value: val } });
+                        }}
                         required
+                        isInvalid={validated && !/^.{2,100}$/.test(form_Data.activite)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Veuillez remplir l'activité de l'entreprise
+                        Activité invalide (2 à 100 caractères)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -517,16 +605,18 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="cessation_jour"
-                        defaultValue={data.cessation_jour}
-                        onChange={chngFn}
-                        required
-                        min="1"
-                        max="31"
+                        value={form_Data.cessation_jour}
+                        pattern="(?:0[1-9]|[12][0-9]|3[01])"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+                          chngFn({ target: { name: "cessation_jour", value: val } });
+                        }}
                         className="text-center"
-                        onInput={(e) =>
-                          (e.target.value = e.target.value.slice(0, 2))
-                        }
+                        isInvalid={validated && cessationPartiallyFilled && (!/^(?:0[1-9]|[12][0-9]|3[01])$/.test(form_Data.cessation_jour) || !isValidDate(form_Data.cessation_jour, form_Data.cessation_mois, form_Data.cessation_annee))}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Jour invalide
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
 
@@ -539,16 +629,18 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="cessation_mois"
-                        defaultValue={data.cessation_mois}
-                        onChange={chngFn}
-                        required
-                        min="1"
-                        max="12"
+                        value={form_Data.cessation_mois}
+                        pattern="(?:0[1-9]|1[0-2])"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+                          chngFn({ target: { name: "cessation_mois", value: val } });
+                        }}
                         className="text-center"
-                        onInput={(e) =>
-                          (e.target.value = e.target.value.slice(0, 2))
-                        }
+                        isInvalid={validated && cessationPartiallyFilled && !/^(?:0[1-9]|1[0-2])$/.test(form_Data.cessation_mois)}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Mois invalide
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
 
@@ -561,16 +653,18 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Control
                         type="text"
                         name="cessation_annee"
-                        defaultValue={data.cessation_annee}
-                        onChange={chngFn}
-                        required
-                        min="1900"
-                        max="2200"
+                        value={form_Data.cessation_annee}
+                        pattern="[0-9]{4}"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+                          chngFn({ target: { name: "cessation_annee", value: val } });
+                        }}
                         className="text-center"
-                        onInput={(e) =>
-                          (e.target.value = e.target.value.slice(0, 4))
-                        }
+                        isInvalid={validated && cessationPartiallyFilled && (!form_Data.cessation_annee || Number(form_Data.cessation_annee) < 1900 || Number(form_Data.cessation_annee) > currentYear + 1)}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Année invalide
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -580,7 +674,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                   <Col md={6}>
                     <Form.Group controlId="nature_entite" className="form-group required">
                       <Form.Label className="control-label">Nature de l'entité :</Form.Label>
-                      <Form.Select name="nature_entite" value={form_Data.nature_entite} onChange={chngFn} required>
+                      <Form.Select name="nature_entite" value={form_Data.nature_entite} onChange={chngFn} required isInvalid={validated && !form_Data.nature_entite}>
                         <option value="">Sélectionnez...</option>
                         <option value="PM">Société / Personne Morale (PM)</option>
                         <option value="PP">Indépendant / Personne Physique (PP)</option>
@@ -595,7 +689,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     <Col md={6}>
                       <Form.Group controlId="details_regime" className="form-group required">
                         <Form.Label className="control-label">Détails du régime :</Form.Label>
-                        <Form.Select name="details_regime" value={form_Data.details_regime} onChange={chngFn} required>
+                        <Form.Select name="details_regime" value={form_Data.details_regime} onChange={chngFn} required isInvalid={validated && !form_Data.details_regime}>
                           <option value="">Sélectionnez le régime...</option>
                           {form_Data.nature_entite === 'PM' && (
                             <>
@@ -622,7 +716,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                   <Col md={6}>
                     <Form.Group controlId="secteur" className="form-group required">
                       <Form.Label className="control-label">Secteur d'activité :</Form.Label>
-                      <Form.Select name="secteur" value={form_Data.secteur} onChange={chngFn} required>
+                      <Form.Select name="secteur" value={form_Data.secteur} onChange={chngFn} required isInvalid={validated && !form_Data.secteur}>
                         <option value="">Sélectionnez le secteur...</option>
                         <option value="Type 1">Industriel</option>
                         <option value="Type 2">Autre</option>
@@ -803,6 +897,23 @@ const Moncompte = ({ setIsLoggedIn }) => {
             </Container>
           </Tab>
         </Tabs>
+
+        <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirmer la suppression</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Êtes-vous sûr de vouloir supprimer définitivement votre compte <strong>{form_Data.email}</strong> ? Cette action est irréversible.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
+              Annuler
+            </Button>
+            <Button variant="danger" onClick={confirmDelete}>
+              Confirmer la suppression
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </>
   );

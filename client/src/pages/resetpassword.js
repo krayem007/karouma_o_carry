@@ -52,13 +52,6 @@ const ResetPassword = () => {
     if (form.checkValidity() === false || form_Data.newPassword !== form_Data.confirmPassword) {
       event.stopPropagation();
       set_Validated(true);
-      if (form_Data.newPassword !== form_Data.confirmPassword && form_Data.confirmPassword) {
-        setAlert({
-          message: "Les mots de passe ne correspondent pas.",
-          type: "error",
-        });
-        setTimeout(() => { setAlert(null); }, 3000);
-      }
     } else {
       set_Validated(true);
 
@@ -162,34 +155,69 @@ const ResetPassword = () => {
         >
           <h1 className="form-title"> Nouveau Mot de Passe</h1>
           <Row className="main-user-info">
-            <Col md={12}>
-              <Form.Group controlId="newPassword" className="formgroupp mb-3">
-                <Form.Label>Nouveau mot de passe :</Form.Label>
+            <Col md={6}>
+              <Form.Group controlId="newPassword" className="form-group required">
+                <Form.Label className="control-label">Nouveau mot de passe :</Form.Label>
                 <Form.Control
                   type="password"
                   name="newPassword"
                   value={form_Data.newPassword}
                   onChange={chngFn}
+                  minLength={6}
                   required
+                  isInvalid={
+                    validated &&
+                    (form_Data.newPassword === "" || form_Data.newPassword.length < 6)
+                  }
+                  isValid={
+                    validated &&
+                    form_Data.newPassword.length >= 6
+                  }
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez entrer un nouveau mot de passe.
+                  {form_Data.newPassword === ""
+                    ? "Veuillez entrer un nouveau mot de passe."
+                    : "Le mot de passe doit comporter au moins 6 caractères."}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
-            <Col md={12}>
-              <Form.Group controlId="confirmPassword" className="formgroupp mb-3">
-                <Form.Label>Confirmer le nouveau mot de passe :</Form.Label>
+          </Row>
+          <Row className="main-user-info">
+            <Col md={6}>
+              <Form.Group controlId="confirmPassword" className="form-group required">
+                <Form.Label className="control-label">Confirmer le nouveau mot de passe :</Form.Label>
                 <Form.Control
                   type="password"
                   name="confirmPassword"
                   value={form_Data.confirmPassword}
+                  pattern={form_Data.newPassword}
                   onChange={chngFn}
+                  minLength={6}
                   required
-                  isInvalid={validated && form_Data.newPassword !== form_Data.confirmPassword}
+                  isInvalid={
+                    validated &&
+                    (form_Data.confirmPassword === "" ||
+                      form_Data.confirmPassword.length < 6 ||
+                      form_Data.confirmPassword !== form_Data.newPassword)
+                  }
+                  isValid={
+                    validated &&
+                    form_Data.confirmPassword.length >= 6 &&
+                    form_Data.newPassword === form_Data.confirmPassword
+                  }
                 />
                 <Form.Control.Feedback type="invalid">
-                  {form_Data.confirmPassword === "" ? "Veuillez confirmer le mot de passe." : "Les mots de passe ne correspondent pas."}
+                  {form_Data.confirmPassword === ""
+                    ? "Veuillez confirmer le mot de passe."
+                    : form_Data.confirmPassword.length < 6
+                      ? "Le mot de passe doit comporter au moins 6 caractères."
+                      : "Les mots de passe ne correspondent pas."}
+                </Form.Control.Feedback>
+                <Form.Control.Feedback type="valid">
+                  {form_Data.confirmPassword === form_Data.newPassword &&
+                    form_Data.confirmPassword.length >= 6
+                    ? "Les mots de passe correspondent et sont valides."
+                    : ""}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>

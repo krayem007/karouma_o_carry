@@ -31,14 +31,43 @@ const Inscription = () => {
     nature_entite: "",
     details_regime: "",
     secteur: "",
+    code_acte: "",
+    identifiant_fiscal: "",
+    identifiant_tva: "",
+    code_categorie: "",
+    nombre_filial: "",
+    nom_prenom_raison: "",
+    adresse: "",
+    code_postal: "",
+    activite: "",
+    cessation_jour: "",
+    cessation_mois: "",
+    cessation_annee: "",
+    cgu: false,
   });
   const [alert, setAlert] = useState({ message: "", type: "" });
 
   const submitFn = (event) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
+    const isValid =
+      /^[A-Z0-9_]{3,20}$/.test(form_Data.code_acte) &&
+      /^[0-9]{7}$/.test(form_Data.identifiant_fiscal) &&
+      /^[A-Z]$/.test(form_Data.identifiant_tva) &&
+      /^[A-Z]$/.test(form_Data.code_categorie) &&
+      /^[0-9]{3}$/.test(form_Data.nombre_filial) &&
+      /^.{2,120}$/.test(form_Data.nom_prenom_raison) &&
+      /^.{5,255}$/.test(form_Data.adresse) &&
+      /^[0-9]{4}$/.test(form_Data.code_postal) &&
+      /^.{2,100}$/.test(form_Data.activite) &&
+      /^\S+@\S+\.\S+$/.test(form_Data.email) &&
+      form_Data.password.length >= 6 &&
+      form_Data.confirm_password === form_Data.password &&
+      form_Data.nature_entite &&
+      form_Data.details_regime &&
+      form_Data.secteur &&
+      form_Data.cgu &&
+      isValidDate(form_Data.cessation_jour, form_Data.cessation_mois, form_Data.cessation_annee);
+    if (!isValid) {
       event.stopPropagation();
     } else {
       // Show success alert
@@ -62,16 +91,21 @@ const Inscription = () => {
         secteur: form_Data.secteur
       };
       axios.post("http://localhost:5002/register", data).then((response) => {
-        console.log("[gg] register data send to the server");
+        if (response.data.error) {
+          setAlert({ message: response.data.message, type: "error" });
+        } else if (response.data.success) {
+          setAlert({
+            message:
+              "L'inscription a été effectuée avec succès. Vous devez maintenant vous connecter.",
+            type: "success",
+          });
+          setTimeout(() => {
+            navigate("/connexion");
+          }, 2000);
+        }
+      }).catch(() => {
+        setAlert({ message: "Erreur réseau lors de l'inscription.", type: "error" });
       });
-      setAlert({
-        message:
-          "L'inscription a été effectuée avec succès. Vous devez maintenant vous connecter.",
-        type: "success",
-      });
-      setTimeout(() => {
-        navigate("/connexion");
-      }, 2000);
     }
     set_Validated(true);
   };
@@ -84,6 +118,16 @@ const Inscription = () => {
       [name]: value,
     });
     set_Validated(false);
+  };
+
+  const currentYear = new Date().getFullYear();
+  const cessationPartiallyFilled =
+    form_Data.cessation_jour || form_Data.cessation_mois || form_Data.cessation_annee;
+
+  const isValidDate = (j, m, a) => {
+    if (!j || !m || !a) return true;
+    const d = new Date(Number(a), Number(m) - 1, Number(j));
+    return d.getFullYear() === Number(a) && d.getMonth() === Number(m) - 1 && d.getDate() === Number(j);
   };
 
   return (
@@ -111,6 +155,8 @@ const Inscription = () => {
           className="toast"
           bg={alert.type}
           onClose={() => setAlert({ message: "", type: "" })}
+          autohide
+          delay={3000}
         >
           <Toast.Body>{alert.message}</Toast.Body>
         </Toast>
@@ -138,11 +184,17 @@ const Inscription = () => {
                 <Form.Control
                   type="text"
                   name="code_acte"
-                  onChange={chngFn}
+                  value={form_Data.code_acte}
+                  pattern="[A-Z0-9_]{3,20}"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^a-zA-Z0-9_]/g, "").toUpperCase().slice(0, 20);
+                    chngFn({ target: { name: "code_acte", value: val } });
+                  }}
                   required
+                  isInvalid={validated && !/^[A-Z0-9_]{3,20}$/.test(form_Data.code_acte)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez remplir le code acte
+                  Code acte invalide (3-20 caractères)
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -160,11 +212,17 @@ const Inscription = () => {
                 <Form.Control
                   type="text"
                   name="identifiant_fiscal"
-                  onChange={chngFn}
+                  value={form_Data.identifiant_fiscal}
+                  pattern="[0-9]{7}"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 7);
+                    chngFn({ target: { name: "identifiant_fiscal", value: val } });
+                  }}
                   required
+                  isInvalid={validated && !/^[0-9]{7}$/.test(form_Data.identifiant_fiscal)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez remplir l'identifiant fiscal
+                  Identifiant fiscal invalide (7 chiffres requis)
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -180,11 +238,17 @@ const Inscription = () => {
                 <Form.Control
                   type="text"
                   name="identifiant_tva"
-                  onChange={chngFn}
+                  value={form_Data.identifiant_tva}
+                  pattern="[A-Z]"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 1);
+                    chngFn({ target: { name: "identifiant_tva", value: val } });
+                  }}
                   required
+                  isInvalid={validated && !/^[A-Z]$/.test(form_Data.identifiant_tva)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez remplir l'identifiant TVA
+                  Code TVA invalide (1 lettre majuscule)
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -200,18 +264,38 @@ const Inscription = () => {
                 <Form.Control
                   type="text"
                   name="code_categorie"
-                  onChange={chngFn}
+                  value={form_Data.code_categorie}
+                  pattern="[A-Z]"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 1);
+                    chngFn({ target: { name: "code_categorie", value: val } });
+                  }}
                   required
+                  isInvalid={validated && !/^[A-Z]$/.test(form_Data.code_categorie)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez remplir le Code catégorie
+                  Code catégorie invalide (1 lettre majuscule)
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={3}>
-              <Form.Group controlId="nombre_filial">
-                <Form.Label>Nombre de filiale (2) :</Form.Label>
-                <Form.Control type="number" name="nombre_filial" min="0" onChange={chngFn} />
+              <Form.Group controlId="nombre_filial" className="form-group required">
+                <Form.Label className="control-label">Nombre de filiale (2) :</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="nombre_filial"
+                  value={form_Data.nombre_filial}
+                  pattern="[0-9]{3}"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 3);
+                    chngFn({ target: { name: "nombre_filial", value: val } });
+                  }}
+                  required
+                  isInvalid={validated && !/^[0-9]{3}$/.test(form_Data.nombre_filial)}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Nombre de filiales doit être sur 3 chiffres
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
@@ -227,12 +311,18 @@ const Inscription = () => {
                 <Form.Control
                   type="text"
                   name="nom_prenom_raison"
+                  value={form_Data.nom_prenom_raison}
                   className="long1"
-                  onChange={chngFn}
+                  pattern=".{2,120}"
+                  onChange={(e) => {
+                    const val = e.target.value.slice(0, 120);
+                    chngFn({ target: { name: "nom_prenom_raison", value: val } });
+                  }}
                   required
+                  isInvalid={validated && !/^.{2,120}$/.test(form_Data.nom_prenom_raison)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez remplir le Nom et Prénom ou Raison sociale
+                  Nom / Raison sociale invalide (2 à 120 caractères)
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -246,12 +336,18 @@ const Inscription = () => {
                 <Form.Control
                   type="text"
                   name="adresse"
+                  value={form_Data.adresse}
                   className="long2"
-                  onChange={chngFn}
+                  pattern=".{5,255}"
+                  onChange={(e) => {
+                    const val = e.target.value.slice(0, 255);
+                    chngFn({ target: { name: "adresse", value: val } });
+                  }}
                   required
+                  isInvalid={validated && !/^.{5,255}$/.test(form_Data.adresse)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez remplir l'adresse ou siège social
+                  Adresse invalide (5 à 255 caractères)
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -265,16 +361,19 @@ const Inscription = () => {
                   Code postal :
                 </Form.Label>
                 <Form.Control
-                  type="number"
+                  type="text"
                   name="code_postal"
-                  min="0000"
-                  max="9999"
-                  onInput={(e) => (e.target.value = e.target.value.slice(0, 4))}
-                  onChange={chngFn}
+                  value={form_Data.code_postal}
+                  pattern="[0-9]{4}"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+                    chngFn({ target: { name: "code_postal", value: val } });
+                  }}
                   required
+                  isInvalid={validated && !/^[0-9]{4}$/.test(form_Data.code_postal)}
                 />
                 <Form.Control.Feedback type="invalid" id="maxwidthfeed">
-                  Veuillez remplir le code postal
+                  Code postal doit contenir 4 chiffres
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -286,11 +385,17 @@ const Inscription = () => {
                 <Form.Control
                   type="text"
                   name="activite"
-                  onChange={chngFn}
+                  value={form_Data.activite}
+                  pattern=".{2,100}"
+                  onChange={(e) => {
+                    const val = e.target.value.slice(0, 100);
+                    chngFn({ target: { name: "activite", value: val } });
+                  }}
                   required
+                  isInvalid={validated && !/^.{2,100}$/.test(form_Data.activite)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez remplir l'activité de l'entreprise
+                  Activité invalide (2 à 100 caractères)
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -299,46 +404,65 @@ const Inscription = () => {
             </Col>
 
             <Col md={1}>
-              <Form.Group controlId="cessation_jour">
+              <Form.Group controlId="cessation_jour" className="form-group">
                 <Form.Label>Jour :</Form.Label>
                 <Form.Control
-                  type="number"
+                  type="text"
                   name="cessation_jour"
-                  min="1"
-                  max="31"
+                  value={form_Data.cessation_jour}
+                  pattern="(?:0[1-9]|[12][0-9]|3[01])"
                   className="text-center"
-                  onInput={(e) => (e.target.value = e.target.value.slice(0, 2))}
-                  onChange={chngFn}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+                    chngFn({ target: { name: "cessation_jour", value: val } });
+                  }}
+                  isInvalid={validated && cessationPartiallyFilled && (!/^(?:0[1-9]|[12][0-9]|3[01])$/.test(form_Data.cessation_jour) || !isValidDate(form_Data.cessation_jour, form_Data.cessation_mois, form_Data.cessation_annee))}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Jour invalide
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
 
             <Col md={1}>
-              <Form.Group controlId="cessation_mois">
+              <Form.Group controlId="cessation_mois" className="form-group">
                 <Form.Label>Mois :</Form.Label>
                 <Form.Control
-                  type="number"
+                  type="text"
                   name="cessation_mois"
-                  min="1"
-                  max="12"
+                  value={form_Data.cessation_mois}
+                  pattern="(?:0[1-9]|1[0-2])"
                   className="text-center"
-                  onInput={(e) => (e.target.value = e.target.value.slice(0, 2))}
-                  onChange={chngFn}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+                    chngFn({ target: { name: "cessation_mois", value: val } });
+                  }}
+                  isInvalid={validated && cessationPartiallyFilled && !/^(?:0[1-9]|1[0-2])$/.test(form_Data.cessation_mois)}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Mois invalide
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
 
             <Col md={2}>
-              <Form.Group controlId="cessation_annee">
+              <Form.Group controlId="cessation_annee" className="form-group">
                 <Form.Label>Année :</Form.Label>
                 <Form.Control
-                  type="number"
+                  type="text"
                   name="cessation_annee"
-                  min="1900"
-                  max="2200"
-                  onInput={(e) => (e.target.value = e.target.value.slice(0, 4))}
-                  onChange={chngFn}
+                  value={form_Data.cessation_annee}
+                  pattern="[0-9]{4}"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+                    chngFn({ target: { name: "cessation_annee", value: val } });
+                  }}
+                  className="text-center"
+                  isInvalid={validated && cessationPartiallyFilled && (!form_Data.cessation_annee || Number(form_Data.cessation_annee) < 1900 || Number(form_Data.cessation_annee) > currentYear + 1)}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Année invalide
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
@@ -348,7 +472,7 @@ const Inscription = () => {
             <Col md={6}>
               <Form.Group controlId="nature_entite" className="form-group required">
                 <Form.Label className="control-label">Nature de l'entité :</Form.Label>
-                <Form.Select name="nature_entite" value={form_Data.nature_entite} onChange={chngFn} required>
+                <Form.Select name="nature_entite" value={form_Data.nature_entite} onChange={chngFn} required isInvalid={validated && !form_Data.nature_entite}>
                   <option value="">Sélectionnez...</option>
                   <option value="PM">Société / Personne Morale (PM)</option>
                   <option value="PP">Indépendant / Personne Physique (PP)</option>
@@ -363,7 +487,7 @@ const Inscription = () => {
               <Col md={6}>
                 <Form.Group controlId="details_regime" className="form-group required">
                   <Form.Label className="control-label">Détails du régime :</Form.Label>
-                  <Form.Select name="details_regime" value={form_Data.details_regime} onChange={chngFn} required>
+                  <Form.Select name="details_regime" value={form_Data.details_regime} onChange={chngFn} required isInvalid={validated && !form_Data.details_regime}>
                     <option value="">Sélectionnez le régime...</option>
                     {form_Data.nature_entite === 'PM' && (
                       <>
@@ -390,7 +514,7 @@ const Inscription = () => {
             <Col md={6}>
               <Form.Group controlId="secteur" className="form-group required">
                 <Form.Label className="control-label">Secteur d'activité :</Form.Label>
-                <Form.Select name="secteur" value={form_Data.secteur} onChange={chngFn} required>
+                <Form.Select name="secteur" value={form_Data.secteur} onChange={chngFn} required isInvalid={validated && !form_Data.secteur}>
                   <option value="">Sélectionnez le secteur...</option>
                   <option value="Type 1">Industriel</option>
                   <option value="Type 2">Autre</option>
@@ -484,7 +608,7 @@ const Inscription = () => {
                   {form_Data.confirm_password === ""
                     ? "Veuillez confirmer votre mot de passe."
                     : form_Data.confirm_password.length < 6
-                      ? "Le mot de passe doit comporter au moins 6 caractères."
+                      ? "Le mot de passe doit comporter plus de 6 caractères."
                       : "Les mots de passe ne correspondent pas."}
                 </Form.Control.Feedback>
 
@@ -506,6 +630,8 @@ const Inscription = () => {
                   required
                   name="cgu"
                   id="cgu"
+                  checked={form_Data.cgu}
+                  onChange={(e) => chngFn({ target: { name: "cgu", value: e.target.checked } })}
                   label={
                     <span>
                       J'accepte les <Link to="/condition" target="_blank">Conditions Générales d'Utilisation</Link>

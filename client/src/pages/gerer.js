@@ -500,7 +500,7 @@ const Gerer = () => {
         console.log("Alert shown, waiting to navigate");
 
         setTimeout(() => {
-          navigate("/visualiser");
+          navigate("/declaration");
         }, 3000);
       } else {
         setAlert({

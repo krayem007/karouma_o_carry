@@ -149,7 +149,7 @@ exports.delete_account = async (req, res) => {
     const isMatch = await bcrypt.compare(password, storedHashedPassword);
 
     if (!isMatch) {
-      return res.status(200).json({ message: 'Incorrect password', del: false });
+      return res.status(200).json({ message: 'Le mot de passe saisi est incorrect.', del: false });
     }
     else {
       const sql = 'DELETE FROM accounts WHERE email = ?';

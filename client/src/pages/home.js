@@ -195,14 +195,14 @@ const Home = ({ isLoggedIn }) => {
               <Col md="auto" className="col-card mb-4">
                 <Card className="card text-center">
                   <div>
-                    <i className="fa-solid fa-print"></i>
+                    <i className="fa-solid fa-calculator"></i>
                   </div>
-                  <Card.Title as="h3">Imprimer vos déclarations</Card.Title>
+                  <Card.Title as="h3">Saisissez vos informations</Card.Title>
                   <Card.Body>
-                    Vérifiez vos déclarations en les visualisant, puis
-                    imprimez-les
+                    Renseignez vos factures et les informations de vos fiches de
+                    paie
                   </Card.Body>
-                  <Link className="botton" id="cardcomment" to="Inscription">
+                  <Link className="botton" to="Inscription" id="cardcomment">
                     En savoir plus
                   </Link>
                 </Card>
@@ -215,7 +215,7 @@ const Home = ({ isLoggedIn }) => {
           {isLoggedIn ? (
             <>
               <Col md="auto" className="col-card mb-4">
-                <Link to="/visualiser" className="modern-card-link">
+                <Link to="/declaration" className="modern-card-link">
                   <div className="icon-wrapper">
                     <i className="fa-solid fa-print"></i>
                   </div>
@@ -232,14 +232,14 @@ const Home = ({ isLoggedIn }) => {
               <Col md="auto" className="col-card mb-4">
                 <Card className="card text-center">
                   <div>
-                    <i className="fa-solid fa-calculator"></i>
+                    <i className="fa-solid fa-print"></i>
                   </div>
-                  <Card.Title as="h3">Saisissez vos informations</Card.Title>
+                  <Card.Title as="h3">Imprimer vos déclarations</Card.Title>
                   <Card.Body>
-                    Renseignez vos factures et les informations de vos fiches de
-                    paie
+                    Vérifiez vos déclarations en les visualisant, puis
+                    imprimez-les
                   </Card.Body>
-                  <Link className="botton" to="Inscription" id="cardcomment">
+                  <Link className="botton" id="cardcomment" to="Inscription">
                     En savoir plus
                   </Link>
                 </Card>
