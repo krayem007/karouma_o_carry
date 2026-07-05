@@ -371,7 +371,7 @@ const print_doc = () => {
                     return rowVal.includes(filterVal);
                   });
                 })).map((row, index) => (
-                  <tr key={row.dec_id || index}>
+                  <tr key={row.dec_id || index} onDoubleClick={() => navigate(`/gerer?mois=${row.mois}&annee=${row.Anne}`)} style={{ cursor: 'pointer' }}>
                     <td className="checkbox">
                       <input
                         type="checkbox"

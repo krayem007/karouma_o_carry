@@ -1,6 +1,6 @@
 import icon from "../images/icon.png";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
@@ -59,6 +59,7 @@ const Gerer = () => {
   };
 
   const navigate = useNavigate(); // Initialize navigate hook
+  const location = useLocation();
   // Toggle a single accordion
   const toggleAccordionItem = (key) => {
     setActiveAccordion((prev) =>
@@ -73,10 +74,8 @@ const Gerer = () => {
     );
   };
 
-  const handleSaisie = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setIsSaisieClicked(true); // Mark "Saisie" as clicked
-    const date = { annee, mois };
+  const loadDeclaration = (m, a) => {
+    setIsSaisieClicked(true);
     console.log("deleted factures id before reset : ", deleteFactureIds);
     console.log("deleted Paie id before reset : ", deletePaieIds);
     console.log("deleted etenue id before reset : ", deleteRetenueIds);
@@ -87,6 +86,7 @@ const Gerer = () => {
     setDeletePaieIds([]);
     setDeleteRetenueIds([]);
     setReportTVA("");
+    const date = { annee: a, mois: m };
     instance.post("/get_dec", date).then((response) => {
       console.log(" decla found : ", response.data);
       if (response.data.dec == true) {
@@ -115,7 +115,7 @@ const Gerer = () => {
             selected: false,
           });
         }
-        setFactures((prev) => [...prev, ...fnewRows]);
+        setFactures(fnewRows);
 
         //add paie
         let pnewRows = [];
@@ -129,7 +129,7 @@ const Gerer = () => {
             selected: false,
           });
         }
-        setPaie((prev) => [...prev, ...pnewRows]);
+        setPaie(pnewRows);
 
         //add retenue
         let rnewRows = [];
@@ -145,7 +145,7 @@ const Gerer = () => {
             selected: false,
           });
         }
-        setRetenue((prev) => [...prev, ...rnewRows]);
+        setRetenue(rnewRows);
       } else if (response.data.not_found != true) {
         setAlert({
           message: response.data.message || "Erreur de chargement",
@@ -171,6 +171,11 @@ const Gerer = () => {
       }
       showAlert("error", msg);
     });
+  };
+
+  const handleSaisie = (e) => {
+    e.preventDefault();
+    loadDeclaration(mois, annee);
   };
 
   const save_decla = () => {
@@ -207,6 +212,17 @@ const Gerer = () => {
         //neet to logging first
       }
     });
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const moisParam = params.get("mois");
+    const anneeParam = params.get("annee");
+    if (moisParam && anneeParam) {
+      setMois(String(Number(moisParam)));
+      setAnnee(anneeParam);
+      loadDeclaration(moisParam, anneeParam);
+    }
   }, []);
 
   const handleChangerMoisAnneeClick = () => {
