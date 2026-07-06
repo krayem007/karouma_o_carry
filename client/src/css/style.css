@@ -793,6 +793,13 @@ div.card {
   margin-top: 4px;
 }
 
+@media (min-width: 768px) and (max-width: 991px) {
+  .cessation-feedback {
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
 #maxwidthfeed {
   max-width: 200px !important;
 }

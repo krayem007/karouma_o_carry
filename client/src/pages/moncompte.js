@@ -379,7 +379,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                 </Row>
 
                 <Row className="main-user-info">
-                  <Col md={3}>
+                  <Col md={6} lg={3}>
                     <Form.Group
                       controlId="identifiant_fiscal"
                       className="form-group required"
@@ -405,7 +405,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     </Form.Group>
                   </Col>
 
-                  <Col md={3}>
+                  <Col md={6} lg={3}>
                     <Form.Group
                       controlId="identifiant_tva"
                       className="form-group required"
@@ -431,7 +431,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     </Form.Group>
                   </Col>
 
-                  <Col md={3}>
+                  <Col md={6} lg={3}>
                     <Form.Group
                       controlId="code_categorie"
                       className="form-group required"
@@ -456,7 +456,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
-                  <Col md={3}>
+                  <Col md={6} lg={3}>
                     <Form.Group
                       controlId="nombre_filial"
                       className="form-group required"
@@ -596,7 +596,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     <Form.Label>Date de cessation d’activité :</Form.Label>
                   </Col>
 
-                  <Col xs={4} md={1} className="mb-2">
+                  <Col xs={4} md={1} className="mb-2 me-md-4">
                     <Form.Group
                       controlId="cessation_jour"
                       className="form-group"
@@ -614,13 +614,13 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         className="text-center"
                         isInvalid={validated && cessationPartiallyFilled && (!/^(?:0[1-9]|[12][0-9]|3[01])$/.test(form_Data.cessation_jour) || !isValidDate(form_Data.cessation_jour, form_Data.cessation_mois, form_Data.cessation_annee))}
                       />
-                      <Form.Control.Feedback type="invalid">
+                      <Form.Control.Feedback type="invalid" className="cessation-feedback">
                         Jour invalide
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
 
-                  <Col xs={4} md={1} className="mb-2">
+                  <Col xs={4} md={1} className="mb-2 me-md-4">
                     <Form.Group
                       controlId="cessation_mois"
                       className="form-group"
@@ -638,7 +638,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         className="text-center"
                         isInvalid={validated && cessationPartiallyFilled && !/^(?:0[1-9]|1[0-2])$/.test(form_Data.cessation_mois)}
                       />
-                      <Form.Control.Feedback type="invalid">
+                      <Form.Control.Feedback type="invalid" className="cessation-feedback">
                         Mois invalide
                       </Form.Control.Feedback>
                     </Form.Group>
@@ -662,7 +662,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         className="text-center"
                         isInvalid={validated && cessationPartiallyFilled && (!form_Data.cessation_annee || Number(form_Data.cessation_annee) < 1900 || Number(form_Data.cessation_annee) > currentYear + 1)}
                       />
-                      <Form.Control.Feedback type="invalid">
+                      <Form.Control.Feedback type="invalid" className="cessation-feedback">
                         Année invalide
                       </Form.Control.Feedback>
                     </Form.Group>
