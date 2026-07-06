@@ -822,7 +822,7 @@ const Gerer = () => {
         <h1 className="form-title"> Gérer mes déclarations </h1>
         <form noValidate onSubmit={submitFn} validated={validated}>
           <Row className="row-gt align-items-center justify-content-start g-2">
-            <Col xs={6} sm={3} md="auto" className="form-labelannee">
+            <Col xs={3} sm={3} md="auto">
               <Form.Group className="form-labelannee">
                 <Form.Control
                   type="text"
@@ -850,7 +850,7 @@ const Gerer = () => {
                 />
               </Form.Group>
             </Col>
-            <Col xs={6} sm={3} md="auto">
+            <Col xs={3} sm={3} md="auto">
               <Form.Select
                 aria-label="Default select example"
                 className="form-selectmois"
@@ -866,7 +866,7 @@ const Gerer = () => {
                 ))}
               </Form.Select>
             </Col>
-            <Col xs={6} sm={3} md="auto">
+            <Col xs={3} sm={3} md="auto">
               <div className="boutong">
                 <Button
                   variant="primary"
@@ -879,7 +879,7 @@ const Gerer = () => {
                 </Button>
               </div>
             </Col>
-            <Col xs={6} sm={3} md="auto">
+            <Col xs={3} sm={3} md="auto">
               <div className="boutong">
                 <Button
                   variant="primary"
@@ -888,11 +888,11 @@ const Gerer = () => {
                   onClick={handleChangerMoisAnneeClick}
                   disabled={!isSaisieClicked}
                 >
-                  Changer Mois/année
+                  Changer
                 </Button>
               </div>
             </Col>
-            <Col xs={12} md="auto" className="mt-2 mt-md-0 ms-md-auto">
+            <Col xs={12} md="auto" className="mt-2 mt-md-0 ms-md-auto text-end">
               <div className="boutond">
                 <Button
                   variant="primary"
@@ -900,7 +900,7 @@ const Gerer = () => {
                   className="custom-primaryg"
                   onClick={toggleAllAccordions}
                 >
-                  Developper ou reduire toutes les tables{" "}
+                  DEVELOPPER/REDUIRE TOUTES{" "}
                 </Button>
               </div>
             </Col>
@@ -912,18 +912,15 @@ const Gerer = () => {
                   Saisir mes factures
                 </Accordion.Header>
                 <Accordion.Body>
-                  <Row className="add-del">
-                    <Col md="auto">
+                  <div className="add-del">
                       <Button
                         variant="primary"
                         onClick={handleAddFacture}
-                        className="custom-primaryg"
+                        className="custom-primaryg me-1 me-md-2"
                         disabled={!isSaisieClicked} // Disable until Saisie is clicked
                       >
                         Ajouter
                       </Button>
-                    </Col>
-                    <Col md="auto">
                       <Button
                         variant="primary"
                         onClick={handleRemoveFacture}
@@ -932,8 +929,7 @@ const Gerer = () => {
                       >
                         Supprimer
                       </Button>
-                    </Col>
-                  </Row>
+                  </div>
                   <Container className="table-container">
                     <div className="table-responsive">
                       <Table hover className="table-custom">
@@ -1520,9 +1516,8 @@ const Gerer = () => {
                   Saisir mes Paie
                 </Accordion.Header>
                 <Accordion.Body>
-                  <Row className="add-del">
-                    <Col md="auto">
-                      <div className="boutong">
+                  <div className="add-del">
+                      <div className="boutong me-1 me-md-2">
                         <Button
                           variant="primary"
                           onClick={handleAddPaie}
@@ -1532,8 +1527,6 @@ const Gerer = () => {
                           Ajouter
                         </Button>
                       </div>
-                    </Col>
-                    <Col md="auto">
                       <div className="boutong">
                         <Button
                           variant="primary"
@@ -1544,8 +1537,7 @@ const Gerer = () => {
                           Supprimer
                         </Button>
                       </div>
-                    </Col>
-                  </Row>
+                  </div>
                   <Container className="table-container">
                     <div className="table-responsive">
                       <Table hover className="table-custom">
@@ -1773,18 +1765,15 @@ const Gerer = () => {
                   Saisir mes informations de retenue à la source
                 </Accordion.Header>
                 <Accordion.Body>
-                  <Row className="add-del">
-                    <Col md="auto">
+                  <div className="add-del">
                       <Button
                         variant="primary"
                         onClick={handleAddRetenue}
-                        className="custom-primaryg"
+                        className="custom-primaryg me-1 me-md-2"
                         disabled={!isSaisieClicked}
                       >
                         Ajouter
                       </Button>
-                    </Col>
-                    <Col md="auto">
                       <Button
                         variant="primary"
                         onClick={handleRemoveRetenue}
@@ -1793,8 +1782,7 @@ const Gerer = () => {
                       >
                         Supprimer
                       </Button>
-                    </Col>
-                  </Row>
+                  </div>
                   <Container className="table-container">
                     <div className="table-responsive">
                       <Table hover className="table-custom">
