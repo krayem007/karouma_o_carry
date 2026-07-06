@@ -803,7 +803,7 @@ div.card {
 .form-control:invalid {
   background-image: none !important;
   box-shadow: none !important;
-  /* Removes any remaining box-shadow */
+  padding-right: 0.75rem !important;
 }
 
 .form-group.required .control-label:after {

@@ -96,8 +96,8 @@ const Welcome = () => {
           fluid
           className="d-flex justify-content-center align-items-center flex-column welcome-cards-container"
         >
-          <Row className="justify-content-center gap-4">
-            <Col xs={12} sm="auto">
+          <Row className="justify-content-center gap-0 gap-md-4">
+            <Col xs="auto" sm="auto">
               <Link to="/gerer" className="modern-card-link">
                 <div className="icon-wrapper">
                   <i className="fa-solid fa-calculator"></i>
@@ -110,7 +110,7 @@ const Welcome = () => {
               </Link>
             </Col>
 
-            <Col xs={12} sm="auto">
+            <Col xs="auto" sm="auto">
               <Link to="/declaration" className="modern-card-link">
                 <div className="icon-wrapper">
                   <i className="fa-solid fa-print"></i>

@@ -15,11 +15,21 @@ const instance = axios.create({
 
 
 class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { expanded: false };
+  }
+
+  closeNavbar = () => this.setState({ expanded: false });
+
   render() {
     const { isLoggedIn, setIsLoggedIn } = this.props;
     return (
       <>
-        <Navbar expand="lg" className="navbar">
+        <Navbar expand="lg" className="navbar"
+          expanded={this.state.expanded}
+          onToggle={(expanded) => this.setState({ expanded })}
+        >
           <Container fluid>
             <Navbar.Brand as={Link} to="/">
               <img src={logo} alt="Déclaration Facile Logo" className="logo" />
@@ -31,7 +41,8 @@ class Header extends React.Component {
               <Nav className="ms-auto">
                 {isLoggedIn ? (
                   <>
-                    <Nav.Link as={Link} to="/moncompte" className="navbartext">
+                    <Nav.Link as={Link} to="/moncompte" className="navbartext"
+                      onClick={this.closeNavbar}>
                       Mon Compte
                     </Nav.Link>
                     <Nav.Link
@@ -41,6 +52,7 @@ class Header extends React.Component {
                         setIsLoggedIn(false);
                         instance.post("/logout").then((response) => 
                           {console.log(response.data);});
+                        this.closeNavbar();
                       }}
                       className="navbartext"
                     >
@@ -53,10 +65,12 @@ class Header extends React.Component {
                       as={Link}
                       to="/inscription"
                       className="navbartext"
+                      onClick={this.closeNavbar}
                     >
                       Créer un compte
                     </Nav.Link>
-                    <Nav.Link as={Link} to="/connexion" className="navbartext">
+                    <Nav.Link as={Link} to="/connexion" className="navbartext"
+                      onClick={this.closeNavbar}>
                       Connexion
                     </Nav.Link>
                   </>

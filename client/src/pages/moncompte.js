@@ -592,11 +592,11 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
-                  <Col md={2}>
+                  <Col xs={12} md={2}>
                     <Form.Label>Date de cessation d’activité :</Form.Label>
                   </Col>
 
-                  <Col md={1}>
+                  <Col xs={4} md={1} className="mb-2">
                     <Form.Group
                       controlId="cessation_jour"
                       className="form-group"
@@ -620,7 +620,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     </Form.Group>
                   </Col>
 
-                  <Col md={1}>
+                  <Col xs={4} md={1} className="mb-2">
                     <Form.Group
                       controlId="cessation_mois"
                       className="form-group"
@@ -644,7 +644,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     </Form.Group>
                   </Col>
 
-                  <Col md={2}>
+                  <Col xs={4} md={2} className="mb-2">
                     <Form.Group
                       controlId="cessation_annee"
                       className="form-group"
@@ -884,7 +884,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     Valider
                   </Button>
                 </div>
-                <div className="password-forgot">
+                <div className="password-forgot mt-4">
                   <Button
                     variant="link"
                     className="forgot"

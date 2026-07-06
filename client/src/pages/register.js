@@ -399,11 +399,11 @@ const Inscription = () => {
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
-            <Col md={2}>
+            <Col xs={12} md={2}>
               <Form.Label>Date de cessation d’activité :</Form.Label>
             </Col>
 
-            <Col md={1}>
+            <Col xs={4} md={1} className="mb-2">
               <Form.Group controlId="cessation_jour" className="form-group">
                 <Form.Label>Jour :</Form.Label>
                 <Form.Control
@@ -424,7 +424,7 @@ const Inscription = () => {
               </Form.Group>
             </Col>
 
-            <Col md={1}>
+            <Col xs={4} md={1} className="mb-2">
               <Form.Group controlId="cessation_mois" className="form-group">
                 <Form.Label>Mois :</Form.Label>
                 <Form.Control
@@ -445,7 +445,7 @@ const Inscription = () => {
               </Form.Group>
             </Col>
 
-            <Col md={2}>
+            <Col xs={4} md={2} className="mb-2">
               <Form.Group controlId="cessation_annee" className="form-group">
                 <Form.Label>Année :</Form.Label>
                 <Form.Control
