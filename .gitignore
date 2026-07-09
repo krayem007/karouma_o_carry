@@ -5,3 +5,8 @@ server/node_modules/
 # Build
 client/build/
 
+# Environment files (contain credentials)
+server/.env
+client/**/.env
+!server/.env.example
+

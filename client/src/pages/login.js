@@ -35,7 +35,7 @@ const Connexion = ({ setIsLoggedIn }) => {
     email: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState("");
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
   const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
   let karouma = false;
@@ -55,12 +55,12 @@ const Connexion = ({ setIsLoggedIn }) => {
       password: form_Data.password,
       email: form_Data.email
     };
-    const res = await instance.post("http://localhost:5002/login", data).then((response) => {
+    instance.post("http://localhost:5002/login", data).then((response) => {
       if (response.status === 200) {
         // If login is successful:
         if (response.data.status == 'success') {
           karouma = true;
-          setLoginError("");
+          setAlert({ message: "", type: "" });
           console.log(response.data.message);
           localStorage.setItem("user", response.data.user);
           const date = new Date(response.data.user_data.activite_date);
@@ -85,11 +85,17 @@ const Connexion = ({ setIsLoggedIn }) => {
         }
         else if (response.data.status == 'error') {
           karouma = false;
-          setLoginError("Adresse e-mail ou mot de passe incorrect.");
+          setAlert({ message: "Adresse e-mail ou mot de passe incorrect.", type: "error" });
         }
       }
       else if (response.status === 400) {
-        setLoginError("Adresse e-mail ou mot de passe incorrect.");
+        setAlert({ message: "Adresse e-mail ou mot de passe incorrect.", type: "error" });
+      }
+    }).catch((error) => {
+      if (error.response?.status === 429) {
+        setAlert({ message: error.response.data.message || "Trop de tentatives. Réessayez dans 15 minutes.", type: "error" });
+      } else {
+        setAlert({ message: "Erreur réseau. Veuillez réessayer.", type: "error" });
       }
     });
 
@@ -102,7 +108,7 @@ const Connexion = ({ setIsLoggedIn }) => {
       [name]: value,
     });
     set_Validated(false);
-    setLoginError("");
+    setAlert({ message: "", type: "" });
   };
 
   return (
@@ -126,6 +132,17 @@ const Connexion = ({ setIsLoggedIn }) => {
         ></script>
       </Helmet>
       <Container className="visualiser-page">
+        {alert.message && (
+          <Toast
+            className="toast"
+            bg={alert.type}
+            onClose={() => setAlert({ message: "", type: "" })}
+            autohide
+            delay={3000}
+          >
+            <Toast.Body>{alert.message}</Toast.Body>
+          </Toast>
+        )}
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
             <Link to="/">Accueil</Link>
@@ -188,11 +205,6 @@ const Connexion = ({ setIsLoggedIn }) => {
                 {validated && form_Data.password.length < 6 && (
                   <div className="login-error-msg">
                     Veuillez entrer votre mot de passe (minimum 6 caractères).
-                  </div>
-                )}
-                {loginError && (
-                  <div className="login-error-msg">
-                    {loginError}
                   </div>
                 )}
               </Form.Group>

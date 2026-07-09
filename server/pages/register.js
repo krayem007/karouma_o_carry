@@ -32,6 +32,22 @@ exports.save = async (req, res) => {
             nature_entite,
             details_regime,
             secteur} = req.body;
+
+            if (email) email = email.trim();
+            if (nom_prenom_raison) nom_prenom_raison = nom_prenom_raison.trim();
+            if (adresse) adresse = adresse.trim();
+            if (activite) activite = activite.trim();
+
+            if (!password || password.length < 6 || password.length > 128) {
+                console.log("password validation failed");
+                return res.json({ error: true, message: "Le mot de passe doit contenir entre 6 et 128 caractères" });
+            }
+
+            if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+                console.log("email validation failed");
+                return res.json({ error: true, message: "Format d'email invalide" });
+            }
+
             if (nombre_filial > 0)
                 console.log("k");
             else

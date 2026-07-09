@@ -1,5 +1,15 @@
 const nodemailer = require('nodemailer');
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 exports.send_email = async (req, res) => {
   const { name, email, objet, message } = req.body;
 
@@ -23,20 +33,25 @@ exports.send_email = async (req, res) => {
     }
   });
 
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeObjet = escapeHtml(objet || 'Non spécifié');
+  const safeMessage = escapeHtml(message || '');
+
   // Options de l'email
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.ADMIN_EMAIL,
-    subject: `Nouveau message de contact: ${objet || 'Sans objet'}`,
+    subject: `Nouveau message de contact: ${safeObjet}`,
     text: `Vous avez reçu un nouveau message de contact:\n\nNom: ${name}\nEmail: ${email}\nObjet: ${objet || 'Non spécifié'}\nMessage:\n${message}`,
     html: `<h3>Vous avez reçu un nouveau message de contact :</h3>
            <ul>
-             <li><strong>Nom :</strong> ${name}</li>
-             <li><strong>Email :</strong> ${email}</li>
-             <li><strong>Objet :</strong> ${objet || 'Non spécifié'}</li>
+             <li><strong>Nom :</strong> ${safeName}</li>
+             <li><strong>Email :</strong> ${safeEmail}</li>
+             <li><strong>Objet :</strong> ${safeObjet}</li>
            </ul>
            <h4>Message :</h4>
-           <p>${message.replace(/\n/g, '<br>')}</p>`
+           <p>${safeMessage.replace(/\n/g, '<br>')}</p>`
   };
 
   try {

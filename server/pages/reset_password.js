@@ -16,8 +16,8 @@ const db = mysql.createConnection({
 exports.request_reset = async (req, res) => {
   const { email } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ error: "L'adresse e-mail est requise." });
+  if (!email || !/^\S+@\S+\.\S+$/.test(email.trim())) {
+    return res.status(400).json({ error: "Format d'email invalide." });
   }
 
   // 1. Check if email exists
@@ -103,6 +103,10 @@ exports.apply_reset = async (req, res) => {
 
   if (!token || !newPassword) {
     return res.status(400).json({ error: "Token et nouveau mot de passe requis.", update: false });
+  }
+
+  if (newPassword.length < 6 || newPassword.length > 128) {
+    return res.status(400).json({ error: "Le mot de passe doit contenir entre 6 et 128 caractères", update: false });
   }
 
   // 1. Find user by token and check expiry

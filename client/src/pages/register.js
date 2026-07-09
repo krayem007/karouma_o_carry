@@ -103,8 +103,12 @@ const Inscription = () => {
             navigate("/connexion");
           }, 2000);
         }
-      }).catch(() => {
-        setAlert({ message: "Erreur réseau lors de l'inscription.", type: "error" });
+      }).catch((error) => {
+        if (error.response?.status === 429) {
+          setAlert({ message: error.response.data.message || "Trop de tentatives. Réessayez dans 15 minutes.", type: "error" });
+        } else {
+          setAlert({ message: "Erreur réseau lors de l'inscription.", type: "error" });
+        }
       });
     }
     set_Validated(true);

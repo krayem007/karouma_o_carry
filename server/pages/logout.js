@@ -1,11 +1,9 @@
 exports.logout = async (req, res) => {
-    console.log("logout func : ",req.body);
-    req.session.authorized = false;
-    console.log("authorized : ", req.session.authorized);
     req.session.destroy(err => {
         if (err) {
-          return res.status(500).send('Could not log out.');
+          return res.status(500).json({ message: 'Could not log out.' });
         }
-        res.clearCookie('connect.sid'); // name of the session ID cookie
-      });
+        res.clearCookie('connect.sid');
+        return res.status(200).json({ message: 'Déconnecté avec succès.' });
+    });
 };
