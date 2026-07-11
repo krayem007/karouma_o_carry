@@ -1,17 +1,7 @@
-const dotenv = require('dotenv');
-const mysql = require("mysql2");
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-
-dotenv.config({ path: '../.env' });
-
-const db = mysql.createConnection({
-  host: process.env.db_host,
-  user: process.env.db_user,
-  password: process.env.db_password,
-  database: process.env.db
-});
+const db = require('../db');
 
 exports.request_reset = async (req, res) => {
   const { email } = req.body;

@@ -1,17 +1,5 @@
-const dotenv = require('dotenv');
-const mysql = require("mysql2");
-const bcrypt = require('bcryptjs');
-
-dotenv.config({ path: '../.env' });
-
-/* -------------------- DB CONNECTION -------------------- */
-const db = mysql.createConnection({
-  host: process.env.db_host,
-  user: process.env.db_user,
-  password: process.env.db_password,
-  database: process.env.db,
-  dateStrings: true
-});
+const bcrypt = require('bcrypt');
+const db = require('../db');
 
 /* -------------------- PROMISE QUERY WRAPPER -------------------- */
 function dbQuery(sql, params) {
@@ -370,6 +358,7 @@ exports.post_dec = async (req, res) => {
     let total_fodec = 0;
 
     // Factures
+    const factureRows = [];
     req.body.factures.forEach((f, i) => {
       smm_tva_p1 = smm_tva_p1 + toSafeNumber(fc_tva_vente(f)) - toSafeNumber(fc_tva_achat(f));
 
@@ -435,38 +424,42 @@ exports.post_dec = async (req, res) => {
         ];
         ops.push(dbQuery(sql, vals));
       } else {
-        const row = {
+        factureRows.push({
           date: f.Date,
           type: f.Type,
           type_achat_vente: f.TypeAV,
           ref: safe_ref,
-          ht: ht,
-          tva: tva,
-          timber: timber,
+          ht,
+          tva,
+          timber,
           fodec: f.FODEC,
-          mtfodec: mtfodec,
+          mtfodec,
           tauxdc: tauxdcValue,
-          mtdc: mtdc,
-          ttc: ttc,
-          ttc_vente: ttc_vente,
-          ht_vente: ht_vente,
-          tva_vente: tva_vente,
-          ht_chat: ht_chat,
-          tva_achat: tva_achat,
+          mtdc,
+          ttc,
+          ttc_vente,
+          ht_vente,
+          tva_vente,
+          ht_chat,
+          tva_achat,
           nature_beneficiaire: nature_benef,
           regime_beneficiaire: regime_benef,
           montant_retenue_calcule: mt_retenue_calcule,
           decla_id: dec_id,
           client_id,
-        };
-        ops.push(dbQuery("INSERT INTO factures SET ?", row));
+        });
       }
     });
+    const fCols = ['date','type','type_achat_vente','ref','ht','tva','timber','fodec','mtfodec','tauxdc','mtdc','ttc','ttc_vente','ht_vente','tva_vente','ht_chat','tva_achat','nature_beneficiaire','regime_beneficiaire','montant_retenue_calcule','decla_id','client_id'];
+    if (factureRows.length > 0) {
+      ops.push(dbQuery(`INSERT INTO factures (${fCols.join(',')}) VALUES ${factureRows.map(() => `(${fCols.map(() => '?').join(',')})`).join(',')}`, factureRows.flatMap(r => fCols.map(c => r[c]))));
+    }
     let smm_tfp = 0;
     let smm_foprolos = 0;
     let smm_tfp_part1 = 0;
     // Paie
     const secteur = users[0].secteur || 'Type 2';
+    const paieRows = [];
     req.body.paie.forEach((p, i) => {
       let brut = toSafeNumber(p.salaireBrut);
       let num_kids = toSafeNumber(p.enfants);
@@ -501,23 +494,27 @@ exports.post_dec = async (req, res) => {
         ];
         ops.push(dbQuery(sql, vals));
       } else {
-        const row = {
+        paieRows.push({
           salarier: p.Salarier,
           famille: p.chef,
-          num_kids: num_kids,
-          brut: brut,
+          num_kids,
+          brut,
           net: safe_net,
           irpp_a: safe_irpp_a,
           irpp_m: safe_irpp_m,
           css: safe_css,
           decla_id: dec_id,
           client_id,
-        };
-        ops.push(dbQuery("INSERT INTO paie SET ?", row));
+        });
       }
     });
+    const pCols = ['salarier','famille','num_kids','brut','net','irpp_a','irpp_m','css','decla_id','client_id'];
+    if (paieRows.length > 0) {
+      ops.push(dbQuery(`INSERT INTO paie (${pCols.join(',')}) VALUES ${paieRows.map(() => `(${pCols.map(() => '?').join(',')})`).join(',')}`, paieRows.flatMap(r => pCols.map(c => r[c]))));
+    }
     let smm_tva_p2 = 0;
     // Retenue
+    const retenueRows = [];
     req.body.retenue.forEach((rtn, i) => {
       let ht = toSafeNumber(rtn.montantHT);
       let tva = toSafeNumber(rtn.tva);
@@ -548,21 +545,24 @@ exports.post_dec = async (req, res) => {
         ];
         ops.push(dbQuery(sql, vals));
       } else {
-        const row = {
+        retenueRows.push({
           type: rtn.source,
           nature_beneficiaire: nature,
           regime_fiscal: regime,
-          ht: ht,
-          tva: tva,
-          ttc: ttc,
-          tva_r: tva_r,
+          ht,
+          tva,
+          ttc,
+          tva_r,
           retenue: retenue_val,
           decla_id: dec_id,
           client_id,
-        };
-        ops.push(dbQuery("INSERT INTO retenue SET ?", row));
+        });
       }
     });
+    const rCols = ['type','nature_beneficiaire','regime_fiscal','ht','tva','ttc','tva_r','retenue','decla_id','client_id'];
+    if (retenueRows.length > 0) {
+      ops.push(dbQuery(`INSERT INTO retenue (${rCols.join(',')}) VALUES ${retenueRows.map(() => `(${rCols.map(() => '?').join(',')})`).join(',')}`, retenueRows.flatMap(r => rCols.map(c => r[c]))));
+    }
     let smm_tva = smm_tva_p1 + smm_tva_p2 - toSafeNumber(reporttva);
     if (smm_tva < 0) smm_tva = 0;
     let smm_ttrs = 0;
@@ -752,6 +752,15 @@ exports.delete_declarations = async (req, res) => {
     const decIds = req.body.decIds;
     if (!decIds || decIds.length === 0) {
       return res.status(400).json({ message: "Aucune déclaration sélectionnée", deleted: false });
+    }
+    for (const dec_id of decIds) {
+      const rows = await dbQuery("SELECT id FROM declarations WHERE id = ? AND client_id = ?", [dec_id, client_id]);
+      if (rows.length === 0) {
+        return res.status(404).json({
+          message: `La déclaration ID ${dec_id} n'existe pas ou ne vous appartient pas`,
+          deleted: false
+        });
+      }
     }
     const ops = [];
     for (const dec_id of decIds) {

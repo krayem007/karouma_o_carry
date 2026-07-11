@@ -1,15 +1,5 @@
-const dotenv = require('dotenv');
-const mysql = require("mysql2");
-const bcrypt = require('bcryptjs');
-
-dotenv.config({path: '../.env'});
-
-const db = mysql.createConnection({
-    host: process.env.db_host,
-    user : process.env.db_user,
-    password: process.env.db_password,
-    database: process.env.db
-});
+const bcrypt = require('bcrypt');
+const db = require('../db');
 
 
 
@@ -54,18 +44,17 @@ exports.save = async (req, res) => {
                 nombre_filial = 0;
 
     db.query('SELECT email FROM accounts WHERE email = ?', [email], async (error, results)=>{
-        console.log('query error: '+ error);
-        console.log('query results: '+ results);
         if(error)
         {
             console.log("couldn't check if the email already in use : ", error);
+            return res.json({ error: true, message: "Erreur base de données" });
         }
         else if (results.length > 0) {
             console.log("that email is already in use");
             return res.json({ error: true, message: "Un compte existe déjà avec cet email" });
         }
         else{
-            let hashedPassword = await bcrypt.hash(password, 12);
+            let hashedPassword = await bcrypt.hash(password, 10);
             console.log(hashedPassword)
             db.query('INSERT INTO accounts SET ?', {
                 code_acte: code_acte,
@@ -86,6 +75,7 @@ exports.save = async (req, res) => {
                     if(error)
                     {
                         console.log("couldn,t save the user in the data base : ", error);
+                        return res.json({ error: true, message: "Erreur lors de l'inscription" });
                     }else{
                         console.log("user registered : ", results);
                         return res.json({ success: true });

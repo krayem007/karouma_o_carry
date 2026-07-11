@@ -1,21 +1,31 @@
 const puppeteer = require("puppeteer");
-const path = require("path"); // <-- add this
-const dotenv = require("dotenv");
-const mysql = require("mysql2");
+const path = require("path");
 const fs = require("fs").promises;
 const handlebars = require("handlebars");
 const { Readable } = require("stream");
 const os = require("os");
+const db = require('../db');
 
-dotenv.config({ path: "../.env" });
+const MAX_CONCURRENT_PRINTS = 3;
+let activePrints = 0;
+const printWaitQueue = [];
 
-const db = mysql.createConnection({
-  host: process.env.db_host,
-  user: process.env.db_user,
-  password: process.env.db_password,
-  database: process.env.db,
-  dateStrings: true
-});
+function acquirePrintSlot() {
+  if (activePrints < MAX_CONCURRENT_PRINTS) {
+    activePrints++;
+    return Promise.resolve();
+  }
+  return new Promise(resolve => printWaitQueue.push(resolve));
+}
+
+function releasePrintSlot() {
+  if (printWaitQueue.length > 0) {
+    const next = printWaitQueue.shift();
+    next();
+  } else {
+    activePrints--;
+  }
+}
 
 // Promise-based db query wrapper
 function dbQuery(sql, params) {
@@ -604,54 +614,71 @@ exports.print_doc = async (req, res) => {
     const finalHtml = template(html_data);
 
     // Save the rendered HTML to a temp file so Puppeteer can resolve relative paths
-    // gggg [bug check] need to double check if this does create multi file or have mutex issue when multi req come from multi user
-    const tempHtmlPath = path.join(__dirname, "../print_js/_temp_render.html");
+    const tempHtmlPath = path.join(__dirname, `../print_js/_temp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.html`);
     await fs.writeFile(tempHtmlPath, finalHtml, "utf8");
 
     console.log("✅ HTML rendered to:", tempHtmlPath);
 
-    // Launch Puppeteer
-    const puppeteer = require("puppeteer-core");
+    await acquirePrintSlot();
 
-    const browser = await puppeteer.launch({
-      executablePath: "/usr/bin/google-chrome", headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    let browser;
+    try {
+      const puppeteer = require("puppeteer-core");
 
-    const page = await browser.newPage();
+      browser = await puppeteer.launch({
+        executablePath: "/usr/bin/google-chrome", headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      });
 
-    // Load HTML file from disk — relative CSS and images now work!
-    const fileUrl = "file://" + tempHtmlPath;
-    await page.goto(fileUrl, { waitUntil: "networkidle0" });
+      const page = await browser.newPage();
 
-    // Generate PDF as a stream
-    const pdfStream = await page.createPDFStream({
-      printBackground: true,
-      // format: "A4", // uncomment if you want to enforce A4
-    });
+      // Load HTML file from disk — relative CSS and images now work!
+      const fileUrl = "file://" + tempHtmlPath;
+      await page.goto(fileUrl, { waitUntil: "networkidle0" });
 
-    // Convert WHATWG stream → Node.js stream
-    const nodeStream = Readable.fromWeb(pdfStream);
+      // Generate PDF as a stream
+      const pdfStream = await page.createPDFStream({
+        printBackground: true,
+        // format: "A4", // uncomment if you want to enforce A4
+      });
 
-    // Send PDF as response
-    res.set({
-      "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="mypage.pdf"',
-    });
+      // Convert WHATWG stream → Node.js stream
+      const nodeStream = Readable.fromWeb(pdfStream);
 
-    nodeStream.pipe(res);
+      // Send PDF as response
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": 'attachment; filename="mypage.pdf"',
+      });
 
-    // Cleanup
-    nodeStream.on("end", async () => {
-      await browser.close();
-      console.log("✅ PDF stream completed and browser closed.");
-    });
+      nodeStream.pipe(res);
 
-    nodeStream.on("error", async (err) => {
-      console.error("❌ PDF stream error:", err);
-      await browser.close();
-      if (!res.headersSent) res.status(500).send("Failed to stream PDF");
-    });
+      const cleanup = async () => {
+        if (browser) {
+          try { await browser.close(); } catch (e) { }
+        }
+        try { await fs.unlink(tempHtmlPath); } catch (e) { }
+        releasePrintSlot();
+      };
+
+      nodeStream.on("end", async () => {
+        await cleanup();
+        console.log("✅ PDF stream completed and browser closed.");
+      });
+
+      nodeStream.on("error", async (err) => {
+        console.error("❌ PDF stream error:", err);
+        await cleanup();
+        if (!res.headersSent) res.status(500).send("Failed to stream PDF");
+      });
+    } catch (err) {
+      if (browser) {
+        try { await browser.close(); } catch (e) { }
+      }
+      try { await fs.unlink(tempHtmlPath); } catch (e) { }
+      releasePrintSlot();
+      throw err;
+    }
   } catch (err) {
     console.error("❌ print_doc error:", err);
     if (browser) {

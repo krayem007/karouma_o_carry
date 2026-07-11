@@ -1,15 +1,5 @@
-const dotenv = require('dotenv');
-const mysql = require("mysql2");
-const bcrypt = require('bcryptjs');
-
-dotenv.config({ path: '../.env' });
-
-const db = mysql.createConnection({
-  host: process.env.db_host,
-  user: process.env.db_user,
-  password: process.env.db_password,
-  database: process.env.db
-});
+const bcrypt = require('bcrypt');
+const db = require('../db');
 
 exports.change_my_account_data = (req, res) => {
   console.log(req.body);

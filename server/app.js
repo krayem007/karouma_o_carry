@@ -1,6 +1,5 @@
 
 const express = require ("express");
-const mysql = require('mysql2');
 const dotenv = require('dotenv');
 const path = require('path');
 const session = require('express-session');
@@ -18,6 +17,13 @@ if (!process.env.SESSION_SECRET) {
 }
 
 app.disable('x-powered-by');
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('UNHANDLED REJECTION:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err);
+});
 
 app.use(helmet({
     contentSecurityPolicy: {
@@ -40,13 +46,15 @@ app.use(cors({
     credentials: true,
   }));
 
-const authLimiter = rateLimit({
-    windowMs: 3 * 60 * 1000,
-    max: 50,
-    message: { error: true, message: "Trop de tentatives. Réessayez dans 3 minutes." },
-    standardHeaders: true,
-    legacyHeaders: false,
-});
+const authLimiter = process.env.SKIP_RATE_LIMIT
+  ? (req, res, next) => { if (process.env.NODE_ENV !== 'production') console.log('[RATE LIMIT] SKIPPED'); next(); }
+  : rateLimit({
+      windowMs: 3 * 60 * 1000,
+      max: 50,
+      message: { error: true, message: "Trop de tentatives. Réessayez dans 3 minutes." },
+      standardHeaders: true,
+      legacyHeaders: false,
+    });
 
 app.use(express.json());
 
@@ -61,20 +69,7 @@ app.use(session({
       sameSite: "lax",
     },
   }));
-const db = mysql.createConnection({
-    host: process.env.db_host,
-    user : process.env.db_user,
-    password: process.env.db_password,
-    database: process.env.db
-});
-db.connect( (error) => {
-    if(error){
-        console.log("mysql connection error :",error)
-    }
-    else{
-        console.log("MYSQL Connected...")
-    }
-})
+
 
 app.post("/register", authLimiter, require('./pages/register').save)
 app.post("/login", authLimiter, require('./pages/login').logging)
@@ -95,4 +90,5 @@ app.post("/apply_reset", authLimiter, require('./pages/reset_password').apply_re
 app.get("/verify_reset_token/:token", require('./pages/reset_password').verify_token)
 
 const port = 5002;
-app.listen(port, ()=> {console.log("server started on port 5002")})
+const server = app.listen(port, ()=> {console.log("server started on port 5002")})
+server.timeout = 120000;

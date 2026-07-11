@@ -363,124 +363,132 @@ const print_doc = () => {
                 </tr>
               </thead>
               <tbody>
-                {getSortedRows(rows.filter((row) => {
-                  return Object.keys(searchFilters).every((key) => {
-                    const filterVal = searchFilters[key].toLowerCase();
-                    if (!filterVal) return true;
-                    const rowVal = String(row[key] ?? "").toLowerCase();
-                    return rowVal.includes(filterVal);
-                  });
-                })).map((row, index) => (
-                  <tr key={row.dec_id || index} onDoubleClick={() => navigate(`/gerer?mois=${row.mois}&annee=${row.Anne}`)} style={{ cursor: 'pointer' }}>
-                    <td className="checkbox">
-                      <input
-                        type="checkbox"
-                        checked={row.selected || false}
-                        onChange={() => {
-                          setRows((prev) =>
-                            prev.map((r) =>
-                              r.dec_id === row.dec_id
-                                ? { ...r, selected: !r.selected }
-                                : r
-                            )
-                          );
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control
-                          className="textadj1"
-                          type="text"
-                          value={row.mois}
-                          onChange={() =>
-                            handleSelectAllRows(setRows, rows, index)
-                          }
-                        />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control
-                          className="textadj1"
-                          type="text"
-                          value={row.Anne}
-                          onChange={() =>
-                            handleSelectAllRows(setRows, rows, index)
-                          }
-                        />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control
-                          className="textadj1"
-                          value={row.totalRS}
-                          onChange={() =>
-                            handleSelectAllRows(setRows, rows, index)
-                          }
-                        />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control value={row.tfp} className="textadj1" />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control
-                          value={row.foprolos}
-                          className="textadj1"
-                        />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control
-                          value={row.droitConsommation}
-                          className="textadj1"
-                        />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control value={row.fodec} className="textadj1" />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control value={row.tva} className="textadj1" />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control
-                          value={row.droitTimbreFiscal}
-                          className="textadj1"
-                        />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control value={row.tcl} className="textadj1" />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group>
-                        <Form.Control
-                          value={row.totalDeclarer}
-                          className="textadj1"
-                        />
-                      </Form.Group>
-                    </td>
-                    <td style={hiddenStyle}>
-                      <Form.Group>
-                        <Form.Control value={row.id} className="textadj1" />
-                      </Form.Group>
+                {rows.length === 0 ? (
+                  <tr>
+                    <td colSpan={12} className="text-start text-muted py-3 ps-5">
+                      La table des déclarations est vide
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  getSortedRows(rows.filter((row) => {
+                    return Object.keys(searchFilters).every((key) => {
+                      const filterVal = searchFilters[key].toLowerCase();
+                      if (!filterVal) return true;
+                      const rowVal = String(row[key] ?? "").toLowerCase();
+                      return rowVal.includes(filterVal);
+                    });
+                  })).map((row, index) => (
+                    <tr key={row.dec_id || index} onDoubleClick={() => navigate(`/gerer?mois=${row.mois}&annee=${row.Anne}`)} style={{ cursor: 'pointer' }}>
+                      <td className="checkbox">
+                        <input
+                          type="checkbox"
+                          checked={row.selected || false}
+                          onChange={() => {
+                            setRows((prev) =>
+                              prev.map((r) =>
+                                r.dec_id === row.dec_id
+                                  ? { ...r, selected: !r.selected }
+                                  : r
+                              )
+                            );
+                          }}
+                        />
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control
+                            className="textadj1"
+                            type="text"
+                            value={row.mois}
+                            onChange={() =>
+                              handleSelectAllRows(setRows, rows, index)
+                            }
+                          />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control
+                            className="textadj1"
+                            type="text"
+                            value={row.Anne}
+                            onChange={() =>
+                              handleSelectAllRows(setRows, rows, index)
+                            }
+                          />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control
+                            className="textadj1"
+                            value={row.totalRS}
+                            onChange={() =>
+                              handleSelectAllRows(setRows, rows, index)
+                            }
+                          />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control value={row.tfp} className="textadj1" />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control
+                            value={row.foprolos}
+                            className="textadj1"
+                          />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control
+                            value={row.droitConsommation}
+                            className="textadj1"
+                          />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control value={row.fodec} className="textadj1" />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control value={row.tva} className="textadj1" />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control
+                            value={row.droitTimbreFiscal}
+                            className="textadj1"
+                          />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control value={row.tcl} className="textadj1" />
+                        </Form.Group>
+                      </td>
+                      <td>
+                        <Form.Group>
+                          <Form.Control
+                            value={row.totalDeclarer}
+                            className="textadj1"
+                          />
+                        </Form.Group>
+                      </td>
+                      <td style={hiddenStyle}>
+                        <Form.Group>
+                          <Form.Control value={row.id} className="textadj1" />
+                        </Form.Group>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </Table>
           </Container>

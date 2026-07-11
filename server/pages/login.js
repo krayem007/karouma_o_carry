@@ -1,23 +1,14 @@
-const dotenv = require('dotenv');
-const mysql = require("mysql2");
-const bcrypt = require('bcryptjs');
-
-dotenv.config({path: '../.env'});
-
-const db = mysql.createConnection({
-    host: process.env.db_host,
-    user : process.env.db_user,
-    password: process.env.db_password,
-    database: process.env.db
-});
+const bcrypt = require('bcrypt');
+const db = require('../db');
 
 exports.logging = async (req, res) => {
     console.log(req.body);
     const { password, email} = req.body;
-    let ret = db.query('SELECT * FROM accounts WHERE email = ?', [email], (error, results)=>{
+    db.query('SELECT * FROM accounts WHERE email = ?', [email], (error, results)=>{
         if(error)
          {
             console.log(error);
+            return res.status(500).json({ message: 'Database error', status: 'error' });
          }
          else if (results.length > 0) 
          {
@@ -55,12 +46,5 @@ exports.logging = async (req, res) => {
                 status: 'error',});
             return -2;
          }
-         console.log("shouldn't be here")
      })
-
-    /*res.status(400).json({
-        message: 'server error!!',
-        status: 'error',});
-    return -3;*/
-
 };
