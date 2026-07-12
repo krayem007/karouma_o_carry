@@ -50,7 +50,7 @@ const authLimiter = process.env.SKIP_RATE_LIMIT
   ? (req, res, next) => { if (process.env.NODE_ENV !== 'production') console.log('[RATE LIMIT] SKIPPED'); next(); }
   : rateLimit({
       windowMs: 3 * 60 * 1000,
-      max: 50,
+      max: 10,
       message: { error: true, message: "Trop de tentatives. Réessayez dans 3 minutes." },
       standardHeaders: true,
       legacyHeaders: false,
