@@ -11,6 +11,7 @@ import {
   Row,
   Button,
   Form,
+  InputGroup,
   Breadcrumb,
   Toast,
 } from "react-bootstrap";
@@ -31,6 +32,8 @@ const ResetPassword = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const [showPasswords, setShowPasswords] = useState({ newPw: false, confirmPw: false });
+  const togglePW = (f) => setShowPasswords(p => ({ ...p, [f]: !p[f] }));
   const [alert, setAlert] = useState(null);
   const [isValidToken, setIsValidToken] = useState(null); // null = checking, true = valid, false = invalid/expired
   const navigate = useNavigate();
@@ -158,27 +161,33 @@ const ResetPassword = () => {
             <Col md={6}>
               <Form.Group controlId="newPassword" className="form-group required">
                 <Form.Label className="control-label">Nouveau mot de passe :</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="newPassword"
-                  value={form_Data.newPassword}
-                  onChange={chngFn}
-                  minLength={6}
-                  required
-                  isInvalid={
-                    validated &&
-                    (form_Data.newPassword === "" || form_Data.newPassword.length < 6)
-                  }
-                  isValid={
-                    validated &&
-                    form_Data.newPassword.length >= 6
-                  }
-                />
-                <Form.Control.Feedback type="invalid">
-                  {form_Data.newPassword === ""
-                    ? "Veuillez entrer un nouveau mot de passe."
-                    : "Le mot de passe doit comporter au moins 6 caractères."}
-                </Form.Control.Feedback>
+                <InputGroup>
+                  <Form.Control
+                    type={showPasswords.newPw ? "text" : "password"}
+                    name="newPassword"
+                    value={form_Data.newPassword}
+                    onChange={chngFn}
+                    minLength={6}
+                    required
+                    isInvalid={
+                      validated &&
+                      (form_Data.newPassword === "" || form_Data.newPassword.length < 6)
+                    }
+                    isValid={
+                      validated &&
+                      form_Data.newPassword.length >= 6
+                    }
+                  />
+                  <Button variant="outline-secondary" className="password-toggle-btn" onClick={() => togglePW('newPw')}>
+                    <i className={`${showPasswords.newPw ? "fa-regular fa-eye-slash" : "fa-regular fa-eye"} password-toggle-icon`} />
+                  </Button>
+                </InputGroup>
+                {validated && form_Data.newPassword === "" && (
+                  <div className="login-error-msg">Veuillez entrer un nouveau mot de passe.</div>
+                )}
+                {validated && form_Data.newPassword.length < 6 && form_Data.newPassword !== "" && (
+                  <div className="login-error-msg">Le mot de passe doit comporter au moins 6 caractères.</div>
+                )}
               </Form.Group>
             </Col>
           </Row>
@@ -186,39 +195,40 @@ const ResetPassword = () => {
             <Col md={6}>
               <Form.Group controlId="confirmPassword" className="form-group required">
                 <Form.Label className="control-label">Confirmer le nouveau mot de passe :</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="confirmPassword"
-                  value={form_Data.confirmPassword}
-                  pattern={form_Data.newPassword}
-                  onChange={chngFn}
-                  minLength={6}
-                  required
-                  isInvalid={
-                    validated &&
-                    (form_Data.confirmPassword === "" ||
-                      form_Data.confirmPassword.length < 6 ||
-                      form_Data.confirmPassword !== form_Data.newPassword)
-                  }
-                  isValid={
-                    validated &&
-                    form_Data.confirmPassword.length >= 6 &&
-                    form_Data.newPassword === form_Data.confirmPassword
-                  }
-                />
-                <Form.Control.Feedback type="invalid">
-                  {form_Data.confirmPassword === ""
-                    ? "Veuillez confirmer le mot de passe."
-                    : form_Data.confirmPassword.length < 6
-                      ? "Le mot de passe doit comporter au moins 6 caractères."
-                      : "Les mots de passe ne correspondent pas."}
-                </Form.Control.Feedback>
-                <Form.Control.Feedback type="valid">
-                  {form_Data.confirmPassword === form_Data.newPassword &&
-                    form_Data.confirmPassword.length >= 6
-                    ? "Les mots de passe correspondent et sont valides."
-                    : ""}
-                </Form.Control.Feedback>
+                <InputGroup>
+                  <Form.Control
+                    type={showPasswords.confirmPw ? "text" : "password"}
+                    name="confirmPassword"
+                    value={form_Data.confirmPassword}
+                    pattern={form_Data.newPassword}
+                    onChange={chngFn}
+                    minLength={6}
+                    required
+                    isInvalid={
+                      validated &&
+                      (form_Data.confirmPassword === "" ||
+                        form_Data.confirmPassword.length < 6 ||
+                        form_Data.confirmPassword !== form_Data.newPassword)
+                    }
+                    isValid={
+                      validated &&
+                      form_Data.confirmPassword.length >= 6 &&
+                      form_Data.newPassword === form_Data.confirmPassword
+                    }
+                  />
+                  <Button variant="outline-secondary" className="password-toggle-btn" onClick={() => togglePW('confirmPw')}>
+                    <i className={`${showPasswords.confirmPw ? "fa-regular fa-eye-slash" : "fa-regular fa-eye"} password-toggle-icon`} />
+                  </Button>
+                </InputGroup>
+                {validated && form_Data.confirmPassword === "" && (
+                  <div className="login-error-msg">Veuillez confirmer votre nouveau mot de passe.</div>
+                )}
+                {validated && form_Data.confirmPassword.length < 6 && form_Data.confirmPassword !== "" && (
+                  <div className="login-error-msg">Le mot de passe doit comporter au moins 6 caractères.</div>
+                )}
+                {validated && form_Data.confirmPassword.length >= 6 && form_Data.confirmPassword !== form_Data.newPassword && (
+                  <div className="login-error-msg">Les mots de passe ne correspondent pas.</div>
+                )}
               </Form.Group>
             </Col>
           </Row>

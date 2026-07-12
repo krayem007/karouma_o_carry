@@ -11,6 +11,7 @@ import {
   Row,
   Button,
   Form,
+  InputGroup,
   Breadcrumb,
   Tab,
   Tabs,
@@ -52,6 +53,8 @@ const Moncompte = ({ setIsLoggedIn }) => {
   console.log("data : ", data);
   const [validated, set_Validated] = useState(false);
   const [validated1, set_Validated1] = useState(false);
+  const [showPasswords, setShowPasswords] = useState({ an: false, nv: false, confirm: false });
+  const togglePW = (f) => setShowPasswords(p => ({ ...p, [f]: !p[f] }));
   const [form_Data, set_Form_Data] = useState({
     anpassword: "",
     confirm_password: "",
@@ -270,6 +273,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
       }
     }
 
+    setDeleteError(false);
     set_Validated1(true);
   };
 
@@ -776,23 +780,32 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Label className="control-label">
                         Ancien mot de passe :
                       </Form.Label>
-                      <Form.Control
-                        type="password"
-                        name="anpassword"
-                        value={form_Data.anpassword}
-                        className="mail_input"
-                        onChange={chngFn}
-                        minLength={6}
-                        required
-                        isInvalid={
-                          (validated1 && (!OldPasswordCheck || form_Data.anpassword === "")) || deleteError
-                        }
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {(!OldPasswordCheck && form_Data.anpassword !== "")
-                          ? "L'ancien mot de passe que vous avez saisi est incorrect."
-                          : "Veuillez entrer votre ancien mot de passe."}
-                      </Form.Control.Feedback>
+                      <InputGroup>
+                        <Form.Control
+                          type={showPasswords.an ? "text" : "password"}
+                          name="anpassword"
+                          value={form_Data.anpassword}
+                          className="mail_input"
+                          onChange={chngFn}
+                          minLength={6}
+                          required
+                          isInvalid={
+                            (validated1 && (!OldPasswordCheck || form_Data.anpassword === "")) || deleteError
+                          }
+                        />
+                        <Button variant="outline-secondary" className="password-toggle-btn" onClick={() => togglePW('an')}>
+                          <i className={`${showPasswords.an ? "fa-regular fa-eye-slash" : "fa-regular fa-eye"} password-toggle-icon`} />
+                        </Button>
+                      </InputGroup>
+                      {validated1 && form_Data.anpassword === "" && (
+                        <div className="login-error-msg">Veuillez entrer votre ancien mot de passe.</div>
+                      )}
+                      {deleteError && form_Data.anpassword === "" && (
+                        <div className="login-error-msg">Veuillez entrer votre ancien mot de passe pour supprimer votre compte.</div>
+                      )}
+                      {validated1 && !OldPasswordCheck && form_Data.anpassword !== "" && (
+                        <div className="login-error-msg">L'ancien mot de passe que vous avez saisi est incorrect.</div>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>
@@ -805,33 +818,40 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Label className="control-label">
                         Nouveau mot de passe :
                       </Form.Label>
-                      <Form.Control
-                        type="password"
-                        name="nvpassword"
-                        className="mail_input"
-                        value={form_Data.nvpassword}
-                        onChange={chngFn}
-                        minLength={6}
-                        required
-                        isInvalid={
-                          validated1 &&
-                          (form_Data.nvpassword === "" ||
-                            form_Data.nvpassword.length < 6 ||
-                            form_Data.nvpassword === form_Data.anpassword)
-                        }
-                        isValid={
-                          validated1 &&
-                          form_Data.nvpassword.length >= 6 &&
-                          form_Data.nvpassword !== form_Data.anpassword
-                        }
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {form_Data.nvpassword === ""
-                          ? "Veuillez entrer votre nouveau mot de passe."
-                          : form_Data.nvpassword.length < 6
-                            ? "Le mot de passe doit comporter au moins 6 caractères."
-                            : "Le nouveau mot de passe doit être différent de l'ancien."}
-                      </Form.Control.Feedback>
+                      <InputGroup>
+                        <Form.Control
+                          type={showPasswords.nv ? "text" : "password"}
+                          name="nvpassword"
+                          className="mail_input"
+                          value={form_Data.nvpassword}
+                          onChange={chngFn}
+                          minLength={6}
+                          required
+                          isInvalid={
+                            validated1 &&
+                            (form_Data.nvpassword === "" ||
+                              form_Data.nvpassword.length < 6 ||
+                              form_Data.nvpassword === form_Data.anpassword)
+                          }
+                          isValid={
+                            validated1 &&
+                            form_Data.nvpassword.length >= 6 &&
+                            form_Data.nvpassword !== form_Data.anpassword
+                          }
+                        />
+                        <Button variant="outline-secondary" className="password-toggle-btn" onClick={() => togglePW('nv')}>
+                          <i className={`${showPasswords.nv ? "fa-regular fa-eye-slash" : "fa-regular fa-eye"} password-toggle-icon`} />
+                        </Button>
+                      </InputGroup>
+                      {validated1 && form_Data.nvpassword === "" && (
+                        <div className="login-error-msg">Veuillez entrer votre nouveau mot de passe.</div>
+                      )}
+                      {validated1 && form_Data.nvpassword.length < 6 && form_Data.nvpassword !== "" && (
+                        <div className="login-error-msg">Le mot de passe doit comporter au moins 6 caractères.</div>
+                      )}
+                      {validated1 && form_Data.nvpassword.length >= 6 && form_Data.nvpassword === form_Data.anpassword && (
+                        <div className="login-error-msg">Le nouveau mot de passe doit être différent de l'ancien.</div>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>
@@ -845,42 +865,41 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       <Form.Label className="control-label">
                         Confirmation du nouveau mot de passe :
                       </Form.Label>
-                      <Form.Control
-                        type="password"
-                        name="confirm_password"
-                        className="mail_input"
-                        value={form_Data.confirm_password}
-                        pattern={form_Data.nvpassword}
-                        onChange={chngFn}
-                        minLength={6}
-                        required
-                        isInvalid={
-                          validated1 &&
-                          (form_Data.confirm_password === "" || // Empty
-                            form_Data.confirm_password.length < 6 || // Less than 6 characters
-                            form_Data.confirm_password !== form_Data.nvpassword) // Ensure it has at least 6 characters
-                        }
-                        isValid={
-                          validated1 &&
-                          form_Data.confirm_password.length >= 6 && // At least 6 characters
-                          form_Data.nvpassword === form_Data.confirm_password // Must match
-                        }
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {form_Data.confirm_password === ""
-                          ? "Veuillez confirmer votre mot de passe."
-                          : form_Data.confirm_password.length < 6
-                            ? "Le mot de passe doit comporter au moins 6 caractères."
-                            : "Les mots de passe ne correspondent pas."}
-                      </Form.Control.Feedback>
-
-                      {/* Feedback for valid case */}
-                      <Form.Control.Feedback type="valid">
-                        {form_Data.confirm_password === form_Data.nvpassword &&
-                          form_Data.confirm_password.length >= 6
-                          ? "Les mots de passe correspondent et sont valides."
-                          : ""}
-                      </Form.Control.Feedback>
+                      <InputGroup>
+                        <Form.Control
+                          type={showPasswords.confirm ? "text" : "password"}
+                          name="confirm_password"
+                          className="mail_input"
+                          value={form_Data.confirm_password}
+                          pattern={form_Data.nvpassword}
+                          onChange={chngFn}
+                          minLength={6}
+                          required
+                          isInvalid={
+                            validated1 &&
+                            (form_Data.confirm_password === "" ||
+                              form_Data.confirm_password.length < 6 ||
+                              form_Data.confirm_password !== form_Data.nvpassword)
+                          }
+                          isValid={
+                            validated1 &&
+                            form_Data.confirm_password.length >= 6 &&
+                            form_Data.nvpassword === form_Data.confirm_password
+                          }
+                        />
+                        <Button variant="outline-secondary" className="password-toggle-btn" onClick={() => togglePW('confirm')}>
+                          <i className={`${showPasswords.confirm ? "fa-regular fa-eye-slash" : "fa-regular fa-eye"} password-toggle-icon`} />
+                        </Button>
+                      </InputGroup>
+                      {validated1 && form_Data.confirm_password === "" && (
+                        <div className="login-error-msg">Veuillez confirmer votre nouveau mot de passe.</div>
+                      )}
+                      {validated1 && form_Data.confirm_password.length < 6 && form_Data.confirm_password !== "" && (
+                        <div className="login-error-msg">Le mot de passe doit comporter au moins 6 caractères.</div>
+                      )}
+                      {validated1 && form_Data.confirm_password.length >= 6 && form_Data.confirm_password !== form_Data.nvpassword && (
+                        <div className="login-error-msg">Les mots de passe ne correspondent pas.</div>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>

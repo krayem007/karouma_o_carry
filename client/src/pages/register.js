@@ -13,6 +13,7 @@ import {
   Row,
   Button,
   Form,
+  InputGroup,
   Breadcrumb,
   Toast,
 } from "react-bootstrap";
@@ -24,6 +25,8 @@ const CANONICAL = Config.SITE_DOMAIN + "/inscription";
 const Inscription = () => {
   const navigate = useNavigate(); // Initialize navigate hook
   const [validated, set_Validated] = useState(false);
+  const [showPasswords, setShowPasswords] = useState({ pw: false, confirm: false });
+  const togglePW = (f) => setShowPasswords(p => ({ ...p, [f]: !p[f] }));
   const [form_Data, set_Form_Data] = useState({
     password: "",
     confirm_password: "",
@@ -559,19 +562,24 @@ const Inscription = () => {
                 <Form.Label className="control-label">
                   Mot de passe :
                 </Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={form_Data.password}
-                  onChange={chngFn}
-                  minLength={6}
-                  className="mail_input"
-                  required
-                  isInvalid={validated && form_Data.password.length < 6}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Le mot de passe doit comporter plus de 6 caractères.
-                </Form.Control.Feedback>
+                <InputGroup>
+                  <Form.Control
+                    type={showPasswords.pw ? "text" : "password"}
+                    name="password"
+                    value={form_Data.password}
+                    onChange={chngFn}
+                    minLength={6}
+                    className="mail_input"
+                    required
+                    isInvalid={validated && form_Data.password.length < 6}
+                  />
+                  <Button variant="outline-secondary" className="password-toggle-btn" onClick={() => togglePW('pw')}>
+                    <i className={`${showPasswords.pw ? "fa-regular fa-eye-slash" : "fa-regular fa-eye"} password-toggle-icon`} />
+                  </Button>
+                </InputGroup>
+                {validated && form_Data.password.length < 6 && (
+                  <div className="login-error-msg">Le mot de passe doit comporter plus de 6 caractères.</div>
+                )}
               </Form.Group>
             </Col>
           </Row>
@@ -584,45 +592,42 @@ const Inscription = () => {
                 <Form.Label className="control-label">
                   Confirmation du mot de passe :
                 </Form.Label>
-                <Form.Control
-                  type="password"
-                  name="confirm_password"
-                  className="mail_input"
-                  value={form_Data.confirm_password}
-                  pattern={form_Data.password}
-                  onChange={chngFn}
-                  minLength={6}
-                  required
-                  // Invalid state: empty, less than 6 characters, or mismatch
-                  isInvalid={
-                    validated &&
-                    (form_Data.confirm_password === "" || // Empty
-                      form_Data.confirm_password.length < 6 || // Less than 6 characters
-                      form_Data.confirm_password !== form_Data.password) // Ensure it has at least 6 characters
-                  }
-                  // Valid state: passwords must match and have the required length
-                  isValid={
-                    validated &&
-                    form_Data.confirm_password.length >= 6 && // At least 6 characters
-                    form_Data.password === form_Data.confirm_password // Must match
-                  }
-                />
+                <InputGroup>
+                  <Form.Control
+                    type={showPasswords.confirm ? "text" : "password"}
+                    name="confirm_password"
+                    className="mail_input"
+                    value={form_Data.confirm_password}
+                    pattern={form_Data.password}
+                    onChange={chngFn}
+                    minLength={6}
+                    required
+                    isInvalid={
+                      validated &&
+                      (form_Data.confirm_password === "" ||
+                        form_Data.confirm_password.length < 6 ||
+                        form_Data.confirm_password !== form_Data.password)
+                    }
+                    isValid={
+                      validated &&
+                      form_Data.confirm_password.length >= 6 &&
+                      form_Data.password === form_Data.confirm_password
+                    }
+                  />
+                  <Button variant="outline-secondary" className="password-toggle-btn" onClick={() => togglePW('confirm')}>
+                    <i className={`${showPasswords.confirm ? "fa-regular fa-eye-slash" : "fa-regular fa-eye"} password-toggle-icon`} />
+                  </Button>
+                </InputGroup>
 
-                <Form.Control.Feedback type="invalid">
-                  {form_Data.confirm_password === ""
-                    ? "Veuillez confirmer votre mot de passe."
-                    : form_Data.confirm_password.length < 6
-                      ? "Le mot de passe doit comporter plus de 6 caractères."
-                      : "Les mots de passe ne correspondent pas."}
-                </Form.Control.Feedback>
-
-                {/* Feedback for valid case */}
-                <Form.Control.Feedback type="valid">
-                  {form_Data.confirm_password === form_Data.password &&
-                    form_Data.confirm_password.length >= 6
-                    ? "Les mots de passe correspondent et sont valides."
-                    : ""}
-                </Form.Control.Feedback>
+                {validated && form_Data.confirm_password === "" && (
+                  <div className="login-error-msg">Veuillez confirmer votre mot de passe.</div>
+                )}
+                {validated && form_Data.confirm_password.length < 6 && form_Data.confirm_password !== "" && (
+                  <div className="login-error-msg">Le mot de passe doit comporter plus de 6 caractères.</div>
+                )}
+                {validated && form_Data.confirm_password.length >= 6 && form_Data.confirm_password !== form_Data.password && (
+                  <div className="login-error-msg">Les mots de passe ne correspondent pas.</div>
+                )}
               </Form.Group>
             </Col>
           </Row>
