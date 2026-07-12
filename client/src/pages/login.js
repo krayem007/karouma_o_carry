@@ -69,7 +69,7 @@ const Connexion = ({ setIsLoggedIn }) => {
           localStorage.setItem("identifiant_fiscal", response.data.user_data.identifiant_fiscal);
           localStorage.setItem("identifiant_tva", response.data.user_data.identifiant_tva);
           localStorage.setItem("code_categorie", response.data.user_data.code_categorie);
-          localStorage.setItem("nombre_filial", response.data.user_data.nombre_filiale);
+          localStorage.setItem("nombre_filial", String(response.data.user_data.nombre_filiale).padStart(3, '0'));
           localStorage.setItem("nom_prenom_raison", response.data.user_data.raison_sociale);
           localStorage.setItem("adresse", response.data.user_data.address);
           localStorage.setItem("code_postal", response.data.user_data.code_postal);

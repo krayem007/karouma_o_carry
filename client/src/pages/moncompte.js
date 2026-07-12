@@ -38,7 +38,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
     identifiant_fiscal: localStorage.getItem("identifiant_fiscal"),
     identifiant_tva: localStorage.getItem("identifiant_tva"),
     code_categorie: localStorage.getItem("code_categorie"),
-    nombre_filial: localStorage.getItem("nombre_filial"),
+    nombre_filial: (localStorage.getItem("nombre_filial") || "000").padStart(3, '0'),
     nom_prenom_raison: localStorage.getItem("nom_prenom_raison"),
     adresse: localStorage.getItem("adresse"),
     code_postal: localStorage.getItem("code_postal"),
@@ -198,7 +198,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
           localStorage.setItem("identifiant_fiscal", changed_data.identifiant_fiscal);
           localStorage.setItem("identifiant_tva", changed_data.identifiant_tva);
           localStorage.setItem("code_categorie", changed_data.code_categorie);
-          localStorage.setItem("nombre_filial", changed_data.nombre_filiale);
+          localStorage.setItem("nombre_filial", String(changed_data.nombre_filiale).padStart(3, '0'));
           localStorage.setItem("nom_prenom_raison", changed_data.raison_sociale);
           localStorage.setItem("adresse", changed_data.address);
           localStorage.setItem("code_postal", changed_data.code_postal);
