@@ -7,7 +7,7 @@ import { Container, Breadcrumb, Row, Card, Col } from "react-bootstrap";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5002', // Base URL of the Express backend
+  baseURL: '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 

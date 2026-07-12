@@ -93,7 +93,7 @@ const Inscription = () => {
         details_regime: form_Data.details_regime,
         secteur: form_Data.secteur
       };
-      axios.post("http://localhost:5002/register", data).then((response) => {
+      axios.post("/register", data).then((response) => {
         if (response.data.error) {
           setAlert({ message: response.data.message, type: "error" });
         } else if (response.data.success) {

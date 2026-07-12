@@ -1,4 +1,3 @@
-const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs").promises;
 const handlebars = require("handlebars");
@@ -6,26 +5,7 @@ const { Readable } = require("stream");
 const os = require("os");
 const db = require('../db');
 
-const MAX_CONCURRENT_PRINTS = 3;
-let activePrints = 0;
-const printWaitQueue = [];
-
-function acquirePrintSlot() {
-  if (activePrints < MAX_CONCURRENT_PRINTS) {
-    activePrints++;
-    return Promise.resolve();
-  }
-  return new Promise(resolve => printWaitQueue.push(resolve));
-}
-
-function releasePrintSlot() {
-  if (printWaitQueue.length > 0) {
-    const next = printWaitQueue.shift();
-    next();
-  } else {
-    activePrints--;
-  }
-}
+const getPool = require('../puppeteer-pool');
 
 // Promise-based db query wrapper
 function dbQuery(sql, params) {
@@ -110,7 +90,6 @@ exports.print_doc = async (req, res) => {
 
   const decl_date = req.body[0];
   console.log("decl_date :", decl_date);
-  console.log("user data:", users);
 
   const dec = await dbQuery(
     "SELECT id FROM declarations WHERE client_id = ? and date = ?",
@@ -600,9 +579,7 @@ exports.print_doc = async (req, res) => {
   const options = { day: "numeric", month: "long", year: "numeric" };
   const gen_date = now.toLocaleDateString("fr-FR", options);
   html_data.gen_date = gen_date;
-  console.log("html_data : ", html_data);
-
-  let browser;
+  const printStart = Date.now();
   try {
     // Load and compile Handlebars template
     const templatePath = path.join(
@@ -617,35 +594,21 @@ exports.print_doc = async (req, res) => {
     const tempHtmlPath = path.join(__dirname, `../print_js/_temp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.html`);
     await fs.writeFile(tempHtmlPath, finalHtml, "utf8");
 
-    console.log("✅ HTML rendered to:", tempHtmlPath);
+    const status = getPool().status();
+    console.log(`[PDF] HTML rendered — pool: ${status.active} active, ${status.available} avail, ${status.waiting} waiting`);
 
-    await acquirePrintSlot();
+    const { browser, page, release } = await getPool().acquire();
 
-    let browser;
     try {
-      const puppeteer = require("puppeteer-core");
-
-      browser = await puppeteer.launch({
-        executablePath: "/usr/bin/google-chrome", headless: true,
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      });
-
-      const page = await browser.newPage();
-
-      // Load HTML file from disk — relative CSS and images now work!
       const fileUrl = "file://" + tempHtmlPath;
-      await page.goto(fileUrl, { waitUntil: "networkidle0" });
+      await page.goto(fileUrl, { waitUntil: "networkidle0", timeout: 55000 });
 
-      // Generate PDF as a stream
       const pdfStream = await page.createPDFStream({
         printBackground: true,
-        // format: "A4", // uncomment if you want to enforce A4
       });
 
-      // Convert WHATWG stream → Node.js stream
       const nodeStream = Readable.fromWeb(pdfStream);
 
-      // Send PDF as response
       res.set({
         "Content-Type": "application/pdf",
         "Content-Disposition": 'attachment; filename="mypage.pdf"',
@@ -654,38 +617,28 @@ exports.print_doc = async (req, res) => {
       nodeStream.pipe(res);
 
       const cleanup = async () => {
-        if (browser) {
-          try { await browser.close(); } catch (e) { }
-        }
         try { await fs.unlink(tempHtmlPath); } catch (e) { }
-        releasePrintSlot();
+        await release();
+        const totalMs = Date.now() - printStart;
+        console.log(`[PDF] Completed in ${totalMs}ms`);
       };
 
       nodeStream.on("end", async () => {
         await cleanup();
-        console.log("✅ PDF stream completed and browser closed.");
       });
 
       nodeStream.on("error", async (err) => {
-        console.error("❌ PDF stream error:", err);
+        console.error("[PDF] stream error:", err);
         await cleanup();
         if (!res.headersSent) res.status(500).send("Failed to stream PDF");
       });
     } catch (err) {
-      if (browser) {
-        try { await browser.close(); } catch (e) { }
-      }
       try { await fs.unlink(tempHtmlPath); } catch (e) { }
-      releasePrintSlot();
+      await release();
       throw err;
     }
   } catch (err) {
-    console.error("❌ print_doc error:", err);
-    if (browser) {
-      try {
-        await browser.close();
-      } catch (e) { }
-    }
+    console.error("[PDF] print_doc error:", err.message);
     res.status(500).send("Failed to generate PDF: " + (err?.message || err));
   }
 };

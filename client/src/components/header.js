@@ -9,7 +9,7 @@ import axios from  "axios";
 import {useNavigate } from "react-router-dom";
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5002', // Base URL of the Express backend
+  baseURL: '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 

@@ -90,5 +90,25 @@ app.post("/apply_reset", authLimiter, require('./pages/reset_password').apply_re
 app.get("/verify_reset_token/:token", require('./pages/reset_password').verify_token)
 
 const port = 5002;
-const server = app.listen(port, ()=> {console.log("server started on port 5002")})
+const server = app.listen(port, () => {
+  console.log("server started on port 5002");
+  const pool = require('./puppeteer-pool')();
+  pool.initialize().catch(err => console.error("[POOL] Init error:", err));
+});
 server.timeout = 120000;
+
+async function gracefulShutdown(signal) {
+  console.log(`\n[APP] ${signal} received, shutting down...`);
+  server.close(() => {
+    console.log("[APP] HTTP server closed");
+  });
+  try {
+    const pool = require('./puppeteer-pool')();
+    await pool.shutdown();
+  } catch (e) {
+    console.error("[APP] Pool shutdown error:", e);
+  }
+  process.exit(0);
+}
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));

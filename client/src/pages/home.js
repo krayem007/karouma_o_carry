@@ -55,7 +55,7 @@ const Home = ({ isLoggedIn }) => {
 
     // Calcul du salaire net via l'API
     try {
-      const response = await fetch('http://localhost:5002/calculate_net', {
+      const response = await fetch('/calculate_net', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

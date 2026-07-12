@@ -19,7 +19,7 @@ import {
 } from "react-bootstrap";
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5000', // Base URL of the Express backend
+  baseURL: '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
@@ -55,7 +55,7 @@ const Connexion = ({ setIsLoggedIn }) => {
       password: form_Data.password,
       email: form_Data.email
     };
-    instance.post("http://localhost:5002/login", data).then((response) => {
+    instance.post("/login", data).then((response) => {
       if (response.status === 200) {
         // If login is successful:
         if (response.data.status == 'success') {

@@ -43,7 +43,7 @@ const Contact = () => {
     try {
       setDisabled(true);
 
-      const response = await axios.post('http://localhost:5002/contact', {
+      const response = await axios.post('/contact', {
         name,
         email,
         objet,
