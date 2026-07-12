@@ -10,7 +10,6 @@ const CANONICAL = Config.SITE_DOMAIN + "/";
 
 const Home = ({ isLoggedIn }) => {
   const [montantCNSS, setMontantCNSS] = useState('');
-  const [hasPrime, setHasPrime] = useState('');
   const [moisPrime, setMoisPrime] = useState('');
   const [chefFamille, setChefFamille] = useState('');
   const [nbEnfants, setNbEnfants] = useState('');
@@ -29,18 +28,9 @@ const Home = ({ isLoggedIn }) => {
       return;
     }
 
-    if (!hasPrime) {
-      setErrorMsg("Veuillez spécifier si vous avez perçu une prime ou non dans ce trimestre.");
+    if (!moisPrime || Number(moisPrime) <= 0) {
+      setErrorMsg("Veuillez saisir le nombre de mois travaillés dans le trimestre.");
       return;
-    }
-
-
-    if (hasPrime === 'Oui') {
-      const mois = Number(moisPrime);
-      if (moisPrime === '' || mois < 0) {
-        setErrorMsg("Le nombre de mois de prime ne peut pas être négatif ou vide.");
-        return;
-      }
     }
 
     if (!chefFamille) {
@@ -58,12 +48,8 @@ const Home = ({ isLoggedIn }) => {
     }
 
     // Calcul du salaire brut mensuel
-    let brut = 0;
-    if (hasPrime === 'Oui') {
-      brut = cnss / (3 + Number(moisPrime));
-    } else {
-      brut = cnss / 3;
-    }
+    const mois = Number(moisPrime);
+    let brut = mois > 0 ? cnss / mois : cnss / 3;
 
     setSalaireBrut(brut.toFixed(3));
 
@@ -261,9 +247,7 @@ const Home = ({ isLoggedIn }) => {
                 <i className="fa-solid fa-check-to-slot"></i>
               </div>
               <h3 className="card-titlecnss">
-                Outil simplifié pour la vérification CNSS et le calcul des
-                salaires brut et net
-              </h3>
+                Vérifiez la conformité de vos cotisations CNSS avec vos salaires brut et net en quelques clics.              </h3>
 
               <h4 className="cnss-subtitle">
                 Saisissez les détails de votre déclaration CNSS :
@@ -272,51 +256,27 @@ const Home = ({ isLoggedIn }) => {
               {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
 
               <Form className="text-start" onSubmit={(e) => { e.preventDefault(); handleCalculate(); }}>
-                <Row className="justify-content-center">
+                <Row>
                   <Col md={6}>
-                    <Form.Group className="mb-3 text-center">
+                    <Form.Group className="mb-3">
                       <Form.Label>Montant trimestriel déclaré au CNSS</Form.Label>
                       <Form.Control
                         type="number"
-                        className="cnssfc text-center"
+                        className="cnssfc"
                         value={montantCNSS}
                         onChange={(e) => setMontantCNSS(e.target.value)}
                       />
                     </Form.Group>
                   </Col>
-                </Row>
-
-                <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Y a-t-il une prime durant ce trimestre ?</Form.Label>
-                      <Form.Select
-                        className="cnssfc"
-                        name="prime_trimestre"
-                        value={hasPrime}
-                        onChange={(e) => {
-                          setHasPrime(e.target.value);
-                          if (e.target.value !== 'Oui') {
-                            setMoisPrime('');
-                          }
-                        }}
-                      >
-                        <option value="">Sélectionner...</option>
-                        <option value="Oui">Oui</option>
-                        <option value="Non">Non</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Nombre de mois de la prime</Form.Label>
+                      <Form.Label>Nombre de mois travaillés durant le trimestre</Form.Label>
                       <Form.Control
                         type="number"
                         className="cnssfc"
-                        min="0"
+                        min="1"
                         value={moisPrime}
                         onChange={(e) => setMoisPrime(e.target.value)}
-                        disabled={hasPrime !== 'Oui'}
                       />
                     </Form.Group>
                   </Col>

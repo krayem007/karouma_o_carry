@@ -4,7 +4,7 @@ import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Breadcrumb, Row, Card, Col } from "react-bootstrap";
-import axios from  "axios";
+import axios from "axios";
 
 const instance = axios.create({
   baseURL: 'http://localhost:5002', // Base URL of the Express backend
@@ -23,22 +23,19 @@ const Welcome = () => {
   console.log(user);
   const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
   useEffect(() => {
-    
-    instance.get("/welcome").then((response) => 
-      {
+
+    instance.get("/welcome").then((response) => {
         /*gg test*/console.log(response.data);
-        if (response.data.authorized == "true")
-        {
-          console.log("authorized client");
-        }
-        else
-        {
-          console.log("not authorized client");
-          navigate("/connexion");
-          //neet to logging first
-        }
-      });
-    }, []);
+      if (response.data.authorized == "true") {
+        console.log("authorized client");
+      }
+      else {
+        console.log("not authorized client");
+        navigate("/connexion");
+        //neet to logging first
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -85,8 +82,7 @@ const Welcome = () => {
                 enregistrées pour faciliter la validation de votre déclaration.
               </li>
               <li>
-                Une fois vos déclarations vérifiées, vous pouvez les imprimer en
-                sélectionnant l'option 'Imprimer vos déclarations.'
+                Une fois vos déclarations vérifiées, vous pouvez les imprimer dans la vue 'Imprimer vos déclarations.'
               </li>
             </ul>
           </Col>
