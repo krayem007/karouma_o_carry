@@ -336,7 +336,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         <Tabs
           defaultActiveKey="Mes informations personnelles"
           id="fill-tab-example"
-          className="mb-3"
+          className="mb-4 modern-tabs"
           fill
         >
           <Tab
@@ -747,18 +747,23 @@ const Moncompte = ({ setIsLoggedIn }) => {
                 onSubmit={submitFn1}
                 className="register"
               >
-                <Row className="main-user-info">
+                <Row className="main-user-info mb-4">
                   <Col md={6}>
-                    <Form.Group controlId="email" className="gray-background">
-                      <Form.Label>E-mail :</Form.Label>
-                      <Form.Control
-                        type="email"
-                        name="email"
-                        defaultValue={data.email}
-                        className="grey"
-                        required
-                        readOnly
-                      />
+                    <Form.Group controlId="email" className="modern-email-group">
+                      <Form.Label className="modern-label">
+                        <i className="fa-regular fa-envelope me-2 text-muted"></i>
+                        E-mail :
+                      </Form.Label>
+                      <div className="modern-input-wrapper">
+                        <Form.Control
+                          type="email"
+                          name="email"
+                          defaultValue={data.email}
+                          className="modern-input"
+                          required
+                          readOnly
+                        />
+                      </div>
                     </Form.Group>
                   </Col>
                 </Row>
