@@ -281,7 +281,7 @@ const print_doc = () => {
       return;
     }
 
-    const headers = ["Mois","Année","Total R.S","TFP","FOPROLOS","DC","FODEC","TVA","Timbre","TCL","Total à déclarer"];
+    const headers = ["Mois", "Année", "Total R.S", "TFP", "FOPROLOS", "DC", "FODEC", "TVA", "Timbre", "TCL", "Total à déclarer"];
     const rowsData = selectedRows.map(row => [
       row.mois, row.Anne, row.totalRS, row.tfp, row.foprolos,
       row.droitConsommation, row.fodec, row.tva, row.droitTimbreFiscal,
@@ -292,7 +292,7 @@ const print_doc = () => {
 
     try {
       await navigator.clipboard.writeText(tsv);
-      setCopyTooltip("Copié !");
+      setCopyTooltip("Copiées");
       setTimeout(() => setCopyTooltip("Copier vers Excel"), 2000);
     } catch {
       setAlertMessage("Échec de la copie.");
