@@ -25,6 +25,9 @@ exports.change_my_account_data = (req, res) => {
 
   updatableFields.forEach(field => {
     if (req.body[field] !== undefined && req.body[field] !== null && req.body[field] !== '') {
+      if (field === 'identifiant_fiscal' && !/^[0-9A-Z]{8}$/.test(req.body[field])) {
+        return res.status(400).json({ error: 'Identifiant fiscal invalide (8 caractères alphanumériques)', update: false });
+      }
       setClauses.push(`${field} = ?`);
       values.push(req.body[field]);
     }

@@ -154,7 +154,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
     );
     const isValid =
       /^[A-Z0-9_]{3,20}$/.test(form_Data.code_acte) &&
-      /^[0-9]{7}$/.test(form_Data.identifiant_fiscal) &&
+      /^[0-9A-Z]{8}$/.test(form_Data.identifiant_fiscal) &&
       /^[A-Z]$/.test(form_Data.identifiant_tva) &&
       /^[A-Z]$/.test(form_Data.code_categorie) &&
       /^[0-9]{3}$/.test(form_Data.nombre_filial) &&
@@ -391,16 +391,16 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         type="text"
                         name="identifiant_fiscal"
                         value={form_Data.identifiant_fiscal}
-                        pattern="[0-9]{7}"
+                        pattern="[0-9A-Z]{8}"
                         onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, "").slice(0, 7);
+                          const val = e.target.value.replace(/[^0-9A-Za-z]/g, "").toUpperCase().slice(0, 8);
                           chngFn({ target: { name: "identifiant_fiscal", value: val } });
                         }}
                         required
-                        isInvalid={validated && !/^[0-9]{7}$/.test(form_Data.identifiant_fiscal)}
+                        isInvalid={validated && !/^[0-9A-Z]{8}$/.test(form_Data.identifiant_fiscal)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Identifiant fiscal invalide (7 chiffres requis)
+                        Identifiant fiscal invalide (8 caractères alphanumériques)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>

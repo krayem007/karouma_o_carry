@@ -38,6 +38,11 @@ exports.save = async (req, res) => {
                 return res.json({ error: true, message: "Format d'email invalide" });
             }
 
+            if (!identifiant_fiscal || !/^[0-9A-Z]{8}$/.test(identifiant_fiscal)) {
+                console.log("identifiant_fiscal validation failed");
+                return res.json({ error: true, message: "Identifiant fiscal invalide (8 caractères alphanumériques)" });
+            }
+
             if (nombre_filial > 0)
                 console.log("k");
             else

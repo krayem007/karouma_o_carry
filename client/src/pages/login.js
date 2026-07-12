@@ -74,9 +74,9 @@ const Connexion = ({ setIsLoggedIn }) => {
           localStorage.setItem("adresse", response.data.user_data.address);
           localStorage.setItem("code_postal", response.data.user_data.code_postal);
           localStorage.setItem("activite", response.data.user_data.activite);
-          localStorage.setItem("cessation_jour", date.getDate());
-          localStorage.setItem("cessation_mois", (date.getMonth() + 1));
-          localStorage.setItem("cessation_annee", date.getFullYear());
+          localStorage.setItem("cessation_jour", String(date.getDate()).padStart(2, '0'));
+          localStorage.setItem("cessation_mois", String(date.getMonth() + 1).padStart(2, '0'));
+          localStorage.setItem("cessation_annee", String(date.getFullYear()).padStart(4, '0'));
           localStorage.setItem("nature_entite", response.data.user_data.nature_entite || "");
           localStorage.setItem("details_regime", response.data.user_data.details_regime || "");
           localStorage.setItem("secteur", response.data.user_data.secteur || "");
