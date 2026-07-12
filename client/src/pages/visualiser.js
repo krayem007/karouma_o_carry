@@ -543,7 +543,7 @@ const print_doc = () => {
           </div>
         </Row>
       </Container>
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered className="modern-modal">
         <Modal.Header closeButton>
           <Modal.Title>Confirmer la suppression</Modal.Title>
         </Modal.Header>

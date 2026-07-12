@@ -922,7 +922,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
           </Tab>
         </Tabs>
 
-        <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} centered>
+        <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} centered className="modern-modal">
           <Modal.Header closeButton>
             <Modal.Title>Confirmer la suppression</Modal.Title>
           </Modal.Header>

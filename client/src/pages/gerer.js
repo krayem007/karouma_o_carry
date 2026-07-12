@@ -906,7 +906,7 @@ const Gerer = () => {
             </Col>
           </Row>
           <Row className="row-accor">
-            <Accordion alwaysOpen activeKey={activeAccordion}>
+            <Accordion alwaysOpen activeKey={activeAccordion} className="modern-accordion">
               <Accordion.Item eventKey="0">
                 <Accordion.Header onClick={() => toggleAccordionItem("0")}>
                   Saisir mes factures
@@ -1510,7 +1510,7 @@ const Gerer = () => {
             </Accordion>
           </Row>
           <Row className="row-accor">
-            <Accordion alwaysOpen activeKey={activeAccordion}>
+            <Accordion alwaysOpen activeKey={activeAccordion} className="modern-accordion">
               <Accordion.Item eventKey="1">
                 <Accordion.Header onClick={() => toggleAccordionItem("1")}>
                   Saisir mes Paie
@@ -1759,7 +1759,7 @@ const Gerer = () => {
             </Accordion>
           </Row>
           <Row className="row-accor">
-            <Accordion alwaysOpen activeKey={activeAccordion}>
+            <Accordion alwaysOpen activeKey={activeAccordion} className="modern-accordion">
               <Accordion.Item eventKey="2">
                 <Accordion.Header onClick={() => toggleAccordionItem("2")}>
                   Saisir mes informations de retenue à la source

@@ -51,18 +51,30 @@ input[type="number"] {
 }
 
 /* header */
-/* scrollbar */
+/* --- Modern Scrollbar --- */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: crimson transparent;
+}
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey;
+  background: transparent;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: crimson;
+  background-color: crimson;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #b01030;
 }
 
 /* header */
@@ -981,7 +993,7 @@ td {
 
 /* Custom scrollbar for Firefox */
 .table-container {
-  scrollbar-color: crimson #f1f1f1;
+  scrollbar-color: crimson transparent;
   /* Thumb color and track color */
 }
 
@@ -1408,4 +1420,223 @@ form .feedw {
   color: #8c98a4 !important;
   cursor: not-allowed;
   border-color: #e4e7eb !important;
+}
+
+/* --- Modern Accordion --- */
+.modern-accordion {
+  border: none !important;
+  background-color: transparent !important;
+  margin-bottom: 20px;
+}
+
+.modern-accordion .accordion-item {
+  border: 1px solid #ced4da !important; /* Border plus visible */
+  border-radius: 12px !important;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Ombre légèrement plus marquée */
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background-color: #ffffff !important;
+}
+
+.modern-accordion .accordion-item:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Ombre plus visible au hover */
+  border-color: #adb5bd !important; /* Bordure plus sombre au hover */
+}
+
+.modern-accordion .accordion-header {
+  margin: 0;
+}
+
+.modern-accordion .accordion-button {
+  background-color: #ffffff !important;
+  color: #2c3e50 !important;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 18px 24px;
+  border: none;
+  box-shadow: none !important;
+  transition: all 0.3s ease;
+}
+
+.modern-accordion .accordion-button:not(.collapsed) {
+  background-color: #f8fcfb !important;
+  color: #1abc9c !important;
+  border-bottom: 1px solid #ced4da; /* Ligne de séparation plus visible */
+}
+
+.modern-accordion .accordion-button::after {
+  transition: transform 0.3s ease;
+}
+
+.modern-accordion .accordion-button:not(.collapsed)::after {
+  transform: rotate(-180deg);
+}
+
+.modern-accordion .accordion-body {
+  background-color: #ffffff !important;
+  padding: 24px;
+  color: #4a5568;
+}
+
+/* --- Modern Modal --- */
+.modern-modal .modal-content {
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+  background-color: #ffffff;
+  overflow: hidden;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modern-modal .modal-header {
+  border-bottom: 1px solid #eef2f5 !important;
+  padding: 20px 24px !important;
+  background-color: #f8fcfb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modern-modal .modal-title {
+  font-weight: 700;
+  font-size: 20px !important;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.modern-modal .btn-close {
+  background-color: transparent;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  padding: 10px;
+}
+
+.modern-modal .btn-close:hover {
+  opacity: 1;
+  background-color: rgba(220, 53, 69, 0.1);
+  border-radius: 50%;
+  transform: rotate(90deg);
+}
+
+.modern-modal .modal-body {
+  padding: 24px !important;
+  color: #4a5568;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.modern-modal .modal-footer {
+  border-top: 1px solid #eef2f5 !important;
+  padding: 16px 24px !important;
+  background-color: #fafbfc;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modern-modal .modal-footer .btn {
+  padding: 10px 20px !important;
+  font-weight: 600;
+  border-radius: 8px !important;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  margin: 0 !important;
+}
+
+.modern-modal .modal-footer .btn-secondary {
+  background-color: #ffffff !important;
+  color: #6c757d !important;
+  border: 1px solid #dcdfe3 !important;
+}
+
+.modern-modal .modal-footer .btn-secondary:hover {
+  background-color: #f8f9fa !important;
+  color: #495057 !important;
+  border-color: #ced4da !important;
+}
+
+.modern-modal .modal-footer .btn-primary,
+.modern-modal .modal-footer .btn-danger {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modern-modal .modal-footer .btn-primary:hover,
+.modern-modal .modal-footer .btn-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Modal Overlay modernisé (global) */
+.modal-backdrop.show {
+  opacity: 0.6 !important;
+  backdrop-filter: blur(4px);
+  background-color: #1a252f !important;
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+  .modern-modal .modal-dialog {
+    margin: 1rem;
+    width: auto;
+  }
+  .modern-modal .modal-content {
+    border-radius: 12px !important;
+  }
+  .modern-modal .modal-body {
+    padding: 20px !important;
+  }
+  .modern-modal .modal-footer {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+  .modern-modal .modal-footer .btn {
+    width: 100%;
+  }
+}
+
+/* --- Modern Arrows (Home) --- */
+.modern-arrow-col {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 15px !important;
+}
+
+.modern-arrow-icon {
+  font-size: 42px !important;
+  color: #767a7e !important; /* Couleur originale */
+  opacity: 0.6;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  animation: pulse-arrow 2s infinite ease-in-out;
+  margin: 0 !important;
+}
+
+.modern-arrow-col:hover .modern-arrow-icon {
+  opacity: 1;
+  transform: translateX(8px) scale(1.15) !important;
+  color: #2c3e50 !important; /* Devient bleu foncé au survol */
+}
+
+@keyframes pulse-arrow {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+  100% { transform: translateX(0); }
+}
+
+@media (max-width: 1030px) {
+  .modern-arrow-col {
+    display: none !important; /* On cache sur les petits écrans car les cartes passent en colonne */
+  }
 }

@@ -171,8 +171,8 @@ const Home = ({ isLoggedIn }) => {
             </Col>
           )}
           {!isLoggedIn && (
-            <Col md={1} className="arrow-col">
-              <i className="fas fa-angle-double-right" id="arrow"></i>
+            <Col md={1} className="arrow-col modern-arrow-col">
+              <i className="fas fa-angle-double-right modern-arrow-icon" id="arrow"></i>
             </Col>
           )}
           {isLoggedIn ? (
@@ -209,8 +209,8 @@ const Home = ({ isLoggedIn }) => {
               </Col>
             </>
           )}
-          <Col md={1} className="arrow-col">
-            <i className="fas fa-angle-double-right" id="arrow"></i>
+          <Col md={1} className="arrow-col modern-arrow-col">
+            <i className="fas fa-angle-double-right modern-arrow-icon" id="arrow"></i>
           </Col>
           {isLoggedIn ? (
             <>
