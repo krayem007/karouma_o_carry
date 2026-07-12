@@ -14,6 +14,8 @@ import {
   Modal,
   Col,
   Alert,
+  OverlayTrigger,
+  Tooltip,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -45,6 +47,7 @@ const Visualiser = () => {
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [copyTooltip, setCopyTooltip] = useState("Copier vers Excel");
 
   const getSortedRows = (rowsToSort) => {
     const { key, direction } = sortConfig;
@@ -269,6 +272,34 @@ const print_doc = () => {
     setIsPrinting(false);
   };
 
+  const copyToClipboard = async () => {
+    const selectedRows = getSortedRows(rows.filter(row => row.selected));
+
+    if (selectedRows.length === 0) {
+      setAlertMessage("Veuillez sélectionner une ou plusieurs déclarations à copier.");
+      setTimeout(() => setAlertMessage(null), 3000);
+      return;
+    }
+
+    const headers = ["Mois","Année","Total R.S","TFP","FOPROLOS","DC","FODEC","TVA","Timbre","TCL","Total à déclarer"];
+    const rowsData = selectedRows.map(row => [
+      row.mois, row.Anne, row.totalRS, row.tfp, row.foprolos,
+      row.droitConsommation, row.fodec, row.tva, row.droitTimbreFiscal,
+      row.tcl, row.totalDeclarer
+    ]);
+
+    const tsv = [headers.join("\t"), ...rowsData.map(r => r.join("\t"))].join("\n");
+
+    try {
+      await navigator.clipboard.writeText(tsv);
+      setCopyTooltip("Copié !");
+      setTimeout(() => setCopyTooltip("Copier vers Excel"), 2000);
+    } catch {
+      setAlertMessage("Échec de la copie.");
+      setTimeout(() => setAlertMessage(null), 3000);
+    }
+  };
+
   const hasSelected = rows.some((row) => row.selected);
 
   return (
@@ -302,6 +333,15 @@ const print_doc = () => {
           <Breadcrumb.Item active>Mes déclarations</Breadcrumb.Item>
         </Breadcrumb>
         <h1 class="form-title"> Mes déclarations </h1>
+        <Row>
+          <div className="d-flex justify-content-start mb-2">
+            <OverlayTrigger placement="top" overlay={<Tooltip>{copyTooltip}</Tooltip>}>
+              <Button variant="primary" className="custom-primary" onClick={copyToClipboard}>
+                <i className="fas fa-copy"></i>
+              </Button>
+            </OverlayTrigger>
+          </div>
+        </Row>
         <Row>
           <Container className="table-container">
             <Table hover responsive className="table-custom table-responsive">
@@ -522,7 +562,7 @@ const print_doc = () => {
                   Génération...
                 </>
               ) : (
-                "Imprimer"
+                <><i className="fas fa-print me-1"></i>Imprimer</>
               )}
             </Button>
             <Button
