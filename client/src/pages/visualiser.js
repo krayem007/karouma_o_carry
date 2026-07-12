@@ -295,8 +295,22 @@ const print_doc = () => {
       setCopyTooltip("Copiées");
       setTimeout(() => setCopyTooltip("Copier vers Excel"), 2000);
     } catch {
-      setAlertMessage("Échec de la copie.");
-      setTimeout(() => setAlertMessage(null), 3000);
+      try {
+        const textarea = document.createElement("textarea");
+        textarea.value = tsv;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        setCopyTooltip("Copiées");
+        setTimeout(() => setCopyTooltip("Copier vers Excel"), 2000);
+      } catch {
+        setAlertMessage("Échec de la copie.");
+        setTimeout(() => setAlertMessage(null), 3000);
+      }
     }
   };
 
