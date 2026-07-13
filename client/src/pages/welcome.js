@@ -1,9 +1,9 @@
-import react, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import icon from "../images/icon.png";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Breadcrumb, Row, Card, Col } from "react-bootstrap";
+import { Container, Breadcrumb, Row, Col } from "react-bootstrap";
 import axios from "axios";
 
 const instance = axios.create({
@@ -26,7 +26,7 @@ const Welcome = () => {
 
     instance.get("/welcome").then((response) => {
         /*gg test*/console.log(response.data);
-      if (response.data.authorized == "true") {
+      if (response.data.authorized === "true") {
         console.log("authorized client");
       }
       else {
@@ -35,7 +35,7 @@ const Welcome = () => {
         //neet to logging first
       }
     });
-  }, []);
+  }, [navigate]);
 
   return (
     <>

@@ -1,5 +1,5 @@
 import icon from "../images/icon.png";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
@@ -38,7 +38,6 @@ const Connexion = ({ setIsLoggedIn }) => {
   const [alert, setAlert] = useState({ message: "", type: "" });
 
   const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
-  let karouma = false;
 
   const submitFn = async (event) => {
     event.preventDefault();
@@ -58,8 +57,7 @@ const Connexion = ({ setIsLoggedIn }) => {
     instance.post("/login", data).then((response) => {
       if (response.status === 200) {
         // If login is successful:
-        if (response.data.status == 'success') {
-          karouma = true;
+        if (response.data.status === 'success') {
           setAlert({ message: "", type: "" });
           console.log(response.data.message);
           localStorage.setItem("user", response.data.user);
@@ -83,8 +81,7 @@ const Connexion = ({ setIsLoggedIn }) => {
           setIsLoggedIn(true);
           navigate("/welcome");
         }
-        else if (response.data.status == 'error') {
-          karouma = false;
+        else if (response.data.status === 'error') {
           setAlert({ message: "Adresse e-mail ou mot de passe incorrect.", type: "error" });
         }
       }

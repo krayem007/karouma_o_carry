@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons"; // Import the specific icon
 import { Container, Navbar, Nav } from "react-bootstrap";
 import axios from  "axios";
-import {useNavigate } from "react-router-dom";
 
 const instance = axios.create({
   baseURL: '', // Base URL of the Express backend

@@ -17,7 +17,6 @@ import Conditions from "./pages/condition";
 import Reinitialisation from "./pages/reinitialisation";
 import ResetPassword from "./pages/resetpassword";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const instance = axios.create({
   baseURL: '', // Base URL of the Express backend
@@ -31,7 +30,7 @@ function App() {
 
     instance.get("/welcome").then((response) => {
         /*gg test*/console.log(response.data);
-      if (response.data.authorized == "true") {
+      if (response.data.authorized === "true") {
         console.log("authorized client");
         setIsLoggedIn(true);
         //navigate("/welcome");
@@ -65,7 +64,7 @@ function App() {
           <Route path="/gerer" element={<Gerer />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/declaration" element={<Visualiser />} />
-          <Route path="/test_print" element={<handleDownload />} />
+
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/propos" element={<Propos />} />

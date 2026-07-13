@@ -12,7 +12,6 @@ import {
   Form,
   Spinner,
   Modal,
-  Col,
   Alert,
   OverlayTrigger,
   Tooltip,
@@ -149,7 +148,7 @@ const Visualiser = () => {
   useEffect(() => {
     instance.get("/summary").then((response) => {
       /*gg test*/ console.log("summary : ", response.data);
-      if (response.data.authorized == "true") {
+      if (response.data.authorized === "true") {
         console.log("authorized client");
         setRows([]);
         let fnewRows = [];
@@ -199,7 +198,7 @@ const Visualiser = () => {
         //neet to logging first
       }
     });
-  }, []);
+  }, [navigate]);
 
   /*
 const print_doc = () => {

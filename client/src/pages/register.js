@@ -216,21 +216,21 @@ const Inscription = () => {
                 <Form.Label className="control-label">
                   Identifiant fiscal :
                 </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="identifiant_fiscal"
-                    value={form_Data.identifiant_fiscal}
-                    pattern="[0-9A-Z]{8}"
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/[^0-9A-Za-z]/g, "").toUpperCase().slice(0, 8);
-                      chngFn({ target: { name: "identifiant_fiscal", value: val } });
-                    }}
-                    required
-                    isInvalid={validated && !/^[0-9A-Z]{8}$/.test(form_Data.identifiant_fiscal)}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    Identifiant fiscal invalide (8 caractères alphanumériques)
-                  </Form.Control.Feedback>
+                <Form.Control
+                  type="text"
+                  name="identifiant_fiscal"
+                  value={form_Data.identifiant_fiscal}
+                  pattern="[0-9A-Z]{8}"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9A-Za-z]/g, "").toUpperCase().slice(0, 8);
+                    chngFn({ target: { name: "identifiant_fiscal", value: val } });
+                  }}
+                  required
+                  isInvalid={validated && !/^[0-9A-Z]{8}$/.test(form_Data.identifiant_fiscal)}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Identifiant fiscal invalide ( 8 caractères)
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
 

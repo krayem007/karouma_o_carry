@@ -89,7 +89,7 @@ const Gerer = () => {
     const date = { annee: a, mois: m };
     instance.post("/get_dec", date).then((response) => {
       console.log(" decla found : ", response.data);
-      if (response.data.dec == true) {
+      if (response.data.dec === true) {
         setReportTVA(response.data.send_data.reporttva ?? "");
         //handleAddFacture(true, response.data.send_data.factures);
         let fnewRows = [];
@@ -146,7 +146,7 @@ const Gerer = () => {
           });
         }
         setRetenue(rnewRows);
-      } else if (response.data.not_found != true) {
+      } else if (response.data.not_found !== true) {
         setAlert({
           message: response.data.message || "Erreur de chargement",
           type: "error",
@@ -196,7 +196,8 @@ const Gerer = () => {
   const [annee, setAnnee] = useState("");
   const [mois, setMois] = useState("");
   const [ReportTVA, setReportTVA] = useState("");
-  const [retard, setRetard] = useState("");
+
+
 
   // Check if both fields are filled
   const isFormValid = annee !== "" && mois !== "" && mois !== "Mois";
@@ -205,7 +206,7 @@ const Gerer = () => {
   useEffect(() => {
     instance.get("/welcome").then((response) => {
       /*gg test*/ console.log(response.data);
-      if (response.data.authorized == "true") {
+      if (response.data.authorized === "true") {
         console.log("authorized client");
       } else {
         console.log("not authorized client");
@@ -213,7 +214,7 @@ const Gerer = () => {
         //neet to logging first
       }
     });
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -394,6 +395,7 @@ const Gerer = () => {
       if (f.Timbre !== undefined && f.Timbre !== "" && f.Timbre != null && toSafeNumber(f.Timbre) <= 0) hasInvalidZero = true;
       if (f.TauxDC !== undefined && f.TauxDC !== "" && f.TauxDC != null && toSafeNumber(f.TauxDC) <= 0) hasInvalidZero = true;
       if (f.MTDC !== undefined && f.MTDC !== "" && f.MTDC != null && toSafeNumber(f.MTDC) <= 0) hasInvalidZero = true;
+      if (f.montantRetenueCalcule !== undefined && f.montantRetenueCalcule !== "" && f.montantRetenueCalcule != null && toSafeNumber(f.montantRetenueCalcule) <= 0 && showRetenueColumns(f)) hasInvalidZero = true;
     });
 
     (Array.isArray(paie) ? paie : []).forEach(p => {
@@ -1207,7 +1209,7 @@ const Gerer = () => {
                                       onChange={(e) => {
                                         const val = e.target.value;
                                         const normalized = val.replace(/,/g, ".");
-                                        if (val === "" || !isNaN(Number(normalized)) && Number(normalized) >= 0) {
+                                        if (val === "" || (!isNaN(Number(normalized)) && Number(normalized) >= 0)) {
                                           chngFn(index, { ...facture, Timbre: val }, "Timbre");
                                         }
                                       }}
@@ -1469,11 +1471,13 @@ const Gerer = () => {
                                         isInvalid={
                                           validated &&
                                           showRetenueColumns(facture) &&
-                                          !facture.montantRetenueCalcule
+                                          (!facture.montantRetenueCalcule || Number(facture.montantRetenueCalcule) <= 0)
                                         }
                                       />
                                       <Form.Control.Feedback className="feedback" type="invalid">
-                                        Veuillez saisir le montant retenue
+                                        {(!facture.montantRetenueCalcule || facture.montantRetenueCalcule === "")
+                                          ? "Veuillez saisir le montant retenue"
+                                          : "Le montant retenue ne doit pas être nul"}
                                       </Form.Control.Feedback>
                                     </td>
                                   </>

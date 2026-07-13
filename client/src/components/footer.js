@@ -104,7 +104,7 @@ class Footer extends React.Component {
             </Row>
             <Row className="text-center">
               <Col>
-                <a href="#">
+                <a href="#top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
                   <div className="up">
                     <i className="fa fa-angle-up" aria-hidden="true"></i>
                   </div>

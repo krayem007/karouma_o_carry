@@ -83,7 +83,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
 
     instance.get("/welcome").then((response) => {
         /*gg test*/console.log(response.data);
-      if (response.data.authorized == "true") {
+      if (response.data.authorized === "true") {
         console.log("authorized client");
       }
       else {
@@ -92,7 +92,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         //neet to logging first
       }
     });
-  }, []);
+  }, [navigate]);
 
   const [alert, setAlert] = useState(null);
   const [deleteError, setDeleteError] = useState(false);
@@ -103,7 +103,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
     setShowDeleteConfirm(false);
     const data_del = { email: form_Data.email, password: form_Data.anpassword };
     instance.post("/delete_account", data_del).then((response) => {
-      if (response.data.del == true) {
+      if (response.data.del === true) {
         setAlert({
           message: "Votre compte a été supprimé avec succès.",
           type: "success",
@@ -192,7 +192,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
       };
       console.log("changed data : ", changed_data)
       instance.post("/my_account_data", changed_data).then((response) => {
-        if (response.data.update == true) {
+        if (response.data.update === true) {
           console.log("before setting the local storage : ", changed_data);
           localStorage.setItem("code_acte", changed_data.code_acte);
           localStorage.setItem("identifiant_fiscal", changed_data.identifiant_fiscal);
@@ -242,7 +242,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
           newPassword: form_Data.nvpassword
         };
         instance.post("/spiderPUSS", psspssdata).then((response) => {
-          if (response.data.pssdate == true) {
+          if (response.data.pssdate === true) {
             setAlert({
               message: "Votre mot de passe a été changé avec succès.",
               type: "success",
@@ -257,6 +257,12 @@ const Moncompte = ({ setIsLoggedIn }) => {
           else {
             OldPasswordCheck = false;
           }
+        }).catch((error) => {
+          const msg = error.response?.data?.error === "Incorrect old password"
+            ? "L'ancien mot de passe ne correspond pas au mot de passe actuel."
+            : (error.response?.data?.error || "Erreur lors du changement de mot de passe.");
+          setAlert({ message: msg, type: "error" });
+          setTimeout(() => setAlert(null), 3000);
         });
 
       }
@@ -404,7 +410,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^[0-9A-Z]{8}$/.test(form_Data.identifiant_fiscal)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Identifiant fiscal invalide (8 caractères alphanumériques)
+                        Identifiant fiscal invalide ( 8 caractères)
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
