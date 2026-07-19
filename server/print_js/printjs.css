@@ -20,21 +20,21 @@ body {
 .content {
   width: 100%;
   max-width: 210mm;
-  height: 297mm;
+  min-height: 297mm;
   margin: auto;
   padding: 20px;
   box-sizing: border-box;
   font-family: "Times New Roman", Times, serif;
   border-bottom: 1px solid rgb(173, 173, 173);
-  break-after: page;
-  /* Compatible with more PDF tools */
+  page-break-after: always;
+  page-break-inside: avoid;
   direction: rtl;
   text-align: right;
   /* Ensure text aligns properly */
 }
 
 .content:last-child {
-  break-after: auto;
+  page-break-after: auto;
 }
 
 .inligne {
@@ -344,13 +344,13 @@ td {
 }
 
 .table3style {
-  width: 730px;
+  width: 720px;
   height: 66px;
   border: 1.5px;
 }
 
 .table5style {
-  width: 730px;
+  width: 720px;
   height: 66px;
   border: 1.5px;
 }
@@ -463,7 +463,7 @@ td {
 }
 
 .table4style {
-  width: 730px;
+  width: 720px;
   border: 1.5px;
 }
 
