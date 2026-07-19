@@ -467,8 +467,16 @@ td {
   border: 1.5px;
 }
 
+.table4style .table4td11 {
+  width: 120px;
+}
+
+.table4style .table4td111 {
+  width: 120px;
+}
+
 .table4td1 {
-  min-width: 300px;
+  width: 380px;
   text-align: center;
   height: 25px;
 }
