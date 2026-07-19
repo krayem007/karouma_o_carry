@@ -7,7 +7,7 @@
 
 @page {
   size: A4;
-  margin: 10mm;
+  margin: 0;
 }
 
 html,
@@ -26,9 +26,11 @@ body {
   box-sizing: border-box;
   font-family: "Times New Roman", Times, serif;
   border-bottom: 1px solid rgb(173, 173, 173);
-  break-after: page; /* Compatible with more PDF tools */
+  break-after: page;
+  /* Compatible with more PDF tools */
   direction: rtl;
-  text-align: right; /* Ensure text aligns properly */
+  text-align: right;
+  /* Ensure text aligns properly */
 }
 
 .content:last-child {
@@ -41,7 +43,8 @@ body {
 }
 
 img {
-  width: 100px; /* Adjust as needed */
+  width: 100px;
+  /* Adjust as needed */
   height: auto;
 }
 
@@ -66,6 +69,7 @@ img {
   width: 35px;
   height: 20px;
 }
+
 #paddingl1 {
   padding-left: 10px;
 }
@@ -133,6 +137,7 @@ td {
   font-weight: bold;
   height: 30px;
 }
+
 .table2tr1 {
   height: 30px;
 }
@@ -142,11 +147,13 @@ td {
   width: 25px;
   height: 25px;
 }
+
 .paragraphe1 {
   text-align: right;
   padding-top: 30px;
   padding-right: 10px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
 }
 
 .paragraphe2 {
@@ -154,7 +161,8 @@ td {
   text-align: right;
   padding-top: 5px;
   padding-right: 10px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
 }
 
 .paragraphe19 {
@@ -221,7 +229,8 @@ td {
   display: flex;
   text-align: right;
   padding-right: 10px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
   font-weight: bold;
 }
 
@@ -234,7 +243,8 @@ td {
   text-align: right;
   padding-top: 50px;
   padding-right: 10px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
 }
 
 .pagination1 {
@@ -263,6 +273,7 @@ td {
   padding-left: 35px;
   left: 10px;
 }
+
 .pagination5 {
   text-align: left;
   padding-left: 35px;
@@ -290,13 +301,16 @@ td {
   padding-top: 140px;
   left: 10px;
 }
+
 .paragraphe25 {
   display: flex;
   text-align: right;
   padding-top: 50px;
   padding-right: 10px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
 }
+
 .paragraphe25 p {
   font-weight: bold;
 }
@@ -304,12 +318,15 @@ td {
 .paragraphe25 span {
   font-weight: 100;
 }
+
 .paragraphe9 {
   display: flex;
   text-align: right;
   padding-right: 5px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
 }
+
 .table3 {
   float: left;
   text-align: center;
@@ -356,6 +373,7 @@ td {
   text-align: center;
   height: 35.0938px;
 }
+
 .table3tr1 {
   height: 30px;
 }
@@ -374,7 +392,8 @@ td {
   text-align: right;
   padding-top: 2px;
   padding-right: 10px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
   font-weight: bold;
 }
 
@@ -383,7 +402,8 @@ td {
   text-align: right;
   padding-top: 2px;
   padding-right: 20px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
   font-weight: bold;
 }
 
@@ -392,7 +412,8 @@ td {
   text-align: right;
   padding-top: 2px;
   padding-right: 25px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
 }
 
 .paragraphe24 {
@@ -400,7 +421,8 @@ td {
   text-align: right;
   padding-top: 15px;
   padding-right: 25px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
 }
 
 .paragraphe14 {
@@ -408,9 +430,11 @@ td {
   text-align: right;
   padding-top: 2px;
   padding-right: 25px;
-  clear: both; /* Ensures the div is not floating beside the table */
+  clear: both;
+  /* Ensures the div is not floating beside the table */
   font-weight: bold;
 }
+
 .table4 {
   float: left;
   text-align: center;
@@ -419,6 +443,7 @@ td {
   font-size: 13px;
   padding-bottom: 10px;
 }
+
 .table41 {
   float: left;
   text-align: center;
@@ -553,8 +578,10 @@ td {
 .table4style .table4td12,
 .table4style .table4td1222 {
   font-weight: bold;
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margin */
+  padding: 0;
+  /* Remove padding */
+  margin: 0;
+  /* Remove margin */
 }
 
 .table4tr2 .table4td2 {
@@ -605,6 +632,7 @@ td {
   padding-left: 7px;
   padding-right: 7px;
 }
+
 .table4tr2 td {
   border-top: none;
   border-bottom: none;
@@ -614,6 +642,7 @@ td {
   border-top: none;
   border-bottom: none;
 }
+
 .table4tr7 td {
   border-top: none;
   border-bottom: none;
@@ -674,6 +703,7 @@ td {
   margin: 0;
   padding: 0;
 }
+
 .table4td3 li {
   padding-right: 30px;
 }
@@ -726,6 +756,7 @@ td {
   padding-left: 7px;
   padding-right: 7px;
 }
+
 .table4td20 {
   text-align: right;
   padding-left: 7px;
@@ -805,6 +836,7 @@ td {
   padding-top: 2px;
   border: none;
 }
+
 .table4tr12 td {
   padding-top: 0px;
   border-bottom: none;
@@ -870,6 +902,7 @@ td {
   display: flex;
   font-size: 10px;
 }
+
 .footernotes1 {
   padding-top: 10px;
   padding-right: 7px;
@@ -888,8 +921,10 @@ td {
 
 .paragraphe7 {
   display: flex;
-  justify-content: space-between; /* Ensures space between the items */
-  align-items: center; /* Align items vertically */
+  justify-content: space-between;
+  /* Ensures space between the items */
+  align-items: center;
+  /* Align items vertically */
   font-size: 13px;
   padding-top: 7px;
   padding-right: 15px;
@@ -897,8 +932,10 @@ td {
 
 .paragraphe8 {
   display: flex;
-  justify-content: space-between; /* Ensures space between the items */
-  align-items: center; /* Align items vertically */
+  justify-content: space-between;
+  /* Ensures space between the items */
+  align-items: center;
+  /* Align items vertically */
   font-size: 13px;
   padding-top: 7px;
   padding-right: 15px;
@@ -907,14 +944,17 @@ td {
 .right-text {
   margin: 0;
 }
+
 .right-text2 {
   margin: 0;
   padding-left: 100px;
 }
+
 .right-text5 {
   margin: 0;
   padding-left: 50px;
 }
+
 .right-text4 {
   margin: 0;
   padding-left: 117px;
@@ -934,24 +974,29 @@ td {
 .left-text {
   display: flex;
   padding-left: 30px;
-  gap: 10px; /* Space between "نعم/لا" and tables */
+  gap: 10px;
+  /* Space between "نعم/لا" and tables */
 }
 
 .left-text2 {
   display: flex;
   padding-left: 70px;
-  gap: 2px; /* Space between "نعم/لا" and tables */
+  gap: 2px;
+  /* Space between "نعم/لا" and tables */
 }
+
 .left-text3 {
   display: flex;
   padding-left: 20px;
-  gap: 10px; /* Space between "نعم/لا" and tables */
+  gap: 10px;
+  /* Space between "نعم/لا" and tables */
 }
 
 .left-text4 {
   display: flex;
   padding-left: 5px;
-  gap: 10px; /* Space between "نعم/لا" and tables */
+  gap: 10px;
+  /* Space between "نعم/لا" and tables */
 }
 
 .centre {
@@ -1005,35 +1050,45 @@ td {
 }
 
 .flex-container1 {
-  display: flex; /* Enables flexbox for horizontal alignment */
-  gap: 10px; /* Adds spacing between items */
+  display: flex;
+  /* Enables flexbox for horizontal alignment */
+  gap: 10px;
+  /* Adds spacing between items */
 }
 
 .flex-container2 {
   padding-right: 5px;
-  display: flex; /* Enables flexbox for horizontal alignment */
-  gap: 10px; /* Adds spacing between items */
+  display: flex;
+  /* Enables flexbox for horizontal alignment */
+  gap: 10px;
+  /* Adds spacing between items */
 }
 
 .flex-container3 {
   padding-top: 4px;
   padding-right: 5px;
-  display: flex; /* Enables flexbox for horizontal alignment */
-  gap: 10px; /* Adds spacing between items */
+  display: flex;
+  /* Enables flexbox for horizontal alignment */
+  gap: 10px;
+  /* Adds spacing between items */
 }
 
 .flex-container4 {
   padding-top: 10px;
   padding-right: 5px;
-  display: flex; /* Enables flexbox for horizontal alignment */
-  gap: 50px; /* Adds spacing between items */
+  display: flex;
+  /* Enables flexbox for horizontal alignment */
+  gap: 50px;
+  /* Adds spacing between items */
 }
 
 .flex-container5 {
   padding-top: 10px;
   padding-right: 5px;
-  display: flex; /* Enables flexbox for horizontal alignment */
-  gap: 20px; /* Adds spacing between items */
+  display: flex;
+  /* Enables flexbox for horizontal alignment */
+  gap: 20px;
+  /* Adds spacing between items */
 }
 
 .paragraphe10 {
@@ -1052,6 +1107,7 @@ td {
   padding-top: 10px;
   font-size: 17px;
 }
+
 .paragraphe11 p {
   font-size: 17px;
 }
@@ -1065,6 +1121,7 @@ td {
 .paragraphe20 p {
   font-size: 20px;
 }
+
 .paragraphe20 {
   text-align: center;
   font-weight: bold;
@@ -1073,6 +1130,7 @@ td {
 .paragraphe21 p {
   font-size: 18px;
 }
+
 .paragraphe21 {
   padding-right: 100px;
   text-align: center;

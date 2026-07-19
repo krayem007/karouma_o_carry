@@ -31,7 +31,12 @@ class PuppeteerPool {
     const browser = await puppeteer.launch({
       executablePath: "/usr/bin/google-chrome",
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--lang=ar",
+        "--disable-features=IsolateOrigins,site-per-process"
+      ],
     });
     const entry = { browser, index, alive: true };
     this.browsers.push(entry);
