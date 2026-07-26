@@ -16,16 +16,17 @@ import {
   Toast,
 } from "react-bootstrap";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const instance = axios.create({
   baseURL: '',
   withCredentials: true,
 });
 
-const TITLE = "Nouveau Mot de Passe | " + Config.SITE_TITLE;
-const DESC = "Créer un nouveau mot de passe";
-
 const ResetPassword = () => {
+  const { t } = useTranslation();
+  const TITLE = t("reset.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("reset.titre_meta");
   const { token } = useParams();
   const [validated, set_Validated] = useState(false);
   const [form_Data, set_Form_Data] = useState({
@@ -61,7 +62,7 @@ const ResetPassword = () => {
       instance.post('/apply_reset', { token, newPassword: form_Data.newPassword })
         .then((response) => {
           setAlert({
-            message: response.data.message || "Mot de passe mis à jour avec succès.",
+            message: response.data.message || t("reset.success_mdp"),
             type: "success",
           });
           setTimeout(() => {
@@ -69,7 +70,7 @@ const ResetPassword = () => {
           }, 3000);
         })
         .catch((error) => {
-          const errorMessage = error.response?.data?.error || "Le lien de réinitialisation est invalide ou a expiré.";
+          const errorMessage = error.response?.data?.error || t("reset.err_lien_invalide");
           setAlert({
             message: errorMessage,
             type: "error",
@@ -93,7 +94,7 @@ const ResetPassword = () => {
   if (isValidToken === null) {
     return (
       <Container className="visualiser-page">
-        <h2 className="reset-verify-msg">Vérification du lien sécurisé...</h2>
+        <h2 className="reset-verify-msg">{t("reset.verif_lien")}</h2>
       </Container>
     );
   }
@@ -109,10 +110,10 @@ const ResetPassword = () => {
         </Helmet>
         <Container className="visualiser-page">
           <Form className="register">
-            <h1 className="form-title reset-error-title">Lien invalide ou expiré</h1>
+            <h1 className="form-title reset-error-title">{t("reset.lien_invalide")}</h1>
             <div className="boutons mt-4">
               <Link to="/reinitialisation">
-                <Button variant="primary" className="green" size="lg">Demander un nouveau lien</Button>
+                <Button variant="primary" className="green" size="lg">{t("reset.demander_nouveau_lien")}</Button>
               </Link>
             </div>
           </Form>
@@ -143,10 +144,10 @@ const ResetPassword = () => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item active>
-            Nouveau Mot de Passe
+            {t("reset.page_title")}
           </Breadcrumb.Item>
         </Breadcrumb>
 
@@ -156,11 +157,11 @@ const ResetPassword = () => {
           validated={validated}
           onSubmit={submitFn}
         >
-          <h1 className="form-title"> Nouveau Mot de Passe</h1>
+          <h1 className="form-title"> {t("reset.page_title")}</h1>
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="newPassword" className="form-group required">
-                <Form.Label className="control-label">Nouveau mot de passe :</Form.Label>
+                <Form.Label className="control-label">{t("reset.nouveau_mdp")}</Form.Label>
                 <InputGroup>
                   <Form.Control
                     type={showPasswords.newPw ? "text" : "password"}
@@ -183,10 +184,10 @@ const ResetPassword = () => {
                   </Button>
                 </InputGroup>
                 {validated && form_Data.newPassword === "" && (
-                  <div className="login-error-msg">Veuillez entrer un nouveau mot de passe.</div>
+                  <div className="login-error-msg">{t("reset.err_nouveau_mdp")}</div>
                 )}
                 {validated && form_Data.newPassword.length < 6 && form_Data.newPassword !== "" && (
-                  <div className="login-error-msg">Le mot de passe doit comporter au moins 6 caractères.</div>
+                  <div className="login-error-msg">{t("reset.err_mdp_length")}</div>
                 )}
               </Form.Group>
             </Col>
@@ -194,7 +195,7 @@ const ResetPassword = () => {
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="confirmPassword" className="form-group required">
-                <Form.Label className="control-label">Confirmer le nouveau mot de passe :</Form.Label>
+                <Form.Label className="control-label">{t("reset.confirmer_mdp")}</Form.Label>
                 <InputGroup>
                   <Form.Control
                     type={showPasswords.confirmPw ? "text" : "password"}
@@ -221,20 +222,20 @@ const ResetPassword = () => {
                   </Button>
                 </InputGroup>
                 {validated && form_Data.confirmPassword === "" && (
-                  <div className="login-error-msg">Veuillez confirmer votre nouveau mot de passe.</div>
+                  <div className="login-error-msg">{t("reset.err_confirmer")}</div>
                 )}
                 {validated && form_Data.confirmPassword.length < 6 && form_Data.confirmPassword !== "" && (
-                  <div className="login-error-msg">Le mot de passe doit comporter au moins 6 caractères.</div>
+                  <div className="login-error-msg">{t("reset.err_mdp_length")}</div>
                 )}
                 {validated && form_Data.confirmPassword.length >= 6 && form_Data.confirmPassword !== form_Data.newPassword && (
-                  <div className="login-error-msg">Les mots de passe ne correspondent pas.</div>
+                  <div className="login-error-msg">{t("reset.err_mdp_match")}</div>
                 )}
               </Form.Group>
             </Col>
           </Row>
           <div className="boutons mt-3">
             <Button variant="primary" type="submit" className="custom-primary">
-              Enregistrer
+              {t("reset.enregistrer")}
             </Button>
           </div>
         </Form>

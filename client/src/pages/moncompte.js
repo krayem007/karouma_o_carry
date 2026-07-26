@@ -1,5 +1,6 @@
 import icon from "../images/icon.png";
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
@@ -26,11 +27,12 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-const TITLE = "Mon Compte | " + Config.SITE_TITLE;
-const DESC = "Mon Compte ";
 const CANONICAL = Config.SITE_DOMAIN + "/moncompte";
 
 const Moncompte = ({ setIsLoggedIn }) => {
+  const { t } = useTranslation();
+  const TITLE = t("moncompte.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("moncompte.titre_meta");
   const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
   const data = {
     email: localStorage.getItem("email"),
@@ -105,7 +107,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
     instance.post("/delete_account", data_del).then((response) => {
       if (response.data.del === true) {
         setAlert({
-          message: "Votre compte a été supprimé avec succès.",
+          message: t("moncompte.success_suppression"),
           type: "success",
         });
 
@@ -130,7 +132,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         }, 3000);
       }
     }).catch((err) => {
-      const msg = err.response?.data?.error || "Erreur lors de la suppression.";
+      const msg = err.response?.data?.error || t("moncompte.err_suppression");
       setAlert({ message: msg, type: "error" });
       setTimeout(() => setAlert(null), 3000);
     });
@@ -211,7 +213,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
           localStorage.setItem("secteur", form_Data.secteur);
           setAlert({
             message:
-              "Vos informations personnelles ont été mises à jour avec succès.",
+              t("moncompte.success_update"),
             type: "success",
           });
 
@@ -221,7 +223,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
           }, 3000);
         }
       }).catch((err) => {
-        const msg = err.response?.data?.error || "Erreur lors de la mise à jour.";
+        const msg = err.response?.data?.error || t("moncompte.err_update");
         setAlert({ message: msg, type: "error" });
         setTimeout(() => setAlert(null), 3000);
       });
@@ -244,7 +246,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         instance.post("/spiderPUSS", psspssdata).then((response) => {
           if (response.data.pssdate === true) {
             setAlert({
-              message: "Votre mot de passe a été changé avec succès.",
+              message: t("moncompte.success_mdp"),
               type: "success",
             });
 
@@ -259,8 +261,8 @@ const Moncompte = ({ setIsLoggedIn }) => {
           }
         }).catch((error) => {
           const msg = error.response?.data?.error === "Incorrect old password"
-            ? "L'ancien mot de passe ne correspond pas au mot de passe actuel."
-            : (error.response?.data?.error || "Erreur lors du changement de mot de passe.");
+            ? t("moncompte.err_ancien_mdp_match")
+            : (error.response?.data?.error || t("moncompte.err_mdp_change"));
           setAlert({ message: msg, type: "error" });
           setTimeout(() => setAlert(null), 3000);
         });
@@ -268,7 +270,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
       }
       if (!OldPasswordCheck) {
         setAlert({
-          message: "L'ancien mot de passe que vous avez saisi est incorrect.",
+          message: t("moncompte.err_ancien_mdp_incorrect"),
           type: "error",
         });
 
@@ -338,9 +340,9 @@ const Moncompte = ({ setIsLoggedIn }) => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>Mon Compte</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("moncompte.page_title")}</Breadcrumb.Item>
         </Breadcrumb>
 
         <Tabs
@@ -351,7 +353,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         >
           <Tab
             eventKey="Mes informations personnelles"
-            title="Mes informations personnelles"
+            title={t("moncompte.tab_infos")}
           >
             <Container>
               <Form
@@ -367,7 +369,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Code acte :
+                        {t("register.code_acte")}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -382,7 +384,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^[A-Z0-9_]{3,20}$/.test(form_Data.code_acte)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Code acte invalide (3-20 caractères)
+                        {t("register.code_acte_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -395,7 +397,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Identifiant fiscal :
+                        {t("register.identifiant_fiscal")}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -410,7 +412,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^[0-9A-Z]{8}$/.test(form_Data.identifiant_fiscal)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Identifiant fiscal invalide ( 8 caractères)
+                        {t("register.identifiant_fiscal_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -421,7 +423,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Identifiant T.V.A :
+                        {t("register.identifiant_tva")}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -436,7 +438,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^[A-Z]$/.test(form_Data.identifiant_tva)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Code TVA invalide (1 lettre majuscule)
+                        {t("register.identifiant_tva_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -447,7 +449,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Code catégorie :
+                        {t("register.code_categorie")}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -462,7 +464,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^[A-Z]$/.test(form_Data.code_categorie)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Code catégorie invalide (1 lettre majuscule)
+                        {t("register.code_categorie_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -471,7 +473,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       controlId="nombre_filial"
                       className="form-group required"
                     >
-                      <Form.Label className="control-label">Nombre de filiale (2) :</Form.Label>
+                      <Form.Label className="control-label">{t("register.nombre_filiale")}</Form.Label>
                       <Form.Control
                         type="text"
                         name="nombre_filial"
@@ -485,7 +487,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^[0-9]{3}$/.test(form_Data.nombre_filial)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Nombre de filiales doit être sur 3 chiffres
+                        {t("register.err_nb_filiale")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -497,7 +499,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Nom et Prénom ou Raison sociale :
+                        {t("register.nom_raison")}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -516,7 +518,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         type="invalid"
                         className="form-group"
                       >
-                        Nom / Raison sociale invalide (2 à 120 caractères)
+                        {t("register.nom_raison_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -528,7 +530,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Adresse ou siège social :
+                        {t("register.adresse")}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -544,7 +546,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^.{5,255}$/.test(form_Data.adresse)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Adresse invalide (5 à 255 caractères)
+                        {t("register.adresse_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -555,14 +557,14 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Code postal :
+                        {t("register.code_postal")}
                       </Form.Label>
                       <Form.Control
                         type="text"
                         name="code_postal"
                         value={form_Data.code_postal}
                         pattern="[0-9]{4}"
-                        placeholder="Code postal"
+                        placeholder={t("moncompte.code_postal")}
                         onChange={(e) => {
                           const val = e.target.value.replace(/\D/g, "").slice(0, 4);
                           chngFn({ target: { name: "code_postal", value: val } });
@@ -571,7 +573,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^[0-9]{4}$/.test(form_Data.code_postal)}
                       />
                       <Form.Control.Feedback type="invalid" id="maxwidthfeed">
-                        Code postal doit contenir 4 chiffres
+                        {t("moncompte.code_postal_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -583,7 +585,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Activité :
+                        {t("register.activite")}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -598,12 +600,12 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && !/^.{2,100}$/.test(form_Data.activite)}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Activité invalide (2 à 100 caractères)
+                        {t("register.activite_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                   <Col xs={12} md={2}>
-                    <Form.Label>Date de cessation d’activité :</Form.Label>
+                    <Form.Label>{t("register.date_cessation")}</Form.Label>
                   </Col>
 
                   <Col xs={4} md={1} className="mb-2 me-md-4">
@@ -611,7 +613,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       controlId="cessation_jour"
                       className="form-group"
                     >
-                      <Form.Label>Jour :</Form.Label>
+                      <Form.Label>{t("register.jour")}</Form.Label>
                       <Form.Control
                         type="text"
                         name="cessation_jour"
@@ -625,7 +627,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && cessationPartiallyFilled && (!/^(?:0[1-9]|[12][0-9]|3[01])$/.test(form_Data.cessation_jour) || !isValidDate(form_Data.cessation_jour, form_Data.cessation_mois, form_Data.cessation_annee))}
                       />
                       <Form.Control.Feedback type="invalid" className="cessation-feedback">
-                        Jour invalide
+                        {t("register.jour_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -635,7 +637,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       controlId="cessation_mois"
                       className="form-group"
                     >
-                      <Form.Label>Mois :</Form.Label>
+                      <Form.Label>{t("register.mois")}</Form.Label>
                       <Form.Control
                         type="text"
                         name="cessation_mois"
@@ -649,7 +651,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && cessationPartiallyFilled && !/^(?:0[1-9]|1[0-2])$/.test(form_Data.cessation_mois)}
                       />
                       <Form.Control.Feedback type="invalid" className="cessation-feedback">
-                        Mois invalide
+                        {t("register.mois_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -659,7 +661,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       controlId="cessation_annee"
                       className="form-group"
                     >
-                      <Form.Label>Année :</Form.Label>
+                      <Form.Label>{t("register.annee")}</Form.Label>
                       <Form.Control
                         type="text"
                         name="cessation_annee"
@@ -673,24 +675,24 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         isInvalid={validated && cessationPartiallyFilled && (!form_Data.cessation_annee || Number(form_Data.cessation_annee) < 1900 || Number(form_Data.cessation_annee) > currentYear + 1)}
                       />
                       <Form.Control.Feedback type="invalid" className="cessation-feedback">
-                        Année invalide
+                        {t("register.annee_err")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
 
-                <div className="section_title" style={{ marginTop: '20px', marginBottom: '10px', fontSize: '18px', fontWeight: 'bold' }}>Profil Fiscal :</div>
+                <div className="section_title" style={{ marginTop: '20px', marginBottom: '10px', fontSize: '18px', fontWeight: 'bold' }}>{t("register.section_fiscal")}</div>
                 <Row className="main-user-info">
                   <Col md={6}>
                     <Form.Group controlId="nature_entite" className="form-group required">
-                      <Form.Label className="control-label">Nature de l'entité :</Form.Label>
+                      <Form.Label className="control-label">{t("register.nature_entite")}</Form.Label>
                       <Form.Select name="nature_entite" value={form_Data.nature_entite} onChange={chngFn} required isInvalid={validated && !form_Data.nature_entite}>
-                        <option value="">Sélectionnez...</option>
-                        <option value="PM">Société / Personne Morale (PM)</option>
-                        <option value="PP">Indépendant / Personne Physique (PP)</option>
+                        <option value="">{t("common.selectionnez")}</option>
+                        <option value="PM">{t("register.pm_option")}</option>
+                        <option value="PP">{t("register.pp_option")}</option>
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
-                        Veuillez sélectionner la nature de l'entité.
+                        {t("register.err_nature")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -698,25 +700,25 @@ const Moncompte = ({ setIsLoggedIn }) => {
                   {form_Data.nature_entite && (
                     <Col md={6}>
                       <Form.Group controlId="details_regime" className="form-group required">
-                        <Form.Label className="control-label">Détails du régime :</Form.Label>
+                        <Form.Label className="control-label">{t("register.details_regime")}</Form.Label>
                         <Form.Select name="details_regime" value={form_Data.details_regime} onChange={chngFn} required isInvalid={validated && !form_Data.details_regime}>
-                          <option value="">Sélectionnez le régime...</option>
+                          <option value="">{t("register.selectionnez_regime")}</option>
                           {form_Data.nature_entite === 'PM' && (
                             <>
-                              <option value="IS_10">IS 10%</option>
-                              <option value="IS_20">IS 20%</option>
-                              <option value="IS_35">IS 35%</option>
+                              <option value="IS_10">{t("common.is_10")}</option>
+                              <option value="IS_20">{t("common.is_20")}</option>
+                              <option value="IS_35">{t("common.is_35")}</option>
                             </>
                           )}
                           {form_Data.nature_entite === 'PP' && (
                             <>
-                              <option value="REEL_3">Régime Réel</option>
-                              <option value="FORFAITAIRE_10">Régime Forfaitaire</option>
+                              <option value="REEL_3">{t("register.regime_reel")}</option>
+                              <option value="FORFAITAIRE_10">{t("register.regime_forfaitaire")}</option>
                             </>
                           )}
                         </Form.Select>
                         <Form.Control.Feedback type="invalid">
-                          Veuillez sélectionner les détails du régime.
+                          {t("register.err_regime")}
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
@@ -725,14 +727,14 @@ const Moncompte = ({ setIsLoggedIn }) => {
                 <Row className="main-user-info">
                   <Col md={6}>
                     <Form.Group controlId="secteur" className="form-group required">
-                      <Form.Label className="control-label">Secteur d'activité :</Form.Label>
+                      <Form.Label className="control-label">{t("register.secteur")}</Form.Label>
                       <Form.Select name="secteur" value={form_Data.secteur} onChange={chngFn} required isInvalid={validated && !form_Data.secteur}>
-                        <option value="">Sélectionnez le secteur...</option>
-                        <option value="Type 1">Industriel</option>
-                        <option value="Type 2">Autre</option>
+                        <option value="">{t("register.secteur_select")}</option>
+                        <option value="Type 1">{t("register.industriel")}</option>
+                        <option value="Type 2">{t("register.autre")}</option>
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
-                        Veuillez sélectionner le secteur d'activité.
+                        {t("register.err_secteur")}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -740,7 +742,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
 
                 <div className="boutons">
                   <Button variant="primary" type="submit" className="green">
-                    Valider
+                    {t("common.valider")}
                   </Button>
                 </div>
               </Form>
@@ -748,7 +750,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
           </Tab>
           <Tab
             eventKey="Paramétrage de la sécurité"
-            title="Paramétrage de la sécurité"
+            title={t("moncompte.tab_securite")}
           >
             <Container>
               <Form
@@ -762,7 +764,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     <Form.Group controlId="email" className="modern-email-group">
                       <Form.Label className="modern-label">
                         <i className="fa-regular fa-envelope me-2 text-muted"></i>
-                        E-mail :
+                        {t("moncompte.email_label")}
                       </Form.Label>
                       <div className="modern-input-wrapper">
                         <Form.Control
@@ -784,7 +786,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Ancien mot de passe :
+                        {t("moncompte.ancien_mdp")}
                       </Form.Label>
                       <InputGroup>
                         <Form.Control
@@ -804,13 +806,13 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         </Button>
                       </InputGroup>
                       {validated1 && form_Data.anpassword === "" && (
-                        <div className="login-error-msg">Veuillez entrer votre ancien mot de passe.</div>
+                        <div className="login-error-msg">{t("moncompte.err_ancien_mdp_required")}</div>
                       )}
                       {deleteError && form_Data.anpassword === "" && (
-                        <div className="login-error-msg">Veuillez entrer votre ancien mot de passe pour supprimer votre compte.</div>
+                        <div className="login-error-msg">{t("moncompte.err_ancien_mdp_delete")}</div>
                       )}
                       {validated1 && !OldPasswordCheck && form_Data.anpassword !== "" && (
-                        <div className="login-error-msg">L'ancien mot de passe que vous avez saisi est incorrect.</div>
+                        <div className="login-error-msg">{t("moncompte.err_ancien_mdp_incorrect")}</div>
                       )}
                     </Form.Group>
                   </Col>
@@ -822,7 +824,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Nouveau mot de passe :
+                        {t("moncompte.nouveau_mdp")}
                       </Form.Label>
                       <InputGroup>
                         <Form.Control
@@ -850,13 +852,13 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         </Button>
                       </InputGroup>
                       {validated1 && form_Data.nvpassword === "" && (
-                        <div className="login-error-msg">Veuillez entrer votre nouveau mot de passe.</div>
+                        <div className="login-error-msg">{t("moncompte.err_nouveau_mdp_required")}</div>
                       )}
                       {validated1 && form_Data.nvpassword.length < 6 && form_Data.nvpassword !== "" && (
-                        <div className="login-error-msg">Le mot de passe doit comporter au moins 6 caractères.</div>
+                        <div className="login-error-msg">{t("moncompte.err_mdp_length")}</div>
                       )}
                       {validated1 && form_Data.nvpassword.length >= 6 && form_Data.nvpassword === form_Data.anpassword && (
-                        <div className="login-error-msg">Le nouveau mot de passe doit être différent de l'ancien.</div>
+                        <div className="login-error-msg">{t("moncompte.err_mdp_different")}</div>
                       )}
                     </Form.Group>
                   </Col>
@@ -869,7 +871,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                       className="form-group required"
                     >
                       <Form.Label className="control-label">
-                        Confirmation du nouveau mot de passe :
+                        {t("moncompte.confirmer_mdp")}
                       </Form.Label>
                       <InputGroup>
                         <Form.Control
@@ -898,20 +900,20 @@ const Moncompte = ({ setIsLoggedIn }) => {
                         </Button>
                       </InputGroup>
                       {validated1 && form_Data.confirm_password === "" && (
-                        <div className="login-error-msg">Veuillez confirmer votre nouveau mot de passe.</div>
+                        <div className="login-error-msg">{t("moncompte.err_confirmer_mdp")}</div>
                       )}
                       {validated1 && form_Data.confirm_password.length < 6 && form_Data.confirm_password !== "" && (
-                        <div className="login-error-msg">Le mot de passe doit comporter au moins 6 caractères.</div>
+                        <div className="login-error-msg">{t("moncompte.err_mdp_length")}</div>
                       )}
                       {validated1 && form_Data.confirm_password.length >= 6 && form_Data.confirm_password !== form_Data.nvpassword && (
-                        <div className="login-error-msg">Les mots de passe ne correspondent pas.</div>
+                        <div className="login-error-msg">{t("moncompte.err_mdp_match")}</div>
                       )}
                     </Form.Group>
                   </Col>
                 </Row>
                 <div className="boutons">
                   <Button variant="primary" className="green" type="submit">
-                    Valider
+                    {t("common.valider")}
                   </Button>
                 </div>
                 <div className="password-forgot mt-4">
@@ -920,7 +922,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
                     className="forgot"
                     onClick={handleRemoveItem}
                   >
-                    Supprimer mon compte
+                    {t("moncompte.supprimer_compte")}
                   </Button>
                 </div>
               </Form>
@@ -930,17 +932,17 @@ const Moncompte = ({ setIsLoggedIn }) => {
 
         <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} centered className="modern-modal">
           <Modal.Header closeButton>
-            <Modal.Title>Confirmer la suppression</Modal.Title>
+            <Modal.Title>{t("moncompte.confirmer_suppression")}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Êtes-vous sûr de vouloir supprimer définitivement votre compte <strong>{form_Data.email}</strong> ? Cette action est irréversible.
+            {t("moncompte.confirmer_suppression_msg", { email: form_Data.email })}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
-              Annuler
+              {t("common.annuler")}
             </Button>
             <Button variant="danger" onClick={confirmDelete}>
-              Confirmer la suppression
+              {t("moncompte.confirmer_suppression")}
             </Button>
           </Modal.Footer>
         </Modal>

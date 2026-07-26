@@ -1,5 +1,6 @@
 import icon from "../images/icon.png";
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
@@ -24,14 +25,15 @@ const instance = axios.create({
   withCredentials: true, // Allow sending cookies with requests
 });
 
-const TITLE = "Mes déclarations | " + Config.SITE_TITLE;
-const DESC = "Mes déclarations";
 const CANONICAL = Config.SITE_DOMAIN + "/declaration";
 const hiddenStyle = {
   display: "none",
 };
 
 const Visualiser = () => {
+  const { t } = useTranslation();
+  const TITLE = t("visualiser.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("visualiser.titre_meta");
   const [rows, setRows] = useState([]);
   const [selectAllRows, setSelectAllRows] = useState(false);
   const [alertMessage, setAlertMessage] = useState(null);
@@ -46,7 +48,7 @@ const Visualiser = () => {
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [copyTooltip, setCopyTooltip] = useState("Copier vers Excel");
+  const [copyTooltip, setCopyTooltip] = useState(t("visualiser.copier_excel"));
 
   const getSortedRows = (rowsToSort) => {
     const { key, direction } = sortConfig;
@@ -234,7 +236,7 @@ const print_doc = () => {
   const print_doc = async () => {
     const selectedDates = getSelectedDates();
     if (selectedDates.length === 0) {
-      setAlertMessage("Veuillez sélectionner une ou plusieurs déclarations à imprimer.");
+      setAlertMessage(t("visualiser.err_imprimer"));
       setTimeout(() => setAlertMessage(null), 3000);
       return;
     }
@@ -275,12 +277,12 @@ const print_doc = () => {
     const selectedRows = getSortedRows(rows.filter(row => row.selected));
 
     if (selectedRows.length === 0) {
-      setAlertMessage("Veuillez sélectionner une ou plusieurs déclarations à copier.");
+      setAlertMessage(t("visualiser.err_copier"));
       setTimeout(() => setAlertMessage(null), 3000);
       return;
     }
 
-    const headers = ["Mois", "Année", "Total R.S", "TFP", "FOPROLOS", "DC", "FODEC", "TVA", "Timbre", "TCL", "Total à déclarer"];
+    const headers = [t("visualiser.mois"), t("visualiser.annee"), t("visualiser.total_rs"), t("visualiser.tvp"), t("visualiser.foprolos"), t("visualiser.dc"), t("visualiser.fodec"), t("visualiser.tva"), t("visualiser.timbre"), t("visualiser.tcl"), t("visualiser.total_declarer")];
     const rowsData = selectedRows.map(row => [
       row.mois, row.Anne, row.totalRS, row.tfp, row.foprolos,
       row.droitConsommation, row.fodec, row.tva, row.droitTimbreFiscal,
@@ -291,8 +293,8 @@ const print_doc = () => {
 
     try {
       await navigator.clipboard.writeText(tsv);
-      setCopyTooltip("Copiées");
-      setTimeout(() => setCopyTooltip("Copier vers Excel"), 2000);
+      setCopyTooltip(t("visualiser.copiees"));
+      setTimeout(() => setCopyTooltip(t("visualiser.copier_excel")), 2000);
     } catch {
       try {
         const textarea = document.createElement("textarea");
@@ -304,10 +306,10 @@ const print_doc = () => {
         textarea.setSelectionRange(0, 99999);
         document.execCommand("copy");
         document.body.removeChild(textarea);
-        setCopyTooltip("Copiées");
-        setTimeout(() => setCopyTooltip("Copier vers Excel"), 2000);
+        setCopyTooltip(t("visualiser.copiees"));
+        setTimeout(() => setCopyTooltip(t("visualiser.copier_excel")), 2000);
       } catch {
-        setAlertMessage("Échec de la copie.");
+        setAlertMessage(t("visualiser.echec_copie"));
         setTimeout(() => setAlertMessage(null), 3000);
       }
     }
@@ -338,14 +340,14 @@ const print_doc = () => {
       <Container className="visualiser-page" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter") print_doc(); }}>
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/welcome">Welcome</Link>
+            <Link to="/welcome">{t("welcome.page_title")}</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>Mes déclarations</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("visualiser.page_title")}</Breadcrumb.Item>
         </Breadcrumb>
-        <h1 class="form-title"> Mes déclarations </h1>
+        <h1 className="form-title"> {t("visualiser.page_title")} </h1>
         <Row>
           <div className="d-flex justify-content-start mb-2">
             <OverlayTrigger placement="top" overlay={<Tooltip>{copyTooltip}</Tooltip>}>
@@ -369,47 +371,47 @@ const print_doc = () => {
                     />
                   </th>
                   <th className="sortable" onClick={() => requestSort("mois")}>
-                    Mois<span className="sort-indicator">{getSortIndicator("mois")}</span>
+                    {t("visualiser.mois")}<span className="sort-indicator">{getSortIndicator("mois")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.mois} onChange={(e) => handleSearchChange("mois", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("Anne")}>
-                    Année<span className="sort-indicator">{getSortIndicator("Anne")}</span>
+                    {t("visualiser.annee")}<span className="sort-indicator">{getSortIndicator("Anne")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.Anne} onChange={(e) => handleSearchChange("Anne", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("totalRS")}>
-                    Total R.S<span className="sort-indicator">{getSortIndicator("totalRS")}</span>
+                    {t("visualiser.total_rs")}<span className="sort-indicator">{getSortIndicator("totalRS")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.totalRS} onChange={(e) => handleSearchChange("totalRS", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("tfp")}>
-                    TFP<span className="sort-indicator">{getSortIndicator("tfp")}</span>
+                    {t("visualiser.tvp")}<span className="sort-indicator">{getSortIndicator("tfp")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.tfp} onChange={(e) => handleSearchChange("tfp", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("foprolos")}>
-                    FOPROLOS<span className="sort-indicator">{getSortIndicator("foprolos")}</span>
+                    {t("visualiser.foprolos")}<span className="sort-indicator">{getSortIndicator("foprolos")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.foprolos} onChange={(e) => handleSearchChange("foprolos", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("droitConsommation")}>
-                    DC<span className="sort-indicator">{getSortIndicator("droitConsommation")}</span>
+                    {t("visualiser.dc")}<span className="sort-indicator">{getSortIndicator("droitConsommation")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.droitConsommation} onChange={(e) => handleSearchChange("droitConsommation", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("fodec")}>
-                    FODEC<span className="sort-indicator">{getSortIndicator("fodec")}</span>
+                    {t("visualiser.fodec")}<span className="sort-indicator">{getSortIndicator("fodec")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.fodec} onChange={(e) => handleSearchChange("fodec", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("tva")}>
-                    TVA<span className="sort-indicator">{getSortIndicator("tva")}</span>
+                    {t("visualiser.tva")}<span className="sort-indicator">{getSortIndicator("tva")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.tva} onChange={(e) => handleSearchChange("tva", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("droitTimbreFiscal")}>
-                    Timbre<span className="sort-indicator">{getSortIndicator("droitTimbreFiscal")}</span>
+                    {t("visualiser.timbre")}<span className="sort-indicator">{getSortIndicator("droitTimbreFiscal")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.droitTimbreFiscal} onChange={(e) => handleSearchChange("droitTimbreFiscal", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable" onClick={() => requestSort("tcl")}>
-                    TCL<span className="sort-indicator">{getSortIndicator("tcl")}</span>
+                    {t("visualiser.tcl")}<span className="sort-indicator">{getSortIndicator("tcl")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.tcl} onChange={(e) => handleSearchChange("tcl", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th className="sortable th-total" onClick={() => requestSort("totalDeclarer")}>
-                    Total à déclarer<span className="sort-indicator">{getSortIndicator("totalDeclarer")}</span>
+                    {t("visualiser.total_declarer")}<span className="sort-indicator">{getSortIndicator("totalDeclarer")}</span>
                     <Form.Control type="text" size="sm" value={searchFilters.totalDeclarer} onChange={(e) => handleSearchChange("totalDeclarer", e.target.value)} onClick={(e) => e.stopPropagation()} />
                   </th>
                   <th style={hiddenStyle}>id</th>
@@ -419,7 +421,7 @@ const print_doc = () => {
                 {rows.length === 0 ? (
                   <tr>
                     <td colSpan={12} className="text-start text-muted py-3 ps-5">
-                      La table des déclarations est vide
+                      {t("visualiser.table_vide")}
                     </td>
                   </tr>
                 ) : (
@@ -572,10 +574,10 @@ const print_doc = () => {
                     aria-hidden="true"
                     className="me-2"
                   />
-                  Génération...
+                  {t("visualiser.generation")}
                 </>
               ) : (
-                <><i className="fas fa-print me-1"></i>Imprimer</>
+                <><i className="fas fa-print me-1"></i>{t("common.imprimer")}</>
               )}
             </Button>
             <Button
@@ -583,7 +585,7 @@ const print_doc = () => {
               className="custom-btn-danger"
               onClick={() => {
                 if (!hasSelected) {
-                  setAlertMessage("Veuillez sélectionner une ou plusieurs déclarations à supprimer.");
+                  setAlertMessage(t("visualiser.err_supprimer"));
                   setTimeout(() => setAlertMessage(null), 3000);
                   return;
                 }
@@ -591,26 +593,24 @@ const print_doc = () => {
               }}
             >
               <i className="fas fa-trash me-1"></i>
-              {isDeleting ? "Suppression..." : "Supprimer"}
+              {isDeleting ? t("visualiser.suppression") : t("visualiser.supprimer")}
             </Button>
           </div>
         </Row>
       </Container>
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered className="modern-modal">
         <Modal.Header closeButton>
-          <Modal.Title>Confirmer la suppression</Modal.Title>
+          <Modal.Title>{t("visualiser.confirmer_suppression")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Êtes-vous sûr de vouloir supprimer les déclarations sélectionnées ?
-          Cette action supprimera également toutes les données liées (factures, paie, retenue) dans la page Gérer.
-          Cette action est irréversible.
+          {t("visualiser.message_suppression")}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Annuler
+            {t("common.annuler")}
           </Button>
           <Button variant="danger" onClick={handleDelete} disabled={isDeleting}>
-            {isDeleting ? "Suppression..." : "Supprimer"}
+            {isDeleting ? t("visualiser.suppression") : t("visualiser.supprimer")}
           </Button>
         </Modal.Footer>
       </Modal>

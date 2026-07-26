@@ -1,0 +1,551 @@
+/* RTL overrides for Arabic */
+
+/* Scroll-to-top button */
+[dir="rtl"] .up {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* Toast */
+[dir="rtl"] .toast {
+  text-align: right;
+}
+
+/* Breadcrumb — RTL: الرئيسية ‹ مرحبا ‹ إدارة التصاريح (Right to Left) */
+[dir="rtl"] nav[aria-label="breadcrumb"] {
+  direction: rtl !important;
+}
+
+[dir="rtl"] .breadcrumb {
+  direction: rtl !important;
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+}
+
+[dir="rtl"] .breadcrumb-item+.breadcrumb-item {
+  padding-right: 0.5rem !important;
+  padding-left: 0 !important;
+}
+
+[dir="rtl"] .breadcrumb-item+.breadcrumb-item::before {
+  float: right !important;
+  padding-right: 0 !important;
+  padding-left: 0.5rem !important;
+  content: "\203A" !important;
+}
+
+/* Home cards */
+[dir="rtl"] .comment .card {
+  text-align: center !important;
+  margin-left: 20px;
+  margin-right: 20px;
+  min-height: 260px;
+}
+
+/* Ensure cards row uses flex alignment */
+[dir="rtl"] .comment.justify-content-center {
+  align-items: stretch;
+}
+
+[dir="rtl"] .comment .card h3,
+[dir="rtl"] .comment .card .card-body,
+[dir="rtl"] .comment .card .card-title,
+[dir="rtl"] .comment .card .card-body p,
+[dir="rtl"] .col-card .card * {
+  text-align: center !important;
+}
+
+@media (max-width: 1030px) {
+  [dir="rtl"] .comment .card {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  [dir="rtl"] .col-card {
+    width: 100% !important;
+    padding: 0 10px !important;
+  }
+  [dir="rtl"] .comment .card {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100% !important;
+    min-height: 240px;
+  }
+  [dir="rtl"] .comment .card h3 {
+    font-size: 22px !important;
+  }
+  [dir="rtl"] .comment .card .card-body {
+    font-size: 15px !important;
+  }
+}
+
+[dir="rtl"] .cardcnss {
+  text-align: right;
+}
+
+[dir="rtl"] .comment h2 {
+  text-align: center;
+}
+
+/* Bootstrap directional utilities — SWAP margins/paddings instead of removing */
+[dir="rtl"] .ms-auto {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+[dir="rtl"] .me-auto {
+  margin-right: 0 !important;
+  margin-left: auto !important;
+}
+
+[dir="rtl"] .ms-1 {
+  margin-left: 0 !important;
+  margin-right: 0.25rem !important;
+}
+
+[dir="rtl"] .ms-2 {
+  margin-left: 0 !important;
+  margin-right: 0.5rem !important;
+}
+
+[dir="rtl"] .ms-3 {
+  margin-left: 0 !important;
+  margin-right: 1rem !important;
+}
+
+[dir="rtl"] .ms-4 {
+  margin-left: 0 !important;
+  margin-right: 1.5rem !important;
+}
+
+[dir="rtl"] .me-1 {
+  margin-right: 0 !important;
+  margin-left: 0.25rem !important;
+}
+
+[dir="rtl"] .me-2 {
+  margin-right: 0 !important;
+  margin-left: 0.5rem !important;
+}
+
+[dir="rtl"] .me-3 {
+  margin-right: 0 !important;
+  margin-left: 1rem !important;
+}
+
+[dir="rtl"] .me-4 {
+  margin-right: 0 !important;
+  margin-left: 1.5rem !important;
+}
+
+[dir="rtl"] .ps-1 {
+  padding-left: 0 !important;
+  padding-right: 0.25rem !important;
+}
+
+[dir="rtl"] .ps-2 {
+  padding-left: 0 !important;
+  padding-right: 0.5rem !important;
+}
+
+[dir="rtl"] .ps-3 {
+  padding-left: 0 !important;
+  padding-right: 1rem !important;
+}
+
+[dir="rtl"] .ps-4 {
+  padding-left: 0 !important;
+  padding-right: 1.5rem !important;
+}
+
+[dir="rtl"] .pe-1 {
+  padding-right: 0 !important;
+  padding-left: 0.25rem !important;
+}
+
+[dir="rtl"] .pe-2 {
+  padding-right: 0 !important;
+  padding-left: 0.5rem !important;
+}
+
+[dir="rtl"] .pe-3 {
+  padding-right: 0 !important;
+  padding-left: 1rem !important;
+}
+
+[dir="rtl"] .pe-4 {
+  padding-right: 0 !important;
+  padding-left: 1.5rem !important;
+}
+
+/* ms-md-auto — keep "Développer/Réduire" button at end position */
+[dir="rtl"] .ms-md-auto {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+/* Navbar alignment */
+[dir="rtl"] .navbar-nav {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+/* Form alignment */
+[dir="rtl"] .form-label {
+  text-align: right;
+}
+
+[dir="rtl"] .form-control,
+[dir="rtl"] .form-select {
+  text-align: right;
+}
+
+/* Select dropdown arrow spacing */
+[dir="rtl"] .form-select {
+  padding-left: 0.75rem;
+  padding-right: 2.25rem;
+  background-position: left 0.5rem center;
+}
+
+/* Card alignment */
+[dir="rtl"] .card-title {
+  text-align: right;
+}
+
+[dir="rtl"] .card-body {
+  text-align: right;
+}
+
+/* Page title alignment */
+[dir="rtl"] .form-title {
+  text-align: center;
+}
+
+[dir="rtl"] .section_title {
+  text-align: right;
+}
+
+/* Alert alignment */
+[dir="rtl"] .alert {
+  text-align: right;
+}
+
+/* Dropdown alignment */
+[dir="rtl"] .dropdown-menu {
+  text-align: right;
+}
+
+/* Feedback alignment */
+[dir="rtl"] .invalid-feedback,
+[dir="rtl"] .valid-feedback {
+  text-align: right;
+}
+
+/* Page-specific */
+[dir="rtl"] .cnss-dashboard-card {
+  text-align: right;
+}
+
+[dir="rtl"] .cnss-subtitle {
+  text-align: right;
+}
+
+[dir="rtl"] .card-titlecnss {
+  text-align: right;
+}
+
+/* Footer alignment */
+[dir="rtl"] .footer-menu {
+  text-align: right;
+}
+
+[dir="rtl"] .footer-icons {
+  text-align: center;
+}
+
+[dir="rtl"] .footer-copyright {
+  text-align: center;
+}
+
+/* Login / Register form */
+[dir="rtl"] .register {
+  direction: rtl;
+}
+
+/* Welcome page */
+[dir="rtl"] .modern-card-link {
+  text-align: right;
+}
+
+[dir="rtl"] .bodyconnected {
+  text-align: right;
+}
+
+/* Home cards */
+[dir="rtl"] .carsour .card {
+  text-align: right;
+}
+
+/* Tooltip */
+[dir="rtl"] .copied-tooltip {
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Home arrows — flip direction in RTL */
+[dir="rtl"] .modern-arrow-icon {
+  transform: scaleX(-1) !important;
+}
+
+[dir="rtl"] .modern-arrow-col:hover .modern-arrow-icon {
+  transform: scaleX(-1) translateX(8px) scale(1.15) !important;
+}
+
+@keyframes pulse-arrow-rtl {
+  0% {
+    transform: scaleX(-1) translateX(0);
+  }
+
+  50% {
+    transform: scaleX(-1) translateX(6px);
+  }
+
+  100% {
+    transform: scaleX(-1) translateX(0);
+  }
+}
+
+[dir="rtl"] .modern-arrow-icon {
+  animation: pulse-arrow-rtl 2s infinite ease-in-out !important;
+}
+
+/* InputGroup in RTL */
+[dir="rtl"] .input-group> :not(:first-child) {
+  margin-left: -1px;
+  margin-right: 0;
+}
+
+[dir="rtl"] .input-group> :not(:last-child) {
+  margin-right: -1px;
+  margin-left: 0;
+}
+
+/* Text alignment utilities */
+[dir="rtl"] .text-start {
+  text-align: right !important;
+}
+
+[dir="rtl"] .text-end {
+  text-align: left !important;
+}
+
+/* Register page sections */
+[dir="rtl"] .register h4 {
+  text-align: right;
+}
+
+/* Condition / Propos page */
+[dir="rtl"] .visualiser-page {
+  direction: rtl;
+}
+
+[dir="rtl"] .visualiser-page p {
+  text-align: right;
+}
+
+[dir="rtl"] .visualiser-page h4 {
+  text-align: right;
+}
+
+[dir="rtl"] .visualiser-page h5 {
+  text-align: right;
+}
+
+[dir="rtl"] .visualiser-page li {
+  text-align: right;
+}
+
+[dir="rtl"] .visualiser-page li::marker {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* CNSS form */
+[dir="rtl"] .cnss-dashboard-card .form-label {
+  text-align: right;
+}
+
+[dir="rtl"] .cnssfc {
+  text-align: right;
+}
+
+[dir="rtl"] .container {
+  direction: rtl;
+}
+
+[dir="rtl"] .container-fluid {
+  direction: rtl;
+}
+
+/* InputGroup — swap negative margin for border-collapse in RTL */
+[dir="rtl"] .input-group > :not(:first-child) {
+  margin-left: 0 !important;
+  margin-right: -1px !important;
+}
+
+/* Remove input left border + radius so it fuses with password toggle button in RTL */
+[dir="rtl"] .input-group > .form-control {
+  border-left: none !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+/* Password toggle button — button on LEFT side in RTL */
+[dir="rtl"] .password-toggle-btn {
+  border: 1px solid #ced4da !important;
+  border-right: none !important;
+  background-color: #fff !important;
+  border-top-left-radius: 0.375rem !important;
+  border-bottom-left-radius: 0.375rem !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* Accordion */
+[dir="rtl"] .modern-accordion .accordion-button::after {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .accordion-button::after {
+  margin-left: 0;
+  margin-right: auto;
+  transform: rotate(90deg);
+}
+
+[dir="rtl"] .accordion-button:not(.collapsed)::after {
+  transform: rotate(-180deg);
+}
+
+/* Form check */
+[dir="rtl"] .form-check-input {
+  margin-right: -1.5em;
+  margin-left: 0;
+}
+
+[dir="rtl"] .form-check {
+  padding-right: 1.5em;
+  padding-left: 0;
+}
+
+/* Modal */
+[dir="rtl"] .modal-header {
+  direction: rtl;
+}
+
+[dir="rtl"] .btn-close {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* Table responsive */
+[dir="rtl"] .table-responsive {
+  direction: rtl;
+}
+
+/* Visualiser table — increase spacing between month/year columns */
+[dir="rtl"] .visualiser-page .table-custom th {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Number inputs */
+[dir="rtl"] input[type="number"] {
+  text-align: right;
+}
+
+/* Valid state */
+[dir="rtl"] .is-valid {
+  direction: rtl;
+}
+
+/* Form label annee */
+[dir="rtl"] .form-labelannee {
+  text-align: right;
+}
+
+/* Green button */
+[dir="rtl"] .green {
+  margin-right: 0;
+}
+
+/* Sort indicator */
+[dir="rtl"] .sort-indicator {
+  margin-right: 5px;
+  margin-left: 0;
+}
+
+/* Visualiser — align search inputs on the same line */
+[dir="rtl"] .visualiser-page .sortable {
+  position: relative;
+  min-height: 100px;
+  padding-bottom: 30px;
+}
+
+[dir="rtl"] .visualiser-page .sortable .form-control-sm {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  width: 90%;
+  margin: 0;
+}
+
+/* Login error message */
+[dir="rtl"] .login-error-msg {
+  text-align: right;
+}
+
+/* Result box in home */
+[dir="rtl"] .result-item-label {
+  text-align: right;
+}
+
+[dir="rtl"] .result-item-value {
+  text-align: right;
+}
+
+/* Gerer page — ensure gap between mois/année fields in RTL */
+[dir="rtl"] .row-gt {
+  column-gap: 1rem;
+}
+
+/* Buttons — swap margin-right to margin-left in RTL */
+[dir="rtl"] .boutons button {
+  margin-right: 0;
+  margin-left: 10px;
+}
+
+/* Hero card — bigger on mobile only */
+@media (max-width: 576px) {
+  [dir="rtl"] .carsour .card {
+    width: 90% !important;
+  }
+  [dir="rtl"] .carsour .card-title {
+    font-size: 24px !important;
+  }
+  [dir="rtl"] .carsour .card-subtitle {
+    font-size: 18px !important;
+  }
+  [dir="rtl"] .carsour .card-body {
+    font-size: 16px !important;
+  }
+  [dir="rtl"] .carsour a {
+    font-size: 18px !important;
+    padding: 12px 20px !important;
+  }
+}

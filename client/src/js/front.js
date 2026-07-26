@@ -1,3 +1,5 @@
+import i18n from "../i18n";
+
 /* Collapse JS */
 var coll = document.getElementsByClassName("collapsible");
 for (var i = 0; i < coll.length; i++) {
@@ -35,15 +37,15 @@ document.getElementById('ajouterfacture').addEventListener('click', function() {
     </td>
     <td><input type="text" class="form-control" placeholder="Date"/></td>
     <td><select class="form-control">
-        <option value="selection">Sélectionner un type de facture</option>
-        <option value="Type 1">Facture d'achat</option>
-        <option value="Type 2">Facture de vente</option>
+        <option value="selection">{i18n.t("front.type_facture")}</option>
+        <option value="Type 1">{i18n.t("front.facture_achat")}</option>
+        <option value="Type 2">{i18n.t("front.facture_vente")}</option>
       </select></td>
-    <td><input type="text" class="form-control" placeholder="Réf facture"/></td>
-    <td><input type="number" class="form-control" placeholder="Total HT"/></td>
-    <td><input type="number" class="form-control" placeholder="TVA"/></td>
-    <td><input type="number" class="form-control" placeholder="Timbre"/></td>
-    <td><input type="number" class="form-control" placeholder="Total TTC"/></td>
+    <td><input type="text" class="form-control" placeholder={i18n.t("front.ref_facture")}/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.total_ht")}/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.taux_tva")}/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.timbre")}/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.total_ttc")}/></td>
   `;
 
   tableBody.appendChild(newRow);
@@ -86,19 +88,19 @@ document.getElementById('ajouterpaie').addEventListener('click', function() {
       <input type="checkbox" class="paieCheckbox"/>
     </td>
     <td><select class="form-control">
-        <option value="">Sélectionner le secteur d'activité</option>
-        <option value="Type 1">Industriel</option>
-        <option value="Type 2">Autre</option>
+        <option value="">{i18n.t("front.select_secteur")}</option>
+        <option value="Type 1">{i18n.t("front.industriel")}</option>
+        <option value="Type 2">{i18n.t("front.autre")}</option>
       </select></td>
-    <td><input type="text" class="form-control" placeholder="Salarier"/></td>
+    <td><input type="text" class="form-control" placeholder={i18n.t("front.salarier")}/></td>
     <td><select class="form-control">
-        <option value="">Chef de famille ou non ?</option>
-        <option value="Type 1">Oui</option>
-        <option value="Type 2">Non</option>
+        <option value="">{i18n.t("front.chef_famille")}</option>
+        <option value="Type 1">{i18n.t("common.oui")}</option>
+        <option value="Type 2">{i18n.t("common.non")}</option>
       </select></td>
-    <td><input type="number" class="form-control" placeholder="Nombre d'enfants"/></td>
-    <td><input type="number" class="form-control" placeholder="Salaire Brut"/></td>
-    <td><input type="number" class="form-control" placeholder="Salaire Net"/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.nb_enfants")}/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.salaire_brut")}/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.salaire_net")}/></td>
   `;
 
   tableBody.appendChild(newRow);
@@ -141,13 +143,13 @@ document.getElementById('ajouterretenue').addEventListener('click', function() {
       <input type="checkbox" class="retenueCheckbox">
     </td>
     <td><select class="form-control">
-        <option value="">Retenue à la source sur :</option>
-        <option value="Type 1">Loyer</option>
-        <option value="Type 2">Honoraires</option>
+        <option value="">{i18n.t("front.retenue_source")}</option>
+        <option value="Type 1">{i18n.t("front.loyer")}</option>
+        <option value="Type 2">{i18n.t("front.honoraires")}</option>
       </select></td>
-    <td><input type="number" class="form-control" placeholder="Montant HT"/></td>
-    <td><input type="number" class="form-control" placeholder="TVA"/></td>
-    <td><input type="number" class="form-control" placeholder="Montant TTC"/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.montant_ht")}/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.taux_tva")}/></td>
+    <td><input type="number" class="form-control" placeholder={i18n.t("front.montant_ttc")}/></td>
   `;
 
   tableBody.appendChild(newRow);

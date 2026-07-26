@@ -2,9 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { Helmet } from "react-helmet";
+import { withTranslation } from "react-i18next";
 
 class Footer extends React.Component {
   render() {
+    const { t } = this.props;
     return (
       <>
         <Helmet>
@@ -27,27 +29,27 @@ class Footer extends React.Component {
                 <ul className="list-unstyled">
                   <li>
                     <Link to="/" className="text-white">
-                      Accueil
+                      {t("footer.accueil")}
                     </Link>
                   </li>
                   <li>
                     <Link to="/condition" className="text-white">
-                      Conditions générales
+                      {t("footer.conditions")}
                     </Link>
                   </li>
                   <li>
                     <Link to="/FAQ" className="text-white">
-                      FAQ
+                      {t("footer.faq")}
                     </Link>
                   </li>
                   <li>
                     <Link to="/propos" className="text-white">
-                      À propos
+                      {t("footer.apropos")}
                     </Link>
                   </li>
                   <li>
                     <Link to="/contact" className="text-white">
-                      Contact
+                      {t("footer.contact")}
                     </Link>
                   </li>
                 </ul>
@@ -98,7 +100,7 @@ class Footer extends React.Component {
             <Row>
               <Col className="footer-copyright text-center">
                 <p>
-                  Déclaration Facile © Copyright 2026. Tous droits réservés.
+                  {t("footer.copyright")}
                 </p>
               </Col>
             </Row>
@@ -118,4 +120,4 @@ class Footer extends React.Component {
   }
 }
 
-export default Footer;
+export default withTranslation()(Footer);

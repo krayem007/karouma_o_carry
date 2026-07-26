@@ -16,17 +16,19 @@ import {
   Toast,
 } from "react-bootstrap";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const instance = axios.create({
   baseURL: '',
   withCredentials: true,
 });
 
-const TITLE = "Réinitialisation de Mot de Passe | " + Config.SITE_TITLE;
-const DESC = "Réinitialisation de Mot de Passe ";
 const CANONICAL = Config.SITE_DOMAIN + "/reinitialisation";
 
 const Reinitialisation = () => {
+  const { t } = useTranslation();
+  const TITLE = t("reinit.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("reinit.titre_meta");
   const [validated, set_Validated] = useState(false);
   const [form_Data, set_Form_Data] = useState({
     email: "",
@@ -47,7 +49,7 @@ const Reinitialisation = () => {
       instance.post('/request_reset', { email: form_Data.email })
         .then((response) => {
           setAlert({
-            message: response.data.message || "Nous allons vous envoyer un e-mail contenant le lien de réinitialisation de votre mot de passe.",
+            message: response.data.message || t("reinit.success_message"),
             type: "success",
           });
           setTimeout(() => {
@@ -55,7 +57,7 @@ const Reinitialisation = () => {
           }, 3000);
         })
         .catch((error) => {
-          const errorMessage = error.response?.data?.error || "Une erreur s'est produite lors de la réinitialisation.";
+          const errorMessage = error.response?.data?.error || t("reinit.err_inconnue");
           setAlert({
             message: errorMessage,
             type: "error",
@@ -111,10 +113,10 @@ const Reinitialisation = () => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item active>
-            Réinitialisation de Mot de Passe
+            {t("reinit.page_title")}
           </Breadcrumb.Item>
         </Breadcrumb>
 
@@ -124,11 +126,11 @@ const Reinitialisation = () => {
           validated={validated}
           onSubmit={submitFn}
         >
-          <h1 className="form-title"> Réinitialisation de Mot de Passe</h1>
+          <h1 className="form-title"> {t("reinit.page_title")}</h1>
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="email" className="formgroupp">
-                <Form.Label>E-mail :</Form.Label>
+                <Form.Label>{t("reinit.email_label")}</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -141,15 +143,14 @@ const Reinitialisation = () => {
                   }
                 />
                 <Form.Control.Feedback type="invalid" className="feedw">
-                  Veuillez entrer votre adresse e-mail pour la réinitialisation
-                  du mot de passe.
+                  {t("reinit.err_email_required")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
           <div className="boutons">
             <Button variant="primary" type="submit" className="custom-primary">
-              Envoyer
+              {t("common.envoyer")}
             </Button>
           </div>
         </Form>

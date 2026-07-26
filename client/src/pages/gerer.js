@@ -1,5 +1,6 @@
 import icon from "../images/icon.png";
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
@@ -23,11 +24,12 @@ const instance = axios.create({
   withCredentials: true, // Allow sending cookies with requests
 });
 
-const TITLE = "Gérer mes déclarations | " + Config.SITE_TITLE;
-const DESC = "Gérer mes déclarations ";
 const CANONICAL = Config.SITE_DOMAIN + "/gerer";
 
 const Gerer = () => {
+  const { t } = useTranslation();
+  const TITLE = t("gerer.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("gerer.titre_meta");
   // State to manage rows
   const [deleteFactureIds, setDeleteFactureIds] = useState([]);
   const [deletePaieIds, setDeletePaieIds] = useState([]);
@@ -148,7 +150,7 @@ const Gerer = () => {
         setRetenue(rnewRows);
       } else if (response.data.not_found !== true) {
         setAlert({
-          message: response.data.message || "Erreur de chargement",
+          message: response.data.message || t("gerer.err_chargement"),
           type: "error",
         });
 
@@ -161,7 +163,7 @@ const Gerer = () => {
       const msg = getErrorMessage(error);
       if (error?.response?.status === 401 || msg.includes('not authorized') || msg.includes('non autorisé')) {
         setAlert({
-          message: "Connexion requise pour effectuer cette opération",
+          message: t("gerer.err_connexion_requise"),
           type: "error",
         });
         setTimeout(() => {
@@ -370,7 +372,7 @@ const Gerer = () => {
   };
 
   const getErrorMessage = (error) => {
-    if (!error) return 'Erreur inconnue';
+    if (!error) return t("gerer.err_inconnue");
     return error?.response?.data?.message || error?.message || error.toString();
   };
 
@@ -496,7 +498,7 @@ const Gerer = () => {
 
       if (response.data.saved === true) {
         setAlert({
-          message: "Vous avez saisi vos données. Vous pouvez maintenant imprimer votre déclaration.",
+          message: t("gerer.success_save"),
           type: "success",
         });
         console.log("Alert shown, waiting to navigate");
@@ -506,7 +508,7 @@ const Gerer = () => {
         }, 3000);
       } else {
         setAlert({
-          message: response.data.message || 'Erreur inconnue',
+          message: response.data.message || t("gerer.err_inconnue"),
           type: "error",
         });
 
@@ -521,7 +523,7 @@ const Gerer = () => {
 
       if (error?.response?.status === 401 || msg.includes('not authorized') || msg.includes('non autorisé')) {
         setAlert({
-          message: "Connexion requise pour effectuer cette opération",
+          message: t("gerer.err_connexion_requise"),
           type: "error",
         });
         setTimeout(() => {
@@ -813,15 +815,15 @@ const Gerer = () => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/welcome">Welcome</Link>
+            <Link to="/welcome">{t("welcome.page_title")}</Link>
           </Breadcrumb.Item>
 
-          <Breadcrumb.Item active>Gérer mes déclarations</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("gerer.page_title")}</Breadcrumb.Item>
         </Breadcrumb>
-        <h1 className="form-title"> Gérer mes déclarations </h1>
+        <h1 className="form-title"> {t("gerer.page_title")} </h1>
         <form noValidate onSubmit={submitFn} validated={validated}>
           <Row className="row-gt align-items-center justify-content-start g-2">
             <Col xs={3} sm={3} md="auto">
@@ -833,7 +835,7 @@ const Gerer = () => {
                   readOnly={isSaisieClicked}
                   min="2000"
                   max={currentYear + 100}
-                  placeholder="Année:"
+                  placeholder={t("gerer.annee_label")}
                   className="form-labelannee"
                   onChange={(e) => {
                     const raw = e.target.value;
@@ -860,7 +862,7 @@ const Gerer = () => {
                 onChange={(e) => setMois(e.target.value)}
                 disabled={isSaisieClicked}
               >
-                <option>Mois</option>
+                <option>{t("register.mois")}</option>
                 {[...Array(12)].map((_, i) => (
                   <option key={i + 1} value={i + 1}>
                     {i + 1}
@@ -877,7 +879,7 @@ const Gerer = () => {
                   onClick={handleSaisie}
                   disabled={!isFormValid}
                 >
-                  Saisie
+                  {t("gerer.saisie")}
                 </Button>
               </div>
             </Col>
@@ -890,7 +892,7 @@ const Gerer = () => {
                   onClick={handleChangerMoisAnneeClick}
                   disabled={!isSaisieClicked}
                 >
-                  Changer
+                  {t("gerer.changer")}
                 </Button>
               </div>
             </Col>
@@ -902,7 +904,7 @@ const Gerer = () => {
                   className="custom-primaryg"
                   onClick={toggleAllAccordions}
                 >
-                  DEVELOPPER/REDUIRE TOUTES{" "}
+                  {t("gerer.develop_reduire")}{" "}
                 </Button>
               </div>
             </Col>
@@ -911,7 +913,7 @@ const Gerer = () => {
             <Accordion alwaysOpen activeKey={activeAccordion} className="modern-accordion">
               <Accordion.Item eventKey="0">
                 <Accordion.Header onClick={() => toggleAccordionItem("0")}>
-                  Saisir mes factures
+                  {t("gerer.factures_titre")}
                 </Accordion.Header>
                 <Accordion.Body>
                   <div className="add-del">
@@ -921,7 +923,7 @@ const Gerer = () => {
                         className="custom-primaryg me-1 me-md-2"
                         disabled={!isSaisieClicked} // Disable until Saisie is clicked
                       >
-                        Ajouter
+                        {t("gerer.ajouter")}
                       </Button>
                       <Button
                         variant="primary"
@@ -929,7 +931,7 @@ const Gerer = () => {
                         className="custom-primaryg"
                         disabled={!isSaisieClicked}
                       >
-                        Supprimer
+                        {t("gerer.supprimer_selection")}
                       </Button>
                   </div>
                   <Container className="table-container">
@@ -945,43 +947,43 @@ const Gerer = () => {
                               />
                             </th>
                             <th className="thautre">
-                              Date <span className="text-danger">*</span>
+                              {t("gerer.date")} <span className="text-danger">*</span>
                             </th>
                             <th id="custome_th">
-                              Type du facture
+                              {t("gerer.type_facture")}
                               <span className="text-danger">*</span>
                             </th>
                             <th className="thmt">
-                              Type d'achat ou de vente
+                              {t("gerer.type_achat_vente")}
                               <span className="text-danger">*</span>
                             </th>
-                            <th className="thautre">Réf facture</th>
+                            <th className="thautre">{t("gerer.ref_facture")}</th>
                             <th className="thmt">
-                              Total HT <span className="text-danger">*</span>
+                              {t("gerer.total_ht")} <span className="text-danger">*</span>
                             </th>
                             <th className="thautre">
-                              TVA <span className="text-danger">*</span>
+                              {t("gerer.taux_tva")} <span className="text-danger">*</span>
                             </th>
                             <th className="thautre">
-                              Timbre <span className="text-danger">*</span>
+                              {t("gerer.timbre")} <span className="text-danger">*</span>
                             </th>
-                            <th className="thmt">FODEC</th>
-                            <th className="thmt">Montant FODEC</th>
-                            <th className="thmt">Taux Droit de consommation</th>
+                            <th className="thmt">{t("gerer.fodec_label")}</th>
+                            <th className="thmt">{t("gerer.montant_fodec")}</th>
+                            <th className="thmt">{t("gerer.taux_dc")}</th>
                             <th className="thmt">
-                              Montant Droit de consommation
+                              {t("gerer.montant_dc")}
                             </th>
                             <th className="thmt">
-                              Total TTC <span className="text-danger">*</span>
+                              {t("gerer.total_ttc")} <span className="text-danger">*</span>
                             </th>
                             <th className="thmt text-nowrap">
-                              Nature Bénéficiaire <span className="text-danger">*</span>
+                              {t("gerer.nature_beneficiaire")} <span className="text-danger">*</span>
                             </th>
                             <th className="thmt text-nowrap">
-                              Régime Bénéficiaire <span className="text-danger">*</span>
+                              {t("gerer.regime_beneficiaire")} <span className="text-danger">*</span>
                             </th>
                             <th className="thmt text-nowrap">
-                              Montant Retenue <span className="text-danger">*</span>
+                              {t("gerer.montant_retenue")} <span className="text-danger">*</span>
                             </th>
                             <th className="d-none">id</th>
                           </tr>
@@ -993,7 +995,7 @@ const Gerer = () => {
                                 colSpan={18}
                                 className="text-start text-muted py-3 ps-5"
                               >
-                                La table des factures est vide
+                                {t("gerer.vide_factures")}
                               </td>
                             </tr>
                           ) : (
@@ -1019,7 +1021,7 @@ const Gerer = () => {
                                     <Form.Control
                                       className="textadj"
                                       type="date"
-                                      placeholder="Date"
+                                      placeholder={t("gerer.date")}
                                       value={facture.Date}
                                       onChange={
                                         (e) =>
@@ -1035,7 +1037,7 @@ const Gerer = () => {
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Veuillez remplir la date de la facture
+                                      {t("gerer.err_date")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1044,7 +1046,7 @@ const Gerer = () => {
                                     controlId={`type-facture-${index}`}
                                   >
                                     <Form.Select
-                                      aria-label="Type de facture"
+                                      aria-label={t("gerer.type_facture")}
                                       value={factures[index]?.Type || ""}
                                       onChange={(e) =>
                                         chngFn(index, {
@@ -1057,26 +1059,26 @@ const Gerer = () => {
                                         validated && !factures[index]?.Type
                                       }
                                     >
-                                      <option value="">Type du facture </option>
+                                      <option value="">{t("gerer.type_facture")} </option>
                                       <option value="Facture d'achat">
-                                        Facture d'achat
+                                        {t("gerer.facture_achat")}
                                       </option>
                                       <option value="Facture de vente">
-                                        Facture de vente
+                                        {t("gerer.facture_vente")}
                                       </option>
                                     </Form.Select>
                                     <Form.Control.Feedback
                                       type="invalid"
                                       className="feedback"
                                     >
-                                      Veuillez sélectionner le type du facture
+                                      {t("gerer.err_type_facture")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
                                 <td>
                                   <Form.Group controlId={`TypeAV-${index}`}>
                                     <Form.Select
-                                      aria-label="Type d'achat ou de vente"
+                                      aria-label={t("gerer.type_achat_vente")}
                                       value={factures[index]?.TypeAV || ""}
                                       onChange={(e) =>
                                         chngFn(index, {
@@ -1090,27 +1092,26 @@ const Gerer = () => {
                                       }
                                     >
                                       <option value="">
-                                        Type d'achat ou de vente
+                                        {t("gerer.type_achat_vente")}
                                       </option>
-                                      <option value="Achat d’équipement local">
-                                        Equipement local
+                                      <option value="Achat d'équipement local">
+                                        {t("gerer.equipement_local")}
                                       </option>
-                                      <option value="Achat d’équipement importé">
-                                        Equipement importé
+                                      <option value="Achat d'équipement importé">
+                                        {t("gerer.equipement_importe")}
                                       </option>
                                       <option value="Autres achats locaux">
-                                        Autres achats et ventes locaux
+                                        {t("gerer.autres_achats_locaux")}
                                       </option>
                                       <option value="Autres achats importés">
-                                        Autres achats et ventes importés
+                                        {t("gerer.autres_achats_importes")}
                                       </option>
                                     </Form.Select>
                                     <Form.Control.Feedback
                                       type="invalid"
                                       className="feedback"
                                     >
-                                      Veuillez sélectionner type d'achat ou de
-                                      vente
+                                      {t("gerer.err_type_achat")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1118,7 +1119,7 @@ const Gerer = () => {
                                   <Form.Control
                                     className="textadj"
                                     type="text"
-                                    placeholder="Réf facture"
+                                    placeholder={t("gerer.ref_facture")}
                                     value={facture.Ref}
                                     onChange={(e) =>
                                       chngFn(index, {
@@ -1134,7 +1135,7 @@ const Gerer = () => {
                                   >
                                     <Form.Control
                                       min="0"
-                                      placeholder="Total HT"
+                                      placeholder={t("gerer.total_ht")}
                                       value={facture.TotalHT}
                                       step="0.001"
                                       onChange={(e) => {
@@ -1156,8 +1157,8 @@ const Gerer = () => {
                                       type="invalid"
                                     >
                                       {factures[index]?.TotalHT == null || factures[index]?.TotalHT === ""
-                                        ? "Veuillez remplir le Total HT"
-                                        : "Le Total HT ne doit pas être nul"}
+                                        ? t("gerer.err_total_ht_empty")
+                                        : t("gerer.err_total_ht_zero")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1183,16 +1184,16 @@ const Gerer = () => {
                                         validated && !factures[index]?.tva
                                       }
                                     >
-                                      <option value=""> Taux TVA </option>
-                                      <option value="7">7%</option>
-                                      <option value="13">13%</option>
-                                      <option value="19">19%</option>
-                                    </Form.Select>
-                                    <Form.Control.Feedback
-                                      type="invalid"
-                                      className="feedback"
-                                    >
-                                      Veuillez sélectionner le TVA.
+                                       <option value=""> {t("gerer.taux_tva")} </option>
+                                       <option value="7">7%</option>
+                                       <option value="13">13%</option>
+                                       <option value="19">19%</option>
+                                     </Form.Select>
+                                     <Form.Control.Feedback
+                                       type="invalid"
+                                       className="feedback"
+                                     >
+                                       {t("gerer.err_tva")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1204,7 +1205,7 @@ const Gerer = () => {
                                       className="textadj"
                                       type="text"
                                       inputMode="decimal"
-                                      placeholder="Timbre"
+                                      placeholder={t("gerer.timbre")}
                                       value={facture.Timbre}
                                       onChange={(e) => {
                                         const val = e.target.value;
@@ -1231,8 +1232,8 @@ const Gerer = () => {
                                       type="invalid"
                                     >
                                       {factures[index]?.Timbre == null || factures[index]?.Timbre === ""
-                                        ? "Veuillez remplir le montant de timbre"
-                                        : "Le montant du timbre ne doit pas être nul"}
+                                        ? t("gerer.err_timbre_empty")
+                                        : t("gerer.err_timbre_zero")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1251,10 +1252,10 @@ const Gerer = () => {
                                       }
                                     >
                                       <option value="">
-                                        Soumise au FODEC ?{" "}
+                                        {t("gerer.soumise_fodec")}{" "}
                                       </option>
-                                      <option value="Oui">Oui</option>
-                                      <option value="Non">Non</option>
+                                      <option value="Oui">{t("common.oui")}</option>
+                                      <option value="Non">{t("common.non")}</option>
                                     </Form.Select>
                                   </Form.Group>
                                 </td>
@@ -1265,7 +1266,7 @@ const Gerer = () => {
                                     <Form.Control
                                       type="number"
                                       min="0"
-                                      placeholder="Montant FODEC"
+                                      placeholder={t("gerer.montant_fodec")}
                                       value={facture.MTFODEC}
                                       step="0.001"
                                       onChange={(e) =>
@@ -1290,7 +1291,7 @@ const Gerer = () => {
                                       type="number"
                                       min="0"
                                       step="0.001"
-                                      placeholder="Taux DC en %"
+                                      placeholder={t("gerer.taux_dc")}
                                       value={facture.TauxDC}
                                       onChange={(e) => {
                                         const val = e.target.value;
@@ -1312,7 +1313,7 @@ const Gerer = () => {
                                       }
                                     />
                                     <Form.Control.Feedback className="feedback" type="invalid">
-                                      Le taux ne doit pas être nul
+                                      {t("gerer.err_dc_zero")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1323,7 +1324,7 @@ const Gerer = () => {
                                     <Form.Control
                                       type="number"
                                       min="0"
-                                      placeholder="Montant DC"
+                                      placeholder={t("gerer.montant_dc")}
                                       value={facture.MTDC}
                                       step="0.001"
                                       onChange={(e) => {
@@ -1346,7 +1347,7 @@ const Gerer = () => {
                                       }
                                     />
                                     <Form.Control.Feedback className="feedback" type="invalid">
-                                      Le montant ne doit pas être nul
+                                      {t("gerer.err_montant_dc_zero")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1357,7 +1358,7 @@ const Gerer = () => {
                                     <Form.Control
                                       type="number"
                                       min="0"
-                                      placeholder="Total TTC"
+                                      placeholder={t("gerer.total_ttc")}
                                       value={facture.TotalTTC}
                                       step="0.001"
                                       onChange={(e) => {
@@ -1379,8 +1380,8 @@ const Gerer = () => {
                                       type="invalid"
                                     >
                                       {factures[index]?.TotalTTC == null || factures[index]?.TotalTTC === ""
-                                        ? "Veuillez remplir le Total TTC"
-                                        : "Le Total TTC ne doit pas être nul"}
+                                        ? t("gerer.err_total_ttc_empty")
+                                        : t("gerer.err_total_ttc_zero")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1389,7 +1390,7 @@ const Gerer = () => {
                                   <>
                                     <td className="td-retenue-nature">
                                       <Form.Select
-                                        aria-label="Nature Bénéficiaire"
+                                        aria-label={t("gerer.nature_beneficiaire")}
                                         value={facture.natureBeneficiaire || ""}
                                         onChange={(e) => {
                                           const newNature = e.target.value;
@@ -1404,18 +1405,18 @@ const Gerer = () => {
                                         required
                                         isInvalid={validated && !facture.natureBeneficiaire}
                                       >
-                                        <option value="">Nature Bénéficiaire</option>
-                                        <option value="PM">Société / Personne Morale</option>
-                                        <option value="PP">Indépendant / Personne Physique</option>
+                                        <option value="">{t("gerer.nature_beneficiaire")}</option>
+                                        <option value="PM">{t("gerer.societe_pm")}</option>
+                                        <option value="PP">{t("gerer.personne_physique")}</option>
                                       </Form.Select>
                                       <Form.Control.Feedback className="feedback" type="invalid">
-                                        Veuillez sélectionner la nature
+                                        {t("gerer.err_nature")}
                                       </Form.Control.Feedback>
                                     </td>
                                     <td className="td-retenue-nature">
                                       {facture.natureBeneficiaire && (
                                         <Form.Select
-                                          aria-label="Régime Bénéficiaire"
+                                          aria-label={t("gerer.regime_beneficiaire")}
                                           value={facture.regimeBeneficiaire || ""}
                                           onChange={(e) => {
                                             const updatedFacture = {
@@ -1428,24 +1429,24 @@ const Gerer = () => {
                                           required
                                           isInvalid={validated && !facture.regimeBeneficiaire}
                                         >
-                                          <option value="">Régime Bénéficiaire</option>
+                                          <option value="">{t("gerer.regime_beneficiaire")}</option>
                                           {facture.natureBeneficiaire === 'PM' && (
                                             <>
-                                              <option value="IS_10">IS 10%</option>
-                                              <option value="IS_20">IS 20%</option>
-                                              <option value="IS_35">IS 35%</option>
+                                              <option value="IS_10">{t("common.is_10")}</option>
+                                              <option value="IS_20">{t("common.is_20")}</option>
+                                              <option value="IS_35">{t("common.is_35")}</option>
                                             </>
                                           )}
                                           {facture.natureBeneficiaire === 'PP' && (
                                             <>
-                                              <option value="REEL_3">Régime Réel</option>
-                                              <option value="FORFAITAIRE_10">Régime Forfaitaire</option>
+                                              <option value="REEL_3">{t("gerer.regime_reel")}</option>
+                                              <option value="FORFAITAIRE_10">{t("gerer.regime_forfaitaire")}</option>
                                             </>
                                           )}
                                         </Form.Select>
                                       )}
                                       <Form.Control.Feedback className="feedback" type="invalid">
-                                        Veuillez sélectionner le régime
+                                        {t("gerer.err_regime")}
                                       </Form.Control.Feedback>
                                     </td>
                                     <td className="td-retenue-montant">
@@ -1453,7 +1454,7 @@ const Gerer = () => {
                                         type="number"
                                         min="0"
                                         step="0.001"
-                                        placeholder="Montant Retenue"
+                                        placeholder={t("gerer.montant_retenue")}
                                         value={facture.montantRetenueCalcule ?? ""}
                                         onChange={(e) => {
                                           const val = e.target.value;
@@ -1476,8 +1477,8 @@ const Gerer = () => {
                                       />
                                       <Form.Control.Feedback className="feedback" type="invalid">
                                         {(!facture.montantRetenueCalcule || facture.montantRetenueCalcule === "")
-                                          ? "Veuillez saisir le montant retenue"
-                                          : "Le montant retenue ne doit pas être nul"}
+                                          ? t("gerer.err_retenue")
+                                          : t("gerer.err_retenue_zero")}
                                       </Form.Control.Feedback>
                                     </td>
                                   </>
@@ -1517,7 +1518,7 @@ const Gerer = () => {
             <Accordion alwaysOpen activeKey={activeAccordion} className="modern-accordion">
               <Accordion.Item eventKey="1">
                 <Accordion.Header onClick={() => toggleAccordionItem("1")}>
-                  Saisir mes Paie
+                  {t("gerer.paie_titre")}
                 </Accordion.Header>
                 <Accordion.Body>
                   <div className="add-del">
@@ -1528,7 +1529,7 @@ const Gerer = () => {
                           className="custom-primaryg"
                           disabled={!isSaisieClicked}
                         >
-                          Ajouter
+                          {t("gerer.ajouter")}
                         </Button>
                       </div>
                       <div className="boutong">
@@ -1538,7 +1539,7 @@ const Gerer = () => {
                           className="custom-primaryg"
                           disabled={!isSaisieClicked}
                         >
-                          Supprimer
+                          {t("gerer.supprimer_selection")}
                         </Button>
                       </div>
                   </div>
@@ -1555,18 +1556,18 @@ const Gerer = () => {
                               />
                             </th>
                             <th>
-                              Salarier <span className="text-danger">*</span>
+                              {t("gerer.salarier")} <span className="text-danger">*</span>
                             </th>
                             <th id="custome_th">
-                              Chef de famille{" "}
+                              {t("gerer.chef_famille")}{" "}
                               <span className="text-danger">*</span>
                             </th>
                             <th>
-                              Nombre d'enfants{" "}
+                              {t("gerer.nb_enfants")}{" "}
                               <span className="text-danger">*</span>
                             </th>
                             <th>
-                              Salaire Brut{" "}
+                              {t("gerer.salaire_brut")}{" "}
                               <span className="text-danger">*</span>
                             </th>
                             <th className="d-none">id</th>
@@ -1579,7 +1580,7 @@ const Gerer = () => {
                                 colSpan={5}
                                 className="text-start text-muted py-3 ps-5"
                               >
-                                La table des paies est vide
+                                {t("gerer.vide_paies")}
                               </td>
                             </tr>
                           ) : (
@@ -1601,7 +1602,7 @@ const Gerer = () => {
                                     <Form.Control
                                       className="textadj"
                                       type="text"
-                                      placeholder="Salarier"
+                                      placeholder={t("gerer.salarier")}
                                       value={paie[index]?.Salarier ?? ""} // Access value from the specific index
                                       onChange={(e) =>
                                         chngFn1(index, {
@@ -1618,7 +1619,7 @@ const Gerer = () => {
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Veuillez remplir le nom du salarier
+                                      {t("gerer.err_salarier")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1627,7 +1628,7 @@ const Gerer = () => {
                                 <td>
                                   <Form.Group controlId={`chef-paie-${index}`}>
                                     <Form.Select
-                                      aria-label="Chef de famille"
+                                      aria-label={t("gerer.chef_famille")}
                                       className="form-select"
                                       value={paie[index]?.chef ?? ""} // Access the 'chef' value of the specific row
                                       onChange={(e) =>
@@ -1643,17 +1644,16 @@ const Gerer = () => {
                                       } // Check the specific row's chef field for validation
                                     >
                                       <option value="">
-                                        Chef de famille ou non ?
+                                        {t("gerer.chef_famille")}
                                       </option>
-                                      <option value="Oui">Oui</option>
-                                      <option value="Non">Non</option>
+                                      <option value="Oui">{t("common.oui")}</option>
+                                      <option value="Non">{t("common.non")}</option>
                                     </Form.Select>
                                     <Form.Control.Feedback
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Veuillez sélectionner si le salarié est
-                                      chef de famille
+                                      {t("gerer.err_chef")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1665,7 +1665,7 @@ const Gerer = () => {
                                       className="textadj"
                                       type="number"
                                       min="0"
-                                      placeholder="Nombre d'enfants"
+                                      placeholder={t("gerer.nb_enfants")}
                                       value={paie[index]?.enfants ?? ""}
                                       onChange={(e) => {
                                         const val = e.target.value;
@@ -1687,7 +1687,7 @@ const Gerer = () => {
                                       className="feedback"
                                       type="invalid"
                                     >
-                                      Veuillez remplir le nombre d'enfants
+                                      {t("gerer.err_enfants")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1700,7 +1700,7 @@ const Gerer = () => {
                                       className="textadj"
                                       type="text"
                                       inputMode="decimal"
-                                      placeholder="Salaire Brut"
+                                      placeholder={t("gerer.salaire_brut")}
                                       value={paie[index]?.salaireBrut ?? ""}
                                       onChange={(e) => {
                                         const val = e.target.value;
@@ -1727,8 +1727,8 @@ const Gerer = () => {
                                       type="invalid"
                                     >
                                       {paie[index]?.salaireBrut == null || paie[index]?.salaireBrut === ""
-                                        ? "Veuillez remplir le salaire Brut"
-                                        : "Le salaire brut ne doit pas être nul"}
+                                        ? t("gerer.err_salaire_brut")
+                                        : t("gerer.err_salaire_brut_zero")}
                                     </Form.Control.Feedback>
                                   </Form.Group>
                                 </td>
@@ -1766,7 +1766,7 @@ const Gerer = () => {
             <Accordion alwaysOpen activeKey={activeAccordion} className="modern-accordion">
               <Accordion.Item eventKey="2">
                 <Accordion.Header onClick={() => toggleAccordionItem("2")}>
-                  Saisir mes informations de retenue à la source
+                  {t("gerer.retenue_titre")}
                 </Accordion.Header>
                 <Accordion.Body>
                   <div className="add-del">
@@ -1776,7 +1776,7 @@ const Gerer = () => {
                         className="custom-primaryg me-1 me-md-2"
                         disabled={!isSaisieClicked}
                       >
-                        Ajouter
+                        {t("gerer.ajouter")}
                       </Button>
                       <Button
                         variant="primary"
@@ -1784,7 +1784,7 @@ const Gerer = () => {
                         className="custom-primaryg"
                         disabled={!isSaisieClicked}
                       >
-                        Supprimer
+                        {t("gerer.supprimer_selection")}
                       </Button>
                   </div>
                   <Container className="table-container">
@@ -1800,23 +1800,23 @@ const Gerer = () => {
                               />
                             </th>
                             <th>
-                              Retenue à la source sur :{" "}
+                              {t("gerer.retenue_source_sur")}{" "}
                               <span className="text-danger">*</span>
                             </th>
                             <th>
-                              Nature Bénéficiaire <span className="text-danger">*</span>
+                              {t("gerer.nature_beneficiaire")} <span className="text-danger">*</span>
                             </th>
                             <th>
-                              Régime Bénéficiaire<span className="text-danger">*</span>
+                              {t("gerer.regime_beneficiaire")}<span className="text-danger">*</span>
                             </th>
                             <th>
-                              Montant HT <span className="text-danger">*</span>
+                              {t("gerer.montant_ht")} <span className="text-danger">*</span>
                             </th>
                             <th>
-                              TVA <span className="text-danger">*</span>
+                              {t("visualiser.tva")} <span className="text-danger">*</span>
                             </th>
                             <th>
-                              Montant TTC <span className="text-danger">*</span>
+                              {t("gerer.montant_ttc")} <span className="text-danger">*</span>
                             </th>
                             <th className="d-none">id</th>
                           </tr>
@@ -1828,7 +1828,7 @@ const Gerer = () => {
                                 colSpan={7}
                                 className="text-start text-muted py-3 ps-5"
                               >
-                                La table des retenues à la source est vide
+                                {t("gerer.vide_retenues")}
                               </td>
                             </tr>
                           ) : (
@@ -1849,7 +1849,7 @@ const Gerer = () => {
                                 </td>
                                 <td>
                                   <Form.Select
-                                    aria-label="Retenue à la source"
+                                    aria-label={t("gerer.retenue_source_sur")}
                                     value={retenue[index]?.source ?? ""}
                                     onChange={(e) =>
                                       chngFn2(index, {
@@ -1863,17 +1863,16 @@ const Gerer = () => {
                                     }
                                   >
                                     <option value="">
-                                      Retenue à la source sur :
+                                      {t("gerer.retenue_source_sur")}
                                     </option>
-                                    <option value="Type 1">Loyer</option>
-                                    <option value="Type 2">Honoraires</option>
+                                    <option value="Type 1">{t("gerer.loyer")}</option>
+                                    <option value="Type 2">{t("gerer.honoraires")}</option>
                                   </Form.Select>
                                   <Form.Control.Feedback
                                     className="feedback"
                                     type="invalid"
                                   >
-                                    Veuillez sélectionner la source de la
-                                    retenue
+                                    {t("gerer.err_retenue_source")}
                                   </Form.Control.Feedback>
                                 </td>
 
@@ -1881,7 +1880,7 @@ const Gerer = () => {
                                   {retenue[index]?.source === "Type 2" && (
                                     <>
                                       <Form.Select
-                                        aria-label="Nature"
+                                        aria-label={t("gerer.nature_beneficiaire")}
                                         value={retenue[index]?.natureBeneficiaire ?? ""}
                                         onChange={(e) =>
                                           chngFn2(index, {
@@ -1893,12 +1892,12 @@ const Gerer = () => {
                                         required
                                         isInvalid={validated && !retenue[index]?.natureBeneficiaire}
                                       >
-                                        <option value="">Nature Bénéficiaire</option>
-                                        <option value="PP">Personne Physique</option>
-                                        <option value="PM">Société / Personne Morale</option>
+                                        <option value="">{t("gerer.nature_beneficiaire")}</option>
+                                        <option value="PP">{t("gerer.personne_physique")}</option>
+                                        <option value="PM">{t("gerer.societe_pm")}</option>
                                       </Form.Select>
                                       <Form.Control.Feedback className="feedback" type="invalid">
-                                        Veuillez sélectionner la nature du bénéficiaire
+                                        {t("gerer.err_nature_beneficiaire")}
                                       </Form.Control.Feedback>
                                     </>
                                   )}
@@ -1908,7 +1907,7 @@ const Gerer = () => {
                                   {retenue[index]?.source === "Type 2" && retenue[index]?.natureBeneficiaire === "PP" && (
                                     <>
                                       <Form.Select
-                                        aria-label="Régime Fiscal"
+                                        aria-label={t("gerer.regime_fiscal")}
                                         value={retenue[index]?.regimeFiscal ?? ""}
                                         onChange={(e) =>
                                           chngFn2(index, {
@@ -1919,12 +1918,12 @@ const Gerer = () => {
                                         required
                                         isInvalid={validated && !retenue[index]?.regimeFiscal}
                                       >
-                                        <option value="">Régime Fiscal</option>
-                                        <option value="FORFAITAIRE">Forfaitaire</option>
-                                        <option value="REEL">Réel</option>
+                                        <option value="">{t("gerer.regime_fiscal")}</option>
+                                        <option value="FORFAITAIRE">{t("gerer.forfaitaire")}</option>
+                                        <option value="REEL">{t("gerer.reel")}</option>
                                       </Form.Select>
                                       <Form.Control.Feedback className="feedback" type="invalid">
-                                        Veuillez sélectionner le régime du bénéficiaire
+                                        {t("gerer.err_regime_beneficiaire")}
                                       </Form.Control.Feedback>
                                     </>
                                   )}
@@ -1935,7 +1934,7 @@ const Gerer = () => {
                                     className="textadj"
                                     type="number"
                                     min="0"
-                                    placeholder="Montant HT"
+                                    placeholder={t("gerer.montant_ht")}
                                     value={retenue[index]?.montantHT ?? ""}
                                     step="0.001"
                                     onChange={(e) => {
@@ -1963,8 +1962,8 @@ const Gerer = () => {
                                     type="invalid"
                                   >
                                     {retenue[index]?.montantHT == null || retenue[index]?.montantHT === ""
-                                      ? "Veuillez remplir le montant HT"
-                                      : "Le montant HT ne doit pas être nul"}
+                                      ? t("gerer.err_montant_ht_empty")
+                                      : t("gerer.err_montant_ht_zero")}
                                   </Form.Control.Feedback>
                                 </td>
 
@@ -1987,16 +1986,16 @@ const Gerer = () => {
                                       validated && !retenue[index]?.tva
                                     }
                                   >
-                                    <option value=""> Taux TVA </option>
-                                    <option value="7">7%</option>
-                                    <option value="13">13%</option>
-                                    <option value="19">19%</option>
-                                  </Form.Select>
-                                  <Form.Control.Feedback
-                                    className="feedback"
-                                    type="invalid"
-                                  >
-                                    Veuillez sélectionner le TVA.
+                                     <option value=""> {t("gerer.taux_tva")} </option>
+                                     <option value="7">7%</option>
+                                     <option value="13">13%</option>
+                                     <option value="19">19%</option>
+                                   </Form.Select>
+                                   <Form.Control.Feedback
+                                     className="feedback"
+                                     type="invalid"
+                                   >
+                                     {t("gerer.err_tva")}
                                   </Form.Control.Feedback>
                                 </td>
 
@@ -2005,7 +2004,7 @@ const Gerer = () => {
                                     className="textadj"
                                     type="number"
                                     min="0"
-                                    placeholder="Montant TTC"
+                                    placeholder={t("gerer.montant_ttc")}
                                     value={retenue[index]?.montantTTC ?? ""}
                                     step="0.001"
                                     onChange={(e) => {
@@ -2033,8 +2032,8 @@ const Gerer = () => {
                                     type="invalid"
                                   >
                                     {retenue[index]?.montantTTC == null || retenue[index]?.montantTTC === ""
-                                      ? "Veuillez remplir le montant TTC"
-                                      : "Le montant TTC ne doit pas être nul"}
+                                      ? t("gerer.err_montant_ttc_empty")
+                                      : t("gerer.err_montant_ttc_zero")}
                                   </Form.Control.Feedback>
                                 </td>
                                 <td className="d-none">
@@ -2091,7 +2090,7 @@ const Gerer = () => {
                       setReportTVA(val);
                     }
                   }}
-                  placeholder="Report de TVA du mois précédent "
+                  placeholder={t("gerer.report_tva")}
                 />
               </Form.Group>
             </Col>
@@ -2124,7 +2123,7 @@ const Gerer = () => {
               disabled={!isSaisieClicked}
               onClick={save_decla}
             >
-              Enregistrer
+                  {t("common.enregistrer")}
             </Button>
           </div>
         </form>

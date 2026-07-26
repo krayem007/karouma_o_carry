@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons"; // Import the specific icon
 import { Container, Navbar, Nav } from "react-bootstrap";
 import axios from  "axios";
+import { withTranslation } from "react-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const instance = axios.create({
   baseURL: '', // Base URL of the Express backend
@@ -22,7 +24,7 @@ class Header extends React.Component {
   closeNavbar = () => this.setState({ expanded: false });
 
   render() {
-    const { isLoggedIn, setIsLoggedIn } = this.props;
+    const { isLoggedIn, setIsLoggedIn, t } = this.props;
     return (
       <>
         <Navbar expand="lg" className="navbar"
@@ -31,7 +33,7 @@ class Header extends React.Component {
         >
           <Container fluid>
             <Navbar.Brand as={Link} to="/">
-              <img src={logo} alt="Déclaration Facile Logo" className="logo" />
+              <img src={logo} alt={t("header.logo_alt")} className="logo" />
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav">
               <FontAwesomeIcon icon={faBars} className="fa-bars" />
@@ -42,7 +44,7 @@ class Header extends React.Component {
                   <>
                     <Nav.Link as={Link} to="/moncompte" className="navbartext"
                       onClick={this.closeNavbar}>
-                      Mon Compte
+                      {t("header.mon_compte")}
                     </Nav.Link>
                     <Nav.Link
                       as={Link}
@@ -55,7 +57,7 @@ class Header extends React.Component {
                       }}
                       className="navbartext"
                     >
-                      Déconnexion
+                      {t("header.deconnexion")}
                     </Nav.Link>
                   </>
                 ) : (
@@ -66,14 +68,17 @@ class Header extends React.Component {
                       className="navbartext"
                       onClick={this.closeNavbar}
                     >
-                      Créer un compte
+                      {t("header.creer_compte")}
                     </Nav.Link>
                     <Nav.Link as={Link} to="/connexion" className="navbartext"
                       onClick={this.closeNavbar}>
-                      Connexion
+                      {t("header.connexion")}
                     </Nav.Link>
                   </>
                 )}
+                <Nav.Item as="li" className="d-flex align-items-center">
+                  <LanguageSwitcher />
+                </Nav.Item>
               </Nav>
             </Navbar.Collapse>
           </Container>
@@ -83,4 +88,4 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default withTranslation()(Header);

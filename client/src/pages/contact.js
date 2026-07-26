@@ -13,12 +13,14 @@ import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import icon from "../images/icon.png";
+import { useTranslation } from "react-i18next";
 
-const TITLE = "Contact | " + Config.SITE_TITLE;
-const DESC = "Contact";
 const CANONICAL = Config.SITE_DOMAIN + "/contact";
 
 const Contact = () => {
+  const { t } = useTranslation();
+  const TITLE = t("contact.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("contact.titre_meta");
   const [validated, setValidated] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -52,7 +54,7 @@ const Contact = () => {
 
       if (response.data.success) {
         setAlert({
-          message: "Votre message a été envoyé avec succès !",
+          message: t("contact.success"),
           type: "success",
         });
         setFormData({
@@ -62,12 +64,12 @@ const Contact = () => {
           message: "",
         });
       } else {
-        throw new Error(response.data.message || "Erreur lors de l'envoi");
+        throw new Error(response.data.message || t("contact.err_envoi"));
       }
     } catch (error) {
       console.error("Error sending email:", error);
       setAlert({
-        message: error.response?.data?.message || "Une erreur s'est produite. Veuillez réessayer.",
+        message: error.response?.data?.message || t("contact.err_inconnue"),
         type: "danger",
       });
     } finally {
@@ -95,9 +97,9 @@ const Contact = () => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>Contact</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("contact.titre_meta")}</Breadcrumb.Item>
         </Breadcrumb>
 
         {alert && (
@@ -111,11 +113,11 @@ const Contact = () => {
         )}
 
         <Form noValidate validated={validated} onSubmit={onSubmit}>
-          <h1 className="form-title">Contactez-Nous</h1>
+          <h1 className="form-title">{t("contact.page_title")}</h1>
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="name" className="form-group required">
-                <Form.Label>Nom:</Form.Label>
+                <Form.Label>{t("contact.nom_label")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -124,13 +126,13 @@ const Contact = () => {
                   required
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez entrer votre nom.
+                  {t("contact.err_nom")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group controlId="email" className="form-group required">
-                <Form.Label>Email:</Form.Label>
+                <Form.Label>{t("contact.email_label")}</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -139,7 +141,7 @@ const Contact = () => {
                   required
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez entrer une adresse e-mail valide.
+                  {t("contact.err_email")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -147,7 +149,7 @@ const Contact = () => {
           <Row className="main-user-info">
             <Col>
               <Form.Group controlId="objet" className="form-group required">
-                <Form.Label>Objet:</Form.Label>
+                <Form.Label>{t("contact.objet_label")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="objet"
@@ -156,7 +158,7 @@ const Contact = () => {
                   required
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez entrer l'objet.
+                  {t("contact.err_objet")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -164,7 +166,7 @@ const Contact = () => {
           <Row className="main-user-info">
             <Col>
               <Form.Group controlId="message" className="form-group required">
-                <Form.Label>Message:</Form.Label>
+                <Form.Label>{t("contact.message_label")}</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
@@ -174,7 +176,7 @@ const Contact = () => {
                   required
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez entrer un message.
+                  {t("contact.err_message")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -186,7 +188,7 @@ const Contact = () => {
               className="green"
               disabled={disabled}
             >
-              Envoyer
+              {t("contact.envoyer")}
             </Button>
           </div>
         </Form>

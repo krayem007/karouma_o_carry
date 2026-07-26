@@ -1,6 +1,7 @@
 import icon from "../images/icon.png";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import axios from "axios";
@@ -18,11 +19,12 @@ import {
   Toast,
 } from "react-bootstrap";
 
-const TITLE = "Inscription | " + Config.SITE_TITLE;
-const DESC = "Inscription ";
 const CANONICAL = Config.SITE_DOMAIN + "/inscription";
 
 const Inscription = () => {
+  const { t } = useTranslation();
+  const TITLE = t("register.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("register.titre_meta");
   const navigate = useNavigate(); // Initialize navigate hook
   const [validated, set_Validated] = useState(false);
   const [showPasswords, setShowPasswords] = useState({ pw: false, confirm: false });
@@ -99,7 +101,7 @@ const Inscription = () => {
         } else if (response.data.success) {
           setAlert({
             message:
-              "L'inscription a été effectuée avec succès. Vous devez maintenant vous connecter.",
+              t("register.success_inscription"),
             type: "success",
           });
           setTimeout(() => {
@@ -108,9 +110,9 @@ const Inscription = () => {
         }
       }).catch((error) => {
         if (error.response?.status === 429) {
-          setAlert({ message: error.response.data.message || "Trop de tentatives. Réessayez dans 15 minutes.", type: "error" });
+          setAlert({ message: error.response.data.message || t("register.err_trop_tentatives"), type: "error" });
         } else {
-          setAlert({ message: "Erreur réseau lors de l'inscription.", type: "error" });
+          setAlert({ message: t("register.err_reseau"), type: "error" });
         }
       });
     }
@@ -171,23 +173,23 @@ const Inscription = () => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>Inscription</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("register.page_title")}</Breadcrumb.Item>
         </Breadcrumb>
 
-        <h1 className="form-title">Inscription</h1>
+        <h1 className="form-title">{t("register.page_title")}</h1>
         <Form
           noValidate
           validated={validated}
           onSubmit={submitFn}
           className="register"
         >
-          <div className="section_title">Informations de l'entreprise :</div>
+          <div className="section_title">{t("register.section_entreprise")}</div>
           <Row className="main-user-info">
             <Col md={2}>
               <Form.Group controlId="code_acte" className="form-group required">
-                <Form.Label className="control-label">Code acte :</Form.Label>
+                <Form.Label className="control-label">{t("register.code_acte")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="code_acte"
@@ -201,7 +203,7 @@ const Inscription = () => {
                   isInvalid={validated && !/^[A-Z0-9_]{3,20}$/.test(form_Data.code_acte)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Code acte invalide (3-20 caractères)
+                  {t("register.code_acte_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -214,7 +216,7 @@ const Inscription = () => {
                 className="form-group required"
               >
                 <Form.Label className="control-label">
-                  Identifiant fiscal :
+                  {t("register.identifiant_fiscal")}
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -229,7 +231,7 @@ const Inscription = () => {
                   isInvalid={validated && !/^[0-9A-Z]{8}$/.test(form_Data.identifiant_fiscal)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Identifiant fiscal invalide ( 8 caractères)
+                  {t("register.identifiant_fiscal_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -240,7 +242,7 @@ const Inscription = () => {
                 className="form-group required"
               >
                 <Form.Label className="control-label">
-                  Identifiant T.V.A :
+                  {t("register.identifiant_tva")}
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -255,7 +257,7 @@ const Inscription = () => {
                   isInvalid={validated && !/^[A-Z]$/.test(form_Data.identifiant_tva)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Code TVA invalide (1 lettre majuscule)
+                  {t("register.identifiant_tva_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -266,7 +268,7 @@ const Inscription = () => {
                 className="form-group required"
               >
                 <Form.Label className="control-label">
-                  Code catégorie :
+                  {t("register.code_categorie")}
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -281,13 +283,13 @@ const Inscription = () => {
                   isInvalid={validated && !/^[A-Z]$/.test(form_Data.code_categorie)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Code catégorie invalide (1 lettre majuscule)
+                  {t("register.code_categorie_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6} lg={3}>
               <Form.Group controlId="nombre_filial" className="form-group required">
-                <Form.Label className="control-label">Nombre de filiale (2) :</Form.Label>
+                <Form.Label className="control-label">{t("register.nombre_filiale")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="nombre_filial"
@@ -301,7 +303,7 @@ const Inscription = () => {
                   isInvalid={validated && !/^[0-9]{3}$/.test(form_Data.nombre_filial)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Nombre de filiales doit être sur 3 chiffres
+                  {t("register.nombre_filiale_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -313,7 +315,7 @@ const Inscription = () => {
                 className="form-group required"
               >
                 <Form.Label className="control-label">
-                  Nom et Prénom ou Raison sociale :
+                  {t("register.nom_raison")}
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -329,7 +331,7 @@ const Inscription = () => {
                   isInvalid={validated && !/^.{2,120}$/.test(form_Data.nom_prenom_raison)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Nom / Raison sociale invalide (2 à 120 caractères)
+                  {t("register.nom_raison_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -338,7 +340,7 @@ const Inscription = () => {
             <Col md={8}>
               <Form.Group controlId="adresse" className="form-group required">
                 <Form.Label className="control-label">
-                  Adresse ou siège social :
+                  {t("register.adresse")}
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -354,7 +356,7 @@ const Inscription = () => {
                   isInvalid={validated && !/^.{5,255}$/.test(form_Data.adresse)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Adresse invalide (5 à 255 caractères)
+                  {t("register.adresse_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -365,7 +367,7 @@ const Inscription = () => {
                 className="form-group required"
               >
                 <Form.Label ClasseName="label" className="control-label">
-                  Code postal :
+                  {t("register.code_postal")}
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -380,7 +382,7 @@ const Inscription = () => {
                   isInvalid={validated && !/^[0-9]{4}$/.test(form_Data.code_postal)}
                 />
                 <Form.Control.Feedback type="invalid" id="maxwidthfeed">
-                  Code postal doit contenir 4 chiffres
+                  {t("register.code_postal_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -388,7 +390,7 @@ const Inscription = () => {
           <Row className="main-user-info d-flex">
             <Col md={4}>
               <Form.Group controlId="activite" className="form-group required">
-                <Form.Label className="control-label">Activité :</Form.Label>
+                <Form.Label className="control-label">{t("register.activite")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="activite"
@@ -402,17 +404,17 @@ const Inscription = () => {
                   isInvalid={validated && !/^.{2,100}$/.test(form_Data.activite)}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Activité invalide (2 à 100 caractères)
+                  {t("register.activite_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col xs={12} md={2}>
-              <Form.Label>Date de cessation d’activité :</Form.Label>
+              <Form.Label>{t("register.date_cessation")}</Form.Label>
             </Col>
 
             <Col xs={4} md={1} className="mb-2 me-md-4">
               <Form.Group controlId="cessation_jour" className="form-group">
-                <Form.Label>Jour :</Form.Label>
+                <Form.Label>{t("register.jour")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="cessation_jour"
@@ -426,14 +428,14 @@ const Inscription = () => {
                   isInvalid={validated && cessationPartiallyFilled && (!/^(?:0[1-9]|[12][0-9]|3[01])$/.test(form_Data.cessation_jour) || !isValidDate(form_Data.cessation_jour, form_Data.cessation_mois, form_Data.cessation_annee))}
                 />
                 <Form.Control.Feedback type="invalid" className="cessation-feedback">
-                  Jour invalide
+                  {t("register.jour_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
 
             <Col xs={4} md={1} className="mb-2 me-md-4">
               <Form.Group controlId="cessation_mois" className="form-group">
-                <Form.Label>Mois :</Form.Label>
+                <Form.Label>{t("register.mois")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="cessation_mois"
@@ -447,14 +449,14 @@ const Inscription = () => {
                   isInvalid={validated && cessationPartiallyFilled && !/^(?:0[1-9]|1[0-2])$/.test(form_Data.cessation_mois)}
                 />
                 <Form.Control.Feedback type="invalid" className="cessation-feedback">
-                  Mois invalide
+                  {t("register.mois_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
 
             <Col xs={4} md={2} className="mb-2">
               <Form.Group controlId="cessation_annee" className="form-group">
-                <Form.Label>Année :</Form.Label>
+                <Form.Label>{t("register.annee")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="cessation_annee"
@@ -468,24 +470,24 @@ const Inscription = () => {
                   isInvalid={validated && cessationPartiallyFilled && (!form_Data.cessation_annee || Number(form_Data.cessation_annee) < 1900 || Number(form_Data.cessation_annee) > currentYear + 1)}
                 />
                 <Form.Control.Feedback type="invalid" className="cessation-feedback">
-                  Année invalide
+                  {t("register.annee_err")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
 
-          <div className="section_title">Profil Fiscal :</div>
+          <div className="section_title">{t("register.section_fiscal")}</div>
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="nature_entite" className="form-group required">
-                <Form.Label className="control-label">Nature de l'entité :</Form.Label>
+                <Form.Label className="control-label">{t("register.nature_entite")}</Form.Label>
                 <Form.Select name="nature_entite" value={form_Data.nature_entite} onChange={chngFn} required isInvalid={validated && !form_Data.nature_entite}>
-                  <option value="">Sélectionnez...</option>
-                  <option value="PM">Société / Personne Morale (PM)</option>
-                  <option value="PP">Indépendant / Personne Physique (PP)</option>
+                  <option value="">{t("common.selectionnez")}</option>
+                  <option value="PM">{t("register.pm_option")}</option>
+                  <option value="PP">{t("register.pp_option")}</option>
                 </Form.Select>
                 <Form.Control.Feedback type="invalid">
-                  Veuillez sélectionner la nature de l'entité.
+                  {t("register.err_nature")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -493,25 +495,25 @@ const Inscription = () => {
             {form_Data.nature_entite && (
               <Col md={6}>
                 <Form.Group controlId="details_regime" className="form-group required">
-                  <Form.Label className="control-label">Détails du régime :</Form.Label>
+                  <Form.Label className="control-label">{t("register.details_regime")}</Form.Label>
                   <Form.Select name="details_regime" value={form_Data.details_regime} onChange={chngFn} required isInvalid={validated && !form_Data.details_regime}>
-                    <option value="">Sélectionnez le régime...</option>
+                    <option value="">{t("register.selectionnez_regime")}</option>
                     {form_Data.nature_entite === 'PM' && (
                       <>
-                        <option value="IS_10">IS 10%</option>
-                        <option value="IS_20">IS 20%</option>
-                        <option value="IS_35">IS 35%</option>
+                        <option value="IS_10">{t("common.is_10")}</option>
+                        <option value="IS_20">{t("common.is_20")}</option>
+                        <option value="IS_35">{t("common.is_35")}</option>
                       </>
                     )}
                     {form_Data.nature_entite === 'PP' && (
                       <>
-                        <option value="REEL_3">Régime Réel</option>
-                        <option value="FORFAITAIRE_10">Régime Forfaitaire</option>
+                        <option value="REEL_3">{t("register.regime_reel")}</option>
+                        <option value="FORFAITAIRE_10">{t("register.regime_forfaitaire")}</option>
                       </>
                     )}
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
-                    Veuillez sélectionner les détails du régime.
+                    {t("register.err_regime")}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -520,25 +522,25 @@ const Inscription = () => {
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="secteur" className="form-group required">
-                <Form.Label className="control-label">Secteur d'activité :</Form.Label>
+                <Form.Label className="control-label">{t("register.secteur")}</Form.Label>
                 <Form.Select name="secteur" value={form_Data.secteur} onChange={chngFn} required isInvalid={validated && !form_Data.secteur}>
-                  <option value="">Sélectionnez le secteur...</option>
-                  <option value="Type 1">Industriel</option>
-                  <option value="Type 2">Autre</option>
+                  <option value="">{t("register.secteur_select")}</option>
+                  <option value="Type 1">{t("register.industriel")}</option>
+                  <option value="Type 2">{t("register.autre")}</option>
                 </Form.Select>
                 <Form.Control.Feedback type="invalid">
-                  Veuillez sélectionner le secteur d'activité.
+                  {t("register.err_secteur")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
 
-          <div className="section_title">Identification :</div>
+          <div className="section_title">{t("register.section_identification")}</div>
 
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="email" className="form-group required">
-                <Form.Label className="control-label">E-mail :</Form.Label>
+                <Form.Label className="control-label">{t("register.email_label")}</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -551,7 +553,7 @@ const Inscription = () => {
                   }
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez entrer une adresse e-mail valide.
+                  {t("register.err_email")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -560,7 +562,7 @@ const Inscription = () => {
             <Col md={6}>
               <Form.Group controlId="password" className="form-group required">
                 <Form.Label className="control-label">
-                  Mot de passe :
+                  {t("register.mot_de_passe")}
                 </Form.Label>
                 <InputGroup>
                   <Form.Control
@@ -578,7 +580,7 @@ const Inscription = () => {
                   </Button>
                 </InputGroup>
                 {validated && form_Data.password.length < 6 && (
-                  <div className="login-error-msg">Le mot de passe doit comporter plus de 6 caractères.</div>
+                  <div className="login-error-msg">{t("register.err_password_length")}</div>
                 )}
               </Form.Group>
             </Col>
@@ -590,7 +592,7 @@ const Inscription = () => {
                 className="form-group required"
               >
                 <Form.Label className="control-label">
-                  Confirmation du mot de passe :
+                  {t("register.confirmation_mdp")}
                 </Form.Label>
                 <InputGroup>
                   <Form.Control
@@ -620,13 +622,13 @@ const Inscription = () => {
                 </InputGroup>
 
                 {validated && form_Data.confirm_password === "" && (
-                  <div className="login-error-msg">Veuillez confirmer votre mot de passe.</div>
+                  <div className="login-error-msg">{t("register.err_confirmer")}</div>
                 )}
                 {validated && form_Data.confirm_password.length < 6 && form_Data.confirm_password !== "" && (
-                  <div className="login-error-msg">Le mot de passe doit comporter plus de 6 caractères.</div>
+                  <div className="login-error-msg">{t("register.err_password_length")}</div>
                 )}
                 {validated && form_Data.confirm_password.length >= 6 && form_Data.confirm_password !== form_Data.password && (
-                  <div className="login-error-msg">Les mots de passe ne correspondent pas.</div>
+                  <div className="login-error-msg">{t("register.err_password_match")}</div>
                 )}
               </Form.Group>
             </Col>
@@ -643,10 +645,10 @@ const Inscription = () => {
                   onChange={(e) => chngFn({ target: { name: "cgu", value: e.target.checked } })}
                   label={
                     <span>
-                      J'accepte les <Link to="/condition" target="_blank">Conditions Générales d'Utilisation</Link>
+                      {t("register.cgu_label")} <Link to="/condition" target="_blank">{t("common.cgu_link")}</Link>
                     </span>
                   }
-                  feedback="Vous devez accepter les conditions générales d'utilisation avant de vous inscrire."
+                  feedback={t("register.cgu_err")}
                   feedbackType="invalid"
                 />
               </Form.Group>
@@ -654,7 +656,7 @@ const Inscription = () => {
           </Row>
           <div className="boutons">
             <Button variant="primary" type="submit" className="custom-primary">
-              Enregistrer
+              {t("common.enregistrer")}
             </Button>
             <Button
               variant="secondary"
@@ -663,7 +665,7 @@ const Inscription = () => {
               as={Link}
               to="/"
             >
-              Annuler
+              {t("common.annuler")}
             </Button>
           </div>
         </Form>

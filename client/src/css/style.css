@@ -1430,18 +1430,22 @@ form .feedw {
 }
 
 .modern-accordion .accordion-item {
-  border: 1px solid #ced4da !important; /* Border plus visible */
+  border: 1px solid #ced4da !important;
+  /* Border plus visible */
   border-radius: 12px !important;
   margin-bottom: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Ombre légèrement plus marquée */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  /* Ombre légèrement plus marquée */
   overflow: hidden;
   transition: all 0.3s ease;
   background-color: #ffffff !important;
 }
 
 .modern-accordion .accordion-item:hover {
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Ombre plus visible au hover */
-  border-color: #adb5bd !important; /* Bordure plus sombre au hover */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  /* Ombre plus visible au hover */
+  border-color: #adb5bd !important;
+  /* Bordure plus sombre au hover */
 }
 
 .modern-accordion .accordion-header {
@@ -1462,7 +1466,8 @@ form .feedw {
 .modern-accordion .accordion-button:not(.collapsed) {
   background-color: #f8fcfb !important;
   color: #1abc9c !important;
-  border-bottom: 1px solid #ced4da; /* Ligne de séparation plus visible */
+  border-bottom: 1px solid #ced4da;
+  /* Ligne de séparation plus visible */
 }
 
 .modern-accordion .accordion-button::after {
@@ -1494,6 +1499,7 @@ form .feedw {
     opacity: 0;
     transform: translateY(-20px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1591,16 +1597,20 @@ form .feedw {
     margin: 1rem;
     width: auto;
   }
+
   .modern-modal .modal-content {
     border-radius: 12px !important;
   }
+
   .modern-modal .modal-body {
     padding: 20px !important;
   }
+
   .modern-modal .modal-footer {
     flex-direction: column-reverse;
     gap: 10px;
   }
+
   .modern-modal .modal-footer .btn {
     width: 100%;
   }
@@ -1616,7 +1626,8 @@ form .feedw {
 
 .modern-arrow-icon {
   font-size: 42px !important;
-  color: #767a7e !important; /* Couleur originale */
+  color: #767a7e !important;
+  /* Couleur originale */
   opacity: 0.6;
   transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
   animation: pulse-arrow 2s infinite ease-in-out;
@@ -1626,17 +1637,27 @@ form .feedw {
 .modern-arrow-col:hover .modern-arrow-icon {
   opacity: 1;
   transform: translateX(8px) scale(1.15) !important;
-  color: #2c3e50 !important; /* Devient bleu foncé au survol */
+  color: #2c3e50 !important;
+  /* Devient bleu foncé au survol */
 }
 
 @keyframes pulse-arrow {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(6px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(6px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 @media (max-width: 1030px) {
   .modern-arrow-col {
-    display: none !important; /* On cache sur les petits écrans car les cartes passent en colonne */
+    display: none !important;
+    /* On cache sur les petits écrans car les cartes passent en colonne */
   }
 }

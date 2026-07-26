@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Container, Breadcrumb } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
-const TITLE = "À propos | " + Config.SITE_TITLE;
-const DESC = "À propos  ";
 const CANONICAL = Config.SITE_DOMAIN + "/apropos";
 
 const Propos = () => {
+  const { t } = useTranslation();
+  const TITLE = t("propos.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("propos.titre_meta");
   return (
     <>
       <Helmet>
@@ -32,74 +34,54 @@ const Propos = () => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>À propos</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("propos.titre_meta")}</Breadcrumb.Item>
         </Breadcrumb>
-        <h1 className="form-title">À propos</h1>
+        <h1 className="form-title">{t("propos.page_title")}</h1>
         <div className="pb-2">
           <p>
-            <strong>Déclaration Facile</strong> est une plateforme innovante et
-            intuitive, conçue pour simplifier la gestion en ligne des
-            déclarations de TVA et des informations fiscales. Premier service de
-            ce genre en Tunisie, il répond aux besoins des PME, professions
-            libérales et structures de taille moyenne en offrant une solution
-            complète, conviviale et sécurisée.
+            {t("propos.intro1")}
           </p>
           <p>
-            Créée par une équipe d’experts alliant compétences financières et
-            technologiques, Déclaration Facile met à disposition des outils
-            performants permettant de gérer vos obligations fiscales de manière
-            efficace, que vous soyez en Tunisie ou à l’étranger.
+            {t("propos.intro2")}
           </p>
         </div>
         <div className="pb-3">
-          <h4>Notre mission</h4>
+          <h4>{t("propos.mission_titre")}</h4>
           <li className="li pb-1">
-            Simplifier les démarches fiscales grâce à une interface intuitive et
-            accessible.
+            {t("propos.mission1")}
           </li>
           <li className="li pb-1">
-            Offrir un service professionnel adapté aux besoins des utilisateurs,
-            quel que soit leur niveau en comptabilité.
+            {t("propos.mission2")}
           </li>
           <li className="li pb-1">
-            Garantir la sécurité et la fiabilité des données via des
-            technologies modernes.
+            {t("propos.mission3")}
           </li>
         </div>
         <div className="pb-2">
-          <h4>Les fondateurs</h4>
-          <h5>Akram - Expert en finance </h5>
+          <h4>{t("propos.fondateurs_titre")}</h4>
+          <h5>{t("propos.fondateur1_titre")}</h5>
           <p>
-            <strong>Akram</strong>, diplômé en finance, possède une expérience
-            significative en comptabilité et gestion financière. Il a accompagné
-            de nombreuses entreprises dans leurs obligations fiscales et
-            sociales, garantissant un respect optimal des normes réglementaires.
+            {t("propos.fondateur1_desc")}
           </p>
-          <h5>Ghassen - Ingénieur en informatique</h5>
+          <h5>{t("propos.fondateur2_titre")}</h5>
           <p>
-            <strong>Ghassen</strong>, ingénieur en informatique, est spécialisé
-            dans le développement de solutions web intuitives. Avec une
-            expertise en technologies cloud, il a conçu une plateforme
-            performante adaptée aux besoins des utilisateurs.
+            {t("propos.fondateur2_desc")}
           </p>
         </div>
         <div className="pb-3">
-          <h4>Pourquoi choisir Déclaration Facile ?</h4>
+          <h4>{t("propos.pourquoi_titre")}</h4>
 
           <li className="li pb-1">
-            <strong>Calculs automatisés </strong>: Simplifiez vos déclarations
-            de TVA, paie et autres obligations fiscales.
+            {t("propos.pourquoi1")}
           </li>
 
           <li className="li pb-1">
-            <strong>Solution tout-en-un</strong> : Gérez vos déclarations de
-            manière simple, rapide et professionnelle.
+            {t("propos.pourquoi2")}
           </li>
           <p>
-            <strong>Avec Déclaration Facile</strong>, facilitez vos démarches et
-            concentrez-vous sur le développement de votre activité.
+            {t("propos.pourquoi3")}
           </p>
         </div>
       </Container>

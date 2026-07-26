@@ -4,13 +4,15 @@ import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Collapse, Container, Breadcrumb } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
-const TITLE = "FAQ | " + Config.SITE_TITLE;
-const DESC = "FAQ";
 const CANONICAL = Config.SITE_DOMAIN + "/Faq";
 
 
 const Faq = () => {
+  const { t } = useTranslation();
+  const TITLE = t("faq.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("faq.titre_meta");
   const [openItems, setOpenItems] = useState([]);
 
   const toggleCollapse = (item) => {
@@ -45,12 +47,12 @@ const Faq = () => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>FAQ</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("faq.page_title")}</Breadcrumb.Item>
         </Breadcrumb>
 
-        <h1 className="form-title">FAQ</h1>
+        <h1 className="form-title">{t("faq.page_title")}</h1>
 
         <div className="FAQ">
           <a
@@ -60,15 +62,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">1. Qu'est-ce que Déclaration Facile ?</span>
+            <span className="fw-bold">{t("faq.q1")}</span>
             <i className={`fas fa-chevron-${openItems.includes(1) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(1)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Déclaration Facile est une plateforme en ligne qui vous permet de
-              préparer et soumettre facilement vos déclarations fiscales
-              mensuelles. Vous pouvez y gérer vos factures, vos paiements et
-              effectuer vos déclarations de manière simple et rapide.
+              {t("faq.a1")}
             </div>
           </Collapse>
         </div>
@@ -81,15 +80,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">2. Comment créer un compte sur Déclaration Facile ?</span>
+            <span className="fw-bold">{t("faq.q2")}</span>
             <i className={`fas fa-chevron-${openItems.includes(2) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(2)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Pour créer un compte, cliquez sur "Créer un compte" en haut à
-              droite de la page d'accueil. Vous devrez fournir votre adresse
-              email, créer un mot de passe, et remplir des informations de base
-              pour finaliser votre inscription.
+              {t("faq.a2")}
             </div>
           </Collapse>
         </div>
@@ -101,15 +97,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">3. Comment me connecter à mon compte ?</span>
+            <span className="fw-bold">{t("faq.q3")}</span>
             <i className={`fas fa-chevron-${openItems.includes(3) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(3)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Une fois inscrit, cliquez sur "Connexion" en haut de la page
-              d'accueil et entrez votre email ainsi que votre mot de passe. Si
-              vous avez oublié votre mot de passe, vous pouvez réinitialiser
-              celui-ci en cliquant sur "Mot de passe oublié".
+              {t("faq.a3")}
             </div>
           </Collapse>
         </div>
@@ -121,17 +114,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">4. Comment puis-je ajouter mes factures et mes informations de paie
-            et de retenue à la source ?</span>
+            <span className="fw-bold">{t("faq.q4")}</span>
             <i className={`fas fa-chevron-${openItems.includes(4) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(4)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Dans la rubrique Gérer mes déclarations, vous pouvez ajouter vos
-              factures, informations de paie et de retenue à la source en
-              remplissant les champs requis, tels que le montant de vos
-              factures, vos salaires, vos retenues à la source et d'autres
-              informations pertinentes.
+              {t("faq.a4")}
             </div>
           </Collapse>
         </div>
@@ -144,15 +132,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">5. Est-ce que Déclaration Facile est sécurisé ?</span>
+            <span className="fw-bold">{t("faq.q5")}</span>
             <i className={`fas fa-chevron-${openItems.includes(5) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(5)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Oui, votre sécurité est notre priorité. Nous utilisons des
-              protocoles de sécurité avancés pour protéger vos données
-              personnelles et fiscales. Toutes vos informations sont cryptées et
-              stockées de manière sécurisée.
+              {t("faq.a5")}
             </div>
           </Collapse>
         </div>
@@ -164,16 +149,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">6. Comment puis-je copier ma déclaration ?</span>
+            <span className="fw-bold">{t("faq.q6")}</span>
             <i className={`fas fa-chevron-${openItems.includes(6) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(6)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Une fois que vous avez renseigné toutes les informations liées à
-              votre déclaration dans la rubrique Gérer mes déclarations, vous
-              aurez accès à un tableau récapitulatif ainsi qu'à un fichier PDF
-              contenant votre déclaration, disponibles dans la rubrique Mes
-              déclarations.
+              {t("faq.a6")}
             </div>
           </Collapse>
         </div>
@@ -185,14 +166,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">7. Puis-je modifier ma déclaration après saisie ?</span>
+            <span className="fw-bold">{t("faq.q7")}</span>
             <i className={`fas fa-chevron-${openItems.includes(7) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(7)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Une fois votre déclaration saisie, vous pouvez la modifier
-              directement sur la plateforme, dans la rubrique Gérer mes
-              déclarations.
+              {t("faq.a7")}
             </div>
           </Collapse>
         </div>
@@ -204,15 +183,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">8. Comment puis-je consulter mes anciennes déclarations ?</span>
+            <span className="fw-bold">{t("faq.q8")}</span>
             <i className={`fas fa-chevron-${openItems.includes(8) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(8)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Vous pouvez consulter toutes vos déclarations précédentes dans les
-              rubriques Gérer mes déclarations et Mes déclarations de votre
-              compte. Pour chaque déclaration, vous avez la possibilité de la
-              télécharger.
+              {t("faq.a8")}
             </div>
           </Collapse>
         </div>
@@ -224,14 +200,12 @@ const Faq = () => {
             href="#!"
             className="QES d-flex justify-content-between align-items-center py-3 border-bottom"
           >
-            <span className="fw-bold">9. Qui puis-je contacter en cas de problème ?</span>
+            <span className="fw-bold">{t("faq.q9")}</span>
             <i className={`fas fa-chevron-${openItems.includes(9) ? 'up' : 'down'} text-muted`}></i>
           </a>
           <Collapse in={openItems.includes(9)} className="Collap">
             <div id="collapse-item" className="pt-2 pb-4 text-muted">
-              Si vous avez des questions ou rencontrez un problème, vous pouvez
-              contacter notre service client par email à
-              support@declarationfacile.tn ou via notre formulaire de contact.
+              {t("faq.a9")}
             </div>
           </Collapse>
         </div>

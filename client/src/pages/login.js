@@ -1,5 +1,6 @@
 import icon from "../images/icon.png";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
@@ -24,11 +25,12 @@ const instance = axios.create({
 });
 
 
-const TITLE = "Connexion | " + Config.SITE_TITLE;
-const DESC = "Connexion ";
 const CANONICAL = Config.SITE_DOMAIN + "/connexion";
 
 const Connexion = ({ setIsLoggedIn }) => {
+  const { t } = useTranslation();
+  const TITLE = t("login.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("login.titre_meta");
   const [validated, set_Validated] = useState(false);
   const [form_Data, set_Form_Data] = useState({
     password: "",
@@ -82,17 +84,17 @@ const Connexion = ({ setIsLoggedIn }) => {
           navigate("/welcome");
         }
         else if (response.data.status === 'error') {
-          setAlert({ message: "Adresse e-mail ou mot de passe incorrect.", type: "error" });
+          setAlert({ message: t("login.err_incorrect"), type: "error" });
         }
       }
       else if (response.status === 400) {
-        setAlert({ message: "Adresse e-mail ou mot de passe incorrect.", type: "error" });
+        setAlert({ message: t("login.err_incorrect"), type: "error" });
       }
     }).catch((error) => {
       if (error.response?.status === 429) {
-        setAlert({ message: error.response.data.message || "Trop de tentatives. Réessayez dans 15 minutes.", type: "error" });
+        setAlert({ message: error.response.data.message || t("login.err_trop_tentatives"), type: "error" });
       } else {
-        setAlert({ message: "Erreur réseau. Veuillez réessayer.", type: "error" });
+        setAlert({ message: t("login.err_reseau"), type: "error" });
       }
     });
 
@@ -142,9 +144,9 @@ const Connexion = ({ setIsLoggedIn }) => {
         )}
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>Connexion</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("login.page_title")}</Breadcrumb.Item>
         </Breadcrumb>
         <Form
           className="register"
@@ -152,13 +154,13 @@ const Connexion = ({ setIsLoggedIn }) => {
           validated={validated}
           onSubmit={submitFn}
         >
-          <h1 className="form-title">Connexion</h1>
-          <div className="section_title">Connectez-vous</div>
+          <h1 className="form-title">{t("login.page_title")}</h1>
+          <div className="section_title">{t("login.sous_titre")}</div>
 
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="email">
-                <Form.Label>E-mail :</Form.Label>
+                <Form.Label>{t("login.email_label")}</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -171,7 +173,7 @@ const Connexion = ({ setIsLoggedIn }) => {
                   }
                 />
                 <Form.Control.Feedback type="invalid">
-                  Veuillez entrer votre adresse email.
+                  {t("login.err_email_required")}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -179,7 +181,7 @@ const Connexion = ({ setIsLoggedIn }) => {
           <Row className="main-user-info">
             <Col md={6}>
               <Form.Group controlId="password">
-                <Form.Label>Mot de passe :</Form.Label>
+                <Form.Label>{t("login.mot_de_passe_label")}</Form.Label>
                 <InputGroup>
                   <Form.Control
                     type={showPassword ? "text" : "password"}
@@ -201,7 +203,7 @@ const Connexion = ({ setIsLoggedIn }) => {
                 </InputGroup>
                 {validated && form_Data.password.length < 6 && (
                   <div className="login-error-msg">
-                    Veuillez entrer votre mot de passe (minimum 6 caractères).
+                    {t("login.err_password_required")}
                   </div>
                 )}
               </Form.Group>
@@ -209,12 +211,12 @@ const Connexion = ({ setIsLoggedIn }) => {
           </Row>
           <div className="boutons">
             <Button variant="primary" type="submit" className="custom-primary">
-              Se connecter
+              {t("login.se_connecter")}
             </Button>
           </div>
           <div className="password-forgot">
             <Link className="forgot" to="/reinitialisation">
-              Mot de passe oublié ?
+              {t("login.mot_de_passe_oublie")}
             </Link>
           </div>
         </Form>

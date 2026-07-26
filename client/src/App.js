@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Home from "./pages/home";
 import Inscription from "./pages/register";
 import Connexion from "./pages/login";
@@ -25,7 +26,21 @@ const instance = axios.create({
 
 
 function App() {
+  const { i18n } = useTranslation();
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State for logged in status
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("language") || "ar";
+    i18n.changeLanguage(savedLang);
+    document.documentElement.lang = savedLang;
+    document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
+    if (savedLang === "ar") {
+      document.body.classList.add("rtl-mode");
+    } else {
+      document.body.classList.remove("rtl-mode");
+    }
+  }, [i18n]);
+
   useEffect(() => {
 
     instance.get("/welcome").then((response) => {

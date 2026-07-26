@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 import Config from "./config.json";
 import { Helmet } from "react-helmet";
 import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
-const TITLE = "Accueil | " + Config.SITE_TITLE;
-const DESC = "Accueil";
+import { useTranslation } from "react-i18next";
 const CANONICAL = Config.SITE_DOMAIN + "/";
 
 const Home = ({ isLoggedIn }) => {
+  const { t } = useTranslation();
+  const TITLE = t("home.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("home.titre_meta");
   const [montantCNSS, setMontantCNSS] = useState('');
   const [moisPrime, setMoisPrime] = useState('');
   const [chefFamille, setChefFamille] = useState('');
@@ -24,24 +26,24 @@ const Home = ({ isLoggedIn }) => {
 
     const cnss = Number(montantCNSS);
     if (!montantCNSS || cnss <= 0) {
-      setErrorMsg("Le montant trimestriel déclaré au CNSS doit être supérieur à 0.");
+      setErrorMsg(t("home.err_montant"));
       return;
     }
 
     if (!moisPrime || Number(moisPrime) <= 0) {
-      setErrorMsg("Veuillez saisir le nombre de mois travaillés dans le trimestre.");
+      setErrorMsg(t("home.err_mois"));
       return;
     }
 
     if (!chefFamille) {
-      setErrorMsg("Veuillez spécifier si vous êtes chef de famille.");
+      setErrorMsg(t("home.err_chef"));
       return;
     }
 
     let enfants = 0;
     if (chefFamille === 'Oui') {
       if (nbEnfants === '' || Number(nbEnfants) < 0) {
-        setErrorMsg("Le nombre d'enfants ne peut pas être négatif ou vide quand vous êtes chef de famille.");
+        setErrorMsg(t("home.err_enfants"));
         return;
       }
       enfants = Number(nbEnfants);
@@ -68,18 +70,18 @@ const Home = ({ isLoggedIn }) => {
       });
 
       if (!response.ok) {
-        throw new Error("Erreur de communication avec le serveur.");
+        throw new Error(t("home.err_serveur"));
       }
 
       const data = await response.json();
       if (data && data.net !== undefined) {
         setSalaireNet(Number(data.net).toFixed(3));
       } else {
-        setErrorMsg("Erreur lors du calcul du salaire net.");
+        setErrorMsg(t("home.err_calcul"));
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg("Une erreur s'est produite lors de la connexion au serveur.");
+      setErrorMsg(t("home.err_connexion"));
     }
   };
   return (
@@ -107,25 +109,17 @@ const Home = ({ isLoggedIn }) => {
           <Col className="carsour">
             <Card>
               <Card.Title className="card-title">
-                Solution simplifiée pour la déclaration de TVA de manière simple
-                et professionnelle
+                {t("home.card_title")}
               </Card.Title>
               <Card.Subtitle className="card-subtitle">
-                Conçu pour être convivial et accessible, cet outil tout-en-un
-                répond parfaitement à vos exigences
+                {t("home.card_subtitle")}
               </Card.Subtitle>
               <Card.Body className="card-body">
-                Déclaration Facile est le premier site tunisien dédié à la
-                gestion en ligne des déclarations de TVA et aux informations
-                fiscales. Conçu par un expert financier et un ingénieur
-                informatique, ce service permet aux PME, professions libérales,
-                et autres structures de taille moyenne de gérer leurs
-                déclarations de TVA en ligne grâce à un logiciel intuitif et
-                facile à utiliser, accessible depuis la Tunisie ou l'étranger.
+                {t("home.card_body")}
               </Card.Body>
               {!isLoggedIn && (
                 <Link className="botton" to="Inscription">
-                  Inscrivez-vous
+                  {t("home.inscrivez_vous")}
                 </Link>
               )}
             </Card>
@@ -136,7 +130,7 @@ const Home = ({ isLoggedIn }) => {
       <Container fluid>
         <Row>
           <Col className="comment">
-            <h2 className="text-center">Voici comment ça fonctionne :</h2>
+            <h2 className="text-center">{t("home.comment_fonctionne")}</h2>
           </Col>
         </Row>
         <Row className="comment justify-content-center mt-4">
@@ -146,12 +140,12 @@ const Home = ({ isLoggedIn }) => {
                 <div>
                   <i className="fa-regular fa-address-card"></i>
                 </div>
-                <Card.Title as="h3">Inscrivez-vous</Card.Title>
+                <Card.Title as="h3">{t("home.etape1_titre")}</Card.Title>
                 <Card.Body>
-                  Première étape pour effectuer votre déclaration de TVA
+                  {t("home.etape1_desc")}
                 </Card.Body>
                 <Link className="botton" to="Inscription" id="cardcomment">
-                  En savoir plus
+                  {t("home.en_savoir_plus")}
                 </Link>
               </Card>
             </Col>
@@ -168,10 +162,9 @@ const Home = ({ isLoggedIn }) => {
                   <div className="icon-wrapper">
                     <i className="fa-solid fa-calculator"></i>
                   </div>
-                  <div className="card-title">Saisissez vos informations</div>
+                  <div className="card-title">{t("home.etape2_titre")}</div>
                   <div className="bodyconnected">
-                    Renseignez vos factures et les informations de vos fiches de
-                    paie
+                    {t("home.etape2_desc")}
                   </div>
                 </Link>
               </Col>
@@ -183,13 +176,12 @@ const Home = ({ isLoggedIn }) => {
                   <div>
                     <i className="fa-solid fa-calculator"></i>
                   </div>
-                  <Card.Title as="h3">Saisissez vos informations</Card.Title>
+                  <Card.Title as="h3">{t("home.etape2_titre")}</Card.Title>
                   <Card.Body>
-                    Renseignez vos factures et les informations de vos fiches de
-                    paie
+                    {t("home.etape2_desc")}
                   </Card.Body>
                   <Link className="botton" to="Inscription" id="cardcomment">
-                    En savoir plus
+                    {t("home.en_savoir_plus")}
                   </Link>
                 </Card>
               </Col>
@@ -205,10 +197,9 @@ const Home = ({ isLoggedIn }) => {
                   <div className="icon-wrapper">
                     <i className="fa-solid fa-print"></i>
                   </div>
-                  <div className="card-title">Imprimer vos déclarations</div>
+                  <div className="card-title">{t("home.etape3_titre")}</div>
                   <div className="bodyconnected">
-                    Vérifiez vos déclarations en les visualisant, puis
-                    imprimez-les
+                    {t("home.etape3_desc")}
                   </div>
                 </Link>
               </Col>
@@ -220,13 +211,12 @@ const Home = ({ isLoggedIn }) => {
                   <div>
                     <i className="fa-solid fa-print"></i>
                   </div>
-                  <Card.Title as="h3">Imprimer vos déclarations</Card.Title>
+                  <Card.Title as="h3">{t("home.etape3_titre")}</Card.Title>
                   <Card.Body>
-                    Vérifiez vos déclarations en les visualisant, puis
-                    imprimez-les
+                    {t("home.etape3_desc")}
                   </Card.Body>
                   <Link className="botton" id="cardcomment" to="Inscription">
-                    En savoir plus
+                    {t("home.en_savoir_plus")}
                   </Link>
                 </Card>
               </Col>
@@ -237,7 +227,7 @@ const Home = ({ isLoggedIn }) => {
       <Container fluid>
         <Row>
           <Col className="comment">
-            <h2 className="text-center">Vérificateur des données CNSS :</h2>
+            <h2 className="text-center">{t("home.verificateur_titre")}</h2>
           </Col>
         </Row>
         <Row className="comment justify-content-center mt-4">
@@ -247,10 +237,10 @@ const Home = ({ isLoggedIn }) => {
                 <i className="fa-solid fa-check-to-slot"></i>
               </div>
               <h3 className="card-titlecnss">
-                Vérifiez la conformité de vos cotisations CNSS avec vos salaires brut et net en quelques clics.              </h3>
+                {t("home.verificateur_desc")}              </h3>
 
               <h4 className="cnss-subtitle">
-                Saisissez les détails de votre déclaration CNSS :
+                {t("home.verificateur_sous_titre")}
               </h4>
 
               {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
@@ -259,7 +249,7 @@ const Home = ({ isLoggedIn }) => {
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Montant trimestriel déclaré au CNSS</Form.Label>
+                      <Form.Label>{t("home.montant_cnss")}</Form.Label>
                       <Form.Control
                         type="number"
                         className="cnssfc"
@@ -270,7 +260,7 @@ const Home = ({ isLoggedIn }) => {
                   </Col>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Nombre de mois travaillés durant le trimestre</Form.Label>
+                      <Form.Label>{t("home.mois_travailles")}</Form.Label>
                       <Form.Control
                         type="number"
                         className="cnssfc"
@@ -285,7 +275,7 @@ const Home = ({ isLoggedIn }) => {
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Chef de famille ou non ?</Form.Label>
+                      <Form.Label>{t("home.chef_famille")}</Form.Label>
                       <Form.Select
                         className="cnssfc"
                         value={chefFamille}
@@ -296,15 +286,15 @@ const Home = ({ isLoggedIn }) => {
                           }
                         }}
                       >
-                        <option value="">Sélectionner...</option>
-                        <option value="Oui">Oui</option>
-                        <option value="Non">Non</option>
+                        <option value="">{t("common.selectionner")}</option>
+                        <option value="Oui">{t("common.oui")}</option>
+                        <option value="Non">{t("common.non")}</option>
                       </Form.Select>
                     </Form.Group>
                   </Col>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Nombre d'enfants</Form.Label>
+                      <Form.Label>{t("home.nb_enfants")}</Form.Label>
                       <Form.Control
                         type="number"
                         className="cnssfc"
@@ -319,7 +309,7 @@ const Home = ({ isLoggedIn }) => {
 
                 <div className="boutons">
                   <Button variant="primary" className="green" onClick={handleCalculate}>
-                    Calculer
+                    {t("home.calculer")}
                   </Button>
                 </div>
 
@@ -328,14 +318,14 @@ const Home = ({ isLoggedIn }) => {
                     <Row>
                       <Col md={6} className="mb-3 mb-md-0">
                         <div className="result-item">
-                          <div className="result-item-label">Salaire Brut Mensuel</div>
-                          <div className="result-item-value">{salaireBrut || '0.000'} <span className="result-unit">TND</span></div>
+                          <div className="result-item-label">{t("home.salaire_brut")}</div>
+                          <div className="result-item-value">{salaireBrut || '0.000'} <span className="result-unit">{t("common.tnd")}</span></div>
                         </div>
                       </Col>
                       <Col md={6}>
                         <div className="result-item">
-                          <div className="result-item-label">Salaire Net Mensuel</div>
-                          <div className="result-item-value">{salaireNet || '0.000'} <span className="result-unit">TND</span></div>
+                          <div className="result-item-label">{t("home.salaire_net")}</div>
+                          <div className="result-item-value">{salaireNet || '0.000'} <span className="result-unit">{t("common.tnd")}</span></div>
                         </div>
                       </Col>
                     </Row>

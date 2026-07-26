@@ -5,18 +5,19 @@ import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Breadcrumb, Row, Col } from "react-bootstrap";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const instance = axios.create({
   baseURL: '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
-
-const TITLE = "Welcome | " + Config.SITE_TITLE;
-const DESC = "Welcome ";
 const CANONICAL = Config.SITE_DOMAIN + "/welcome";
 
 const Welcome = () => {
+  const { t } = useTranslation();
+  const TITLE = t("welcome.titre_meta") + " | " + Config.SITE_TITLE;
+  const DESC = t("welcome.titre_meta");
 
 
   const user = localStorage.getItem("user");
@@ -60,30 +61,20 @@ const Welcome = () => {
       <Container className="visualiser-page">
         <Breadcrumb>
           <Breadcrumb.Item className="no-decoration">
-            <Link to="/">Accueil</Link>
+            <Link to="/">{t("common.accueil")}</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>Welcome</Breadcrumb.Item>
+          <Breadcrumb.Item active>{t("welcome.page_title")}</Breadcrumb.Item>
         </Breadcrumb>
         <Row>
           <Col>
-            <h1>Bienvenue {user} </h1>
+            <h1>{t("welcome.bienvenue")} {user} </h1>
             <p>
-              Pour réaliser vos déclarations mensuelles, veuillez suivre les
-              étapes suivantes :
+              {t("welcome.instructions")}
             </p>
             <ul>
-              <li>
-                Commencez par saisir toutes vos factures, puis renseignez les
-                informations relatives à votre paie. Enfin, complétez les
-                informations concernant la retenue à la source.
-              </li>
-              <li>
-                Assurez-vous que toutes les données sont correctement
-                enregistrées pour faciliter la validation de votre déclaration.
-              </li>
-              <li>
-                Une fois vos déclarations vérifiées, vous pouvez les imprimer dans la vue 'Imprimer vos déclarations.'
-              </li>
+              <li>{t("welcome.instruction1")}</li>
+              <li>{t("welcome.instruction2")}</li>
+              <li>{t("welcome.instruction3")}</li>
             </ul>
           </Col>
         </Row>
@@ -98,10 +89,9 @@ const Welcome = () => {
                 <div className="icon-wrapper">
                   <i className="fa-solid fa-calculator"></i>
                 </div>
-                <div className="card-title">Saisissez vos informations</div>
+                <div className="card-title">{t("welcome.saisissez")}</div>
                 <div className="bodyconnected">
-                  Renseignez vos factures et les informations de vos fiches de
-                  paie
+                  {t("welcome.desc_saisissez")}
                 </div>
               </Link>
             </Col>
@@ -111,10 +101,9 @@ const Welcome = () => {
                 <div className="icon-wrapper">
                   <i className="fa-solid fa-print"></i>
                 </div>
-                <div className="card-title">Imprimer vos déclarations</div>
+                <div className="card-title">{t("welcome.imprimer")}</div>
                 <div className="bodyconnected">
-                  Vérifiez vos déclarations en les visualisant, puis
-                  imprimez-les
+                  {t("welcome.desc_imprimer")}
                 </div>
               </Link>
             </Col>
