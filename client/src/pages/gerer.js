@@ -1094,10 +1094,10 @@ const Gerer = () => {
                                       <option value="">
                                         {t("gerer.type_achat_vente")}
                                       </option>
-                                      <option value="Achat d'équipement local">
+                                      <option value="Achat d’équipement local">
                                         {t("gerer.equipement_local")}
                                       </option>
-                                      <option value="Achat d'équipement importé">
+                                      <option value="Achat d’équipement importé">
                                         {t("gerer.equipement_importe")}
                                       </option>
                                       <option value="Autres achats locaux">

@@ -208,6 +208,7 @@
     "timbre": "Timbre",
     "fodec_label": "FODEC",
     "montant_fodec": "Montant FODEC",
+    "soumise_fodec": "Soumise FODEC ?",
     "taux_dc": "Taux Droit de consommation",
     "montant_dc": "Montant Droit de consommation",
     "total_ttc": "Total TTC",
