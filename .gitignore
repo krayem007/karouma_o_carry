@@ -7,6 +7,9 @@ client/build/
 
 # Environment files (contain credentials)
 # server/.env
-# client/**/.env
 # !server/.env.example
+
+# Temporary files
+server/print_js/_temp_*.html
+*.swp
 
