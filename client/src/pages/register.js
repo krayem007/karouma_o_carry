@@ -97,7 +97,7 @@ const Inscription = () => {
       };
       axios.post("/register", data).then((response) => {
         if (response.data.error) {
-          setAlert({ message: response.data.message, type: "error" });
+          setAlert({ message: t("register.err_inscription"), type: "error" });
         } else if (response.data.success) {
           setAlert({
             message:
@@ -110,7 +110,7 @@ const Inscription = () => {
         }
       }).catch((error) => {
         if (error.response?.status === 429) {
-          setAlert({ message: error.response.data.message || t("register.err_trop_tentatives"), type: "error" });
+          setAlert({ message: t("register.err_trop_tentatives"), type: "error" });
         } else {
           setAlert({ message: t("register.err_reseau"), type: "error" });
         }

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { getErrorMessage } from "../js/getErrorMessage";
 import {
   Breadcrumb,
   Container,
@@ -64,12 +65,12 @@ const Contact = () => {
           message: "",
         });
       } else {
-        throw new Error(response.data.message || t("contact.err_envoi"));
+        throw new Error(t("contact.err_envoi"));
       }
     } catch (error) {
       console.error("Error sending email:", error);
       setAlert({
-        message: error.response?.data?.message || t("contact.err_inconnue"),
+        message: getErrorMessage(error, "contact.err_inconnue"),
         type: "danger",
       });
     } finally {

@@ -18,6 +18,7 @@ import {
 } from "react-bootstrap";
 
 import axios from "axios";
+import { getErrorMessage } from "../js/getErrorMessage";
 
 const instance = axios.create({
   baseURL: "", // Base URL of the Express backend
@@ -150,7 +151,7 @@ const Gerer = () => {
         setRetenue(rnewRows);
       } else if (response.data.not_found !== true) {
         setAlert({
-          message: response.data.message || t("gerer.err_chargement"),
+          message: t("gerer.err_chargement"),
           type: "error",
         });
 
@@ -160,7 +161,7 @@ const Gerer = () => {
         }, 3000);
       }
     }).catch((error) => {
-      const msg = getErrorMessage(error);
+      const msg = getErrorMessage(error, "gerer.err_chargement");
       if (error?.response?.status === 401 || msg.includes('not authorized') || msg.includes('non autorisé')) {
         setAlert({
           message: t("gerer.err_connexion_requise"),
@@ -371,11 +372,6 @@ const Gerer = () => {
     return Boolean(value);
   };
 
-  const getErrorMessage = (error) => {
-    if (!error) return t("gerer.err_inconnue");
-    return error?.response?.data?.message || error?.message || error.toString();
-  };
-
   // Handle form submission
   const submitFn = async (event) => {
     event.preventDefault();
@@ -508,7 +504,7 @@ const Gerer = () => {
         }, 3000);
       } else {
         setAlert({
-          message: response.data.message || t("gerer.err_inconnue"),
+          message: t("gerer.err_inconnue"),
           type: "error",
         });
 
@@ -519,7 +515,7 @@ const Gerer = () => {
       }
     } catch (error) {
       console.error("API ERROR:", error?.response?.data || error?.message);
-      const msg = getErrorMessage(error);
+      const msg = getErrorMessage(error, "gerer.err_inconnue");
 
       if (error?.response?.status === 401 || msg.includes('not authorized') || msg.includes('non autorisé')) {
         setAlert({

@@ -17,6 +17,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { getErrorMessage } from "../js/getErrorMessage";
 
 const instance = axios.create({
   baseURL: '',
@@ -62,7 +63,7 @@ const ResetPassword = () => {
       instance.post('/apply_reset', { token, newPassword: form_Data.newPassword })
         .then((response) => {
           setAlert({
-            message: response.data.message || t("reset.success_mdp"),
+            message: t("reset.success_mdp"),
             type: "success",
           });
           setTimeout(() => {
@@ -70,7 +71,7 @@ const ResetPassword = () => {
           }, 3000);
         })
         .catch((error) => {
-          const errorMessage = error.response?.data?.error || t("reset.err_lien_invalide");
+          const errorMessage = getErrorMessage(error, "reset.err_lien_invalide");
           setAlert({
             message: errorMessage,
             type: "error",

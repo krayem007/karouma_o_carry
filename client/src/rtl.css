@@ -247,7 +247,7 @@
 
 /* Footer alignment */
 [dir="rtl"] .footer-menu {
-  text-align: right;
+  text-align: center;
 }
 
 [dir="rtl"] .footer-icons {

@@ -122,7 +122,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
       }
       else {
         setAlert({
-          message: response.data.message,
+          message: t("moncompte.err_ancien_mdp_incorrect"),
           type: "error",
         });
 
@@ -132,7 +132,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         }, 3000);
       }
     }).catch((err) => {
-      const msg = err.response?.data?.error || t("moncompte.err_suppression");
+      const msg = t("moncompte.err_suppression");
       setAlert({ message: msg, type: "error" });
       setTimeout(() => setAlert(null), 3000);
     });
@@ -223,7 +223,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
           }, 3000);
         }
       }).catch((err) => {
-        const msg = err.response?.data?.error || t("moncompte.err_update");
+        const msg = t("moncompte.err_update");
         setAlert({ message: msg, type: "error" });
         setTimeout(() => setAlert(null), 3000);
       });
@@ -262,7 +262,7 @@ const Moncompte = ({ setIsLoggedIn }) => {
         }).catch((error) => {
           const msg = error.response?.data?.error === "Incorrect old password"
             ? t("moncompte.err_ancien_mdp_match")
-            : (error.response?.data?.error || t("moncompte.err_mdp_change"));
+            : t("moncompte.err_mdp_change");
           setAlert({ message: msg, type: "error" });
           setTimeout(() => setAlert(null), 3000);
         });

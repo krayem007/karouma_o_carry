@@ -92,7 +92,7 @@ const Connexion = ({ setIsLoggedIn }) => {
       }
     }).catch((error) => {
       if (error.response?.status === 429) {
-        setAlert({ message: error.response.data.message || t("login.err_trop_tentatives"), type: "error" });
+        setAlert({ message: t("login.err_trop_tentatives"), type: "error" });
       } else {
         setAlert({ message: t("login.err_reseau"), type: "error" });
       }

@@ -17,6 +17,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { getErrorMessage } from "../js/getErrorMessage";
 
 const instance = axios.create({
   baseURL: '',
@@ -49,7 +50,7 @@ const Reinitialisation = () => {
       instance.post('/request_reset', { email: form_Data.email })
         .then((response) => {
           setAlert({
-            message: response.data.message || t("reinit.success_message"),
+            message: t("reinit.success_message"),
             type: "success",
           });
           setTimeout(() => {
@@ -57,7 +58,7 @@ const Reinitialisation = () => {
           }, 3000);
         })
         .catch((error) => {
-          const errorMessage = error.response?.data?.error || t("reinit.err_inconnue");
+          const errorMessage = getErrorMessage(error, "reinit.err_inconnue");
           setAlert({
             message: errorMessage,
             type: "error",

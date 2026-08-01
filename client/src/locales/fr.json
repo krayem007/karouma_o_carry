@@ -31,7 +31,8 @@
     "is_10": "IS 10%",
     "is_20": "IS 20%",
     "is_35": "IS 35%",
-    "cgu_link": "Conditions Générales d'Utilisation"
+    "cgu_link": "Conditions Générales d'Utilisation",
+    "err_trop_tentatives": "Trop de tentatives. Réessayez dans 3 minutes."
   },
   "home": {
     "titre_meta": "Accueil",
@@ -76,7 +77,7 @@
     "err_email_required": "Veuillez entrer votre adresse email.",
     "err_password_required": "Veuillez entrer votre mot de passe (minimum 6 caractères).",
     "err_incorrect": "Adresse e-mail ou mot de passe incorrect.",
-    "err_trop_tentatives": "Trop de tentatives. Réessayez dans 15 minutes.",
+    "err_trop_tentatives": "Trop de tentatives. Réessayez dans 3 minutes.",
     "err_reseau": "Erreur réseau. Veuillez réessayer."
   },
   "register": {
@@ -132,9 +133,13 @@
     "cgu_label": "J'accepte les Conditions Générales d'Utilisation",
     "cgu_err": "Vous devez accepter les conditions générales d'utilisation avant de vous inscrire.",
     "success_inscription": "L'inscription a été effectuée avec succès. Vous devez maintenant vous connecter.",
-    "err_trop_tentatives": "Trop de tentatives. Réessayez dans 15 minutes.",
+    "err_trop_tentatives": "Trop de tentatives. Réessayez dans 3 minutes.",
     "err_reseau": "Erreur réseau lors de l'inscription.",
     "err_nb_filiale": "Nombre de filiales doit être sur 3 chiffres",
+    "err_email_existant": "Un compte existe déjà avec cet email.",
+    "err_email_format": "Format d'email invalide.",
+    "err_identifiant_invalide": "Identifiant fiscal invalide (8 caractères alphanumériques).",
+    "err_inscription": "Erreur lors de l'inscription.",
     "pm_option": "Société / Personne Morale (PM)",
     "pp_option": "Indépendant / Personne Physique (PP)"
   },
@@ -181,7 +186,11 @@
     "supprimer_compte": "Supprimer mon compte",
     "modifier_mdp": "Modifier le mot de passe",
     "code_postal": "Code postal",
-    "code_postal_err": "Code postal doit contenir 4 chiffres"
+    "code_postal_err": "Code postal doit contenir 4 chiffres",
+    "err_email_requis": "Email requis.",
+    "err_identifiant_invalide": "Identifiant fiscal invalide (8 caractères alphanumériques).",
+    "err_aucun_champ": "Aucun champ à mettre à jour.",
+    "err_mdp_longueur": "Le mot de passe doit contenir entre 6 et 128 caractères."
   },
   "gerer": {
     "titre_meta": "Gérer mes déclarations",
@@ -274,7 +283,9 @@
     "success_save": "Vous avez saisi vos données. Vous pouvez maintenant imprimer votre déclaration.",
     "err_chargement": "Erreur de chargement des données de déclaration",
     "err_connexion_requise": "Connexion requise pour effectuer cette opération",
-    "err_inconnue": "Erreur inconnue"
+    "err_inconnue": "Erreur inconnue",
+    "err_aucune_selection": "Aucune déclaration sélectionnée.",
+    "err_calcul": "Erreur de calcul."
   },
   "visualiser": {
     "titre_meta": "Mes déclarations",

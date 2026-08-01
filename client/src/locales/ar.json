@@ -31,7 +31,8 @@
     "is_10": "IS 10%",
     "is_20": "IS 20%",
     "is_35": "IS 35%",
-    "cgu_link": "الشروط العامة للاستخدام"
+    "cgu_link": "الشروط العامة للاستخدام",
+    "err_trop_tentatives": "محاولات كثيرة. أعد المحاولة بعد 3 دقائق"
   },
   "home": {
     "titre_meta": "الرئيسية",
@@ -76,7 +77,7 @@
     "err_email_required": "يرجى إدخال البريد الإلكتروني",
     "err_password_required": "أدخل كلمة السر (6 أحرف على الأقل)",
     "err_incorrect": "البريد الإلكتروني أو كلمة السر غير صحيحة",
-    "err_trop_tentatives": "محاولات كثيرة. انتظر 15 دقيقة",
+    "err_trop_tentatives": "محاولات كثيرة. أعد المحاولة بعد 3 دقائق",
     "err_reseau": "خطأ في الشبكة"
   },
   "register": {
@@ -132,9 +133,13 @@
     "cgu_label": "أوافق على شروط الاستخدام",
     "cgu_err": "يجب الموافقة على الشروط",
     "success_inscription": "تم التسجيل بنجاح",
-    "err_trop_tentatives": "محاولات كثيرة. انتظر 15 دقيقة",
+    "err_trop_tentatives": "محاولات كثيرة. أعد المحاولة بعد 3 دقائق",
     "err_reseau": "خطأ في الشبكة أثناء التسجيل",
     "err_nb_filiale": "عدد الفروع غير صالح",
+    "err_email_existant": "يوجد حساب بهذا البريد الإلكتروني",
+    "err_email_format": "صيغة البريد الإلكتروني غير صالحة",
+    "err_identifiant_invalide": "المعرف الجبائي غير صالح (8 أحرف أبجدية رقمية)",
+    "err_inscription": "خطأ أثناء التسجيل",
     "pm_option": "شركة / شخص معنوي",
     "pp_option": "مستقل / شخص طبيعي"
   },
@@ -181,7 +186,11 @@
     "supprimer_compte": "حذف الحساب",
     "modifier_mdp": "تغيير كلمة السر",
     "code_postal": "الترقيم البريدي",
-    "code_postal_err": "الترقيم البريدي غير صالح"
+    "code_postal_err": "الترقيم البريدي غير صالح",
+    "err_email_requis": "البريد الإلكتروني مطلوب",
+    "err_identifiant_invalide": "المعرف الجبائي غير صالح (8 أحرف أبجدية رقمية)",
+    "err_aucun_champ": "لا يوجد حقل للتحديث",
+    "err_mdp_longueur": "كلمة السر يجب أن تتكون من 6 إلى 128 حرفاً"
   },
   "gerer": {
     "titre_meta": "إدارة التصاريح",
@@ -273,7 +282,9 @@
     "success_save": "تم حفظ المعطيات. يمكنك الآن طباعة التصريح",
     "err_chargement": "خطأ في تحميل البيانات",
     "err_connexion_requise": "يجب تسجيل الدخول أولاً",
-    "err_inconnue": "خطأ غير معروف"
+    "err_inconnue": "خطأ غير معروف",
+    "err_aucune_selection": "لم يتم تحديد أي تصريح",
+    "err_calcul": "خطأ في الحساب"
   },
   "visualiser": {
     "titre_meta": "تصاريحي",
