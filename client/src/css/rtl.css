@@ -74,6 +74,36 @@
   text-align: center !important;
 }
 
+/* === MOBILE (< lg): tous les éléments sur UNE seule ligne — RTL === */
+@media (max-width: 991.98px) {
+  [dir="rtl"] .navbar-nav {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: 100%;
+    align-items: center !important;
+    gap: 0;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    justify-content: flex-start;
+  }
+
+  [dir="rtl"] .navbar-nav > li.nav-item:last-child {
+    order: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  [dir="rtl"] .navbar-nav .nav-link,
+  [dir="rtl"] .navbar-nav .nav-item {
+    padding: 3px 6px !important;
+    font-size: 13px !important;
+  }
+
+  [dir="rtl"] .navbar-nav .language-switcher {
+    font-size: 13px !important;
+    padding: 3px 6px !important;
+  }
+}
+
 /* Bootstrap directional utilities — SWAP margins/paddings instead of removing */
 [dir="rtl"] .ms-auto {
   margin-left: 0 !important;
@@ -183,7 +213,7 @@
 }
 
 /* Language switcher: move to far LEFT with auto margin pushing auth links to the right */
-[dir="rtl"] .navbar-nav > li.nav-item:last-child {
+[dir="rtl"] .navbar-nav>li.nav-item:last-child {
   order: -1 !important;
   margin-right: auto !important;
   margin-left: 0 !important;
@@ -444,13 +474,13 @@
 }
 
 /* InputGroup — swap negative margin for border-collapse in RTL */
-[dir="rtl"] .input-group > :not(:first-child) {
+[dir="rtl"] .input-group> :not(:first-child) {
   margin-left: 0 !important;
   margin-right: -1px !important;
 }
 
 /* Remove input left border + radius so it fuses with password toggle button in RTL */
-[dir="rtl"] .input-group > .form-control {
+[dir="rtl"] .input-group>.form-control {
   border-left: none !important;
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
@@ -605,18 +635,21 @@
   [dir="rtl"] .carsour .card {
     width: 90% !important;
   }
+
   [dir="rtl"] .carsour .card-title {
     font-size: 24px !important;
   }
+
   [dir="rtl"] .carsour .card-subtitle {
     font-size: 18px !important;
   }
+
   [dir="rtl"] .carsour .card-body {
     font-size: 16px !important;
   }
+
   [dir="rtl"] .carsour a {
     font-size: 18px !important;
     padding: 12px 20px !important;
   }
 }
-

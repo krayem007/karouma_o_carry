@@ -112,7 +112,7 @@ html {
 }
 
 /* Language switcher: always move to the LEFT (next to logo) */
-.navbar-nav > li.nav-item:last-child {
+.navbar-nav>li.nav-item:last-child {
   order: -1 !important;
   margin-right: auto !important;
   margin-left: 0 !important;
@@ -431,6 +431,39 @@ div.card {
 
   div .bodyconnected {
     text-align: center !important;
+  }
+}
+
+/* === MOBILE (< lg): tous les éléments sur UNE seule ligne === */
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: 100%;
+    align-items: center !important;
+    gap: 0;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    justify-content: flex-end;
+  }
+
+  /* Langue à gauche, auth links à droite — même ordre que desktop */
+  .navbar-nav > li.nav-item:last-child {
+    order: -1 !important;
+    margin-right: auto !important;
+    margin-left: 0 !important;
+  }
+
+  /* Réduire padding et taille pour tenir sur une ligne */
+  .navbar-nav .nav-link,
+  .navbar-nav .nav-item {
+    padding: 3px 6px !important;
+    font-size: 13px !important;
+  }
+
+  .navbar-nav .language-switcher {
+    font-size: 13px !important;
+    padding: 3px 6px !important;
   }
 }
 
