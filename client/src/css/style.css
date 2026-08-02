@@ -26,15 +26,18 @@
   background-image: none !important;
 }
 
-/* SUPPRIMER validation Bootstrap (vert/rouge) */
+/* SUPPRIMER icône validation Bootstrap (vert/rouge) mais garder la flèche du select */
 .form-select.is-valid,
 .form-select.is-invalid,
 .was-validated .form-select:valid,
 .was-validated .form-select:invalid {
   border-color: #ced4da !important;
   box-shadow: none !important;
-  background-image: none !important;
-  /* supprime icône validation */
+  --bs-form-select-bg-icon: none !important;
+  background-image: var(--bs-form-select-bg-img) !important;
+  background-repeat: no-repeat !important;
+  background-size: 16px 12px !important;
+  background-position: right 0.75rem center !important;
 }
 
 

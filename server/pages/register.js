@@ -21,7 +21,8 @@ exports.save = async (req, res) => {
             cessation_annee,
             nature_entite,
             details_regime,
-            secteur} = req.body;
+            secteur,
+            language} = req.body;
 
             if (email) email = email.trim();
             if (nom_prenom_raison) nom_prenom_raison = nom_prenom_raison.trim();
@@ -30,17 +31,17 @@ exports.save = async (req, res) => {
 
             if (!password || password.length < 6 || password.length > 128) {
                 console.log("password validation failed");
-                return res.json({ error: true, message: "Le mot de passe doit contenir entre 6 et 128 caractères" });
+                return res.json({ error: "register.err_password_length" });
             }
 
             if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
                 console.log("email validation failed");
-                return res.json({ error: true, message: "Format d'email invalide" });
+                return res.json({ error: "register.err_email_format" });
             }
 
             if (!identifiant_fiscal || !/^[0-9A-Z]{8}$/.test(identifiant_fiscal)) {
                 console.log("identifiant_fiscal validation failed");
-                return res.json({ error: true, message: "Identifiant fiscal invalide (8 caractères alphanumériques)" });
+                return res.json({ error: "register.err_identifiant_invalide" });
             }
 
             if (nombre_filial > 0)
@@ -52,11 +53,11 @@ exports.save = async (req, res) => {
         if(error)
         {
             console.log("couldn't check if the email already in use : ", error);
-            return res.json({ error: true, message: "Erreur base de données" });
+            return res.json({ error: "errors.database_error" });
         }
         else if (results.length > 0) {
             console.log("that email is already in use");
-            return res.json({ error: true, message: "Un compte existe déjà avec cet email" });
+            return res.json({ error: "register.err_email_existant" });
         }
         else{
             let hashedPassword = await bcrypt.hash(password, 10);
@@ -76,11 +77,12 @@ exports.save = async (req, res) => {
                 password : hashedPassword,
                 nature_entite: nature_entite,
                 details_regime: details_regime,
-                secteur: secteur}, (error, results) => {
+                secteur: secteur,
+                language: (language === 'ar' ? 'ar' : 'fr')}, (error, results) => {
                     if(error)
                     {
                         console.log("couldn,t save the user in the data base : ", error);
-                        return res.json({ error: true, message: "Erreur lors de l'inscription" });
+                        return res.json({ error: "register.err_inscription" });
                     }else{
                         console.log("user registered : ", results);
                         return res.json({ success: true });

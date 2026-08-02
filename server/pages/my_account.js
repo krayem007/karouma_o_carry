@@ -62,6 +62,30 @@ exports.change_my_account_data = (req, res) => {
 
 
 
+exports.update_language = (req, res) => {
+  if (req.session.authorized !== true) {
+    return res.status(401).json({ error: 'not authorized', updated: false });
+  }
+
+  const { email, language } = req.body;
+  if (!email || (language !== 'ar' && language !== 'fr')) {
+    return res.status(400).json({ error: 'Invalid language', updated: false });
+  }
+
+  db.query('UPDATE accounts SET language = ? WHERE email = ?', [language, email], (err, result) => {
+    if (err) {
+      console.error('Error updating language:', err);
+      return res.status(500).json({ error: 'Database error', updated: false });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found', updated: false });
+    }
+    res.json({ message: 'Language updated successfully', updated: true });
+  });
+};
+
+
+
 exports.change_password = (req, res) => {
   if (req.session.authorized != true) {
     console.error('not authoraised');

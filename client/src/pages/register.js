@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Config from "./config.json";
 import axios from "axios";
 import { Helmet } from "react-helmet";
+import i18n from "../i18n";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import {
@@ -93,10 +94,14 @@ const Inscription = () => {
         cessation_annee: form_Data.cessation_annee,
         nature_entite: form_Data.nature_entite,
         details_regime: form_Data.details_regime,
-        secteur: form_Data.secteur
+        secteur: form_Data.secteur,
+        language: localStorage.getItem("language") || "fr"
       };
       axios.post("/register", data).then((response) => {
-        if (response.data.error) {
+        const errKey = response.data?.error;
+        if (typeof errKey === "string" && i18n.exists(errKey)) {
+          setAlert({ message: t(errKey), type: "error" });
+        } else if (response.data.error) {
           setAlert({ message: t("register.err_inscription"), type: "error" });
         } else if (response.data.success) {
           setAlert({

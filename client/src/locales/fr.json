@@ -438,7 +438,10 @@
     "email_label": "E-mail :",
     "success_message": "Nous allons vous envoyer un e-mail contenant le lien de réinitialisation de votre mot de passe.",
     "err_inconnue": "Une erreur s'est produite lors de la réinitialisation.",
-    "err_email_required": "Veuillez entrer votre adresse e-mail pour la réinitialisation du mot de passe."
+    "err_email_required": "Veuillez entrer votre adresse e-mail pour la réinitialisation du mot de passe.",
+    "err_email_format": "Format d'email invalide.",
+    "err_email_inconnu": "Cette adresse e-mail n'est pas associée à un compte.",
+    "err_email_envoi": "Erreur lors de l'envoi de l'e-mail."
   },
   "reset": {
     "titre_meta": "Nouveau Mot de Passe",
@@ -454,6 +457,11 @@
     "err_mdp_length": "Le mot de passe doit comporter au moins 6 caractères.",
     "err_confirmer": "Veuillez confirmer votre nouveau mot de passe.",
     "err_mdp_match": "Les mots de passe ne correspondent pas.",
+    "err_champs_requis": "Token et nouveau mot de passe requis.",
+    "err_mdp_longueur": "Le mot de passe doit contenir entre 6 et 128 caractères.",
+    "err_lien_expire": "Le lien de réinitialisation a expiré.",
+    "err_hash": "Erreur lors du hachage du mot de passe.",
+    "err_update": "Erreur lors de la mise à jour du mot de passe.",
     "enregistrer": "Enregistrer"
   },
   "front": {

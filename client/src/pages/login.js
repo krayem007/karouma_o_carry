@@ -28,7 +28,7 @@ const instance = axios.create({
 const CANONICAL = Config.SITE_DOMAIN + "/connexion";
 
 const Connexion = ({ setIsLoggedIn }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const TITLE = t("login.titre_meta") + " | " + Config.SITE_TITLE;
   const DESC = t("login.titre_meta");
   const [validated, set_Validated] = useState(false);
@@ -80,6 +80,16 @@ const Connexion = ({ setIsLoggedIn }) => {
           localStorage.setItem("nature_entite", response.data.user_data.nature_entite || "");
           localStorage.setItem("details_regime", response.data.user_data.details_regime || "");
           localStorage.setItem("secteur", response.data.user_data.secteur || "");
+          const accountLang = response.data.user_data.language === "ar" ? "ar" : "fr";
+          localStorage.setItem("language", accountLang);
+          i18n.changeLanguage(accountLang);
+          document.documentElement.lang = accountLang;
+          document.documentElement.dir = accountLang === "ar" ? "rtl" : "ltr";
+          if (accountLang === "ar") {
+            document.body.classList.add("rtl-mode");
+          } else {
+            document.body.classList.remove("rtl-mode");
+          }
           setIsLoggedIn(true);
           navigate("/welcome");
         }

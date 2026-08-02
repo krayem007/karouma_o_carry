@@ -1,8 +1,14 @@
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
 
-const LanguageSwitcher = () => {
+const instance = axios.create({
+  baseURL: '',
+  withCredentials: true,
+});
+
+const LanguageSwitcher = ({ isLoggedIn }) => {
   const { i18n } = useTranslation();
 
   const changeLanguage = (lang) => {
@@ -14,6 +20,11 @@ const LanguageSwitcher = () => {
       document.body.classList.add("rtl-mode");
     } else {
       document.body.classList.remove("rtl-mode");
+    }
+    if (isLoggedIn) {
+      instance.post("/update_language", { email: localStorage.getItem("email"), language: lang })
+        .then(() => {})
+        .catch(() => {});
     }
   };
 

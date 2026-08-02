@@ -194,6 +194,14 @@
   background-position: left 0.5rem center;
 }
 
+/* Garder la flèche du select à gauche quand le champ est validé (message de contrôle) */
+[dir="rtl"] .form-select.is-invalid,
+[dir="rtl"] .form-select.is-valid,
+[dir="rtl"] .was-validated .form-select:invalid,
+[dir="rtl"] .was-validated .form-select:valid {
+  background-position: left 0.5rem center !important;
+}
+
 /* Card alignment */
 [dir="rtl"] .card-title {
   text-align: right;

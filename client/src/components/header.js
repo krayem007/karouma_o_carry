@@ -77,7 +77,7 @@ class Header extends React.Component {
                   </>
                 )}
                 <Nav.Item as="li" className="d-flex align-items-center">
-                  <LanguageSwitcher />
+                  <LanguageSwitcher isLoggedIn={isLoggedIn} />
                 </Nav.Item>
               </Nav>
             </Navbar.Collapse>

@@ -7,18 +7,18 @@ exports.request_reset = async (req, res) => {
   const { email } = req.body;
 
   if (!email || !/^\S+@\S+\.\S+$/.test(email.trim())) {
-    return res.status(400).json({ error: "Format d'email invalide." });
+    return res.status(400).json({ error: "reinit.err_email_format" });
   }
 
   // 1. Check if email exists
   db.query('SELECT * FROM accounts WHERE email = ?', [email], async (err, results) => {
     if (err) {
       console.error('Database error:', err);
-      return res.status(500).json({ error: "Erreur serveur." });
+      return res.status(500).json({ error: "errors.server_error" });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ error: "Cette adresse e-mail n'est pas associée à un compte." });
+      return res.status(404).json({ error: "reinit.err_email_inconnu" });
     }
 
     const user = results[0];
@@ -68,7 +68,7 @@ exports.request_reset = async (req, res) => {
         return res.status(200).json({ message: "E-mail de réinitialisation envoyé avec succès." });
       } catch (emailErr) {
         console.error("Error sending email:", emailErr);
-        return res.status(500).json({ error: "Erreur lors de l'envoi de l'e-mail." });
+        return res.status(500).json({ error: "reinit.err_email_envoi" });
       }
     };
 
@@ -77,7 +77,7 @@ exports.request_reset = async (req, res) => {
       db.query('UPDATE accounts SET reset_token = ?, reset_token_expiry = ? WHERE email = ?', [token, expiry, email], async (updateErr) => {
         if (updateErr) {
           console.error('Error saving reset token:', updateErr);
-          return res.status(500).json({ error: "Erreur serveur." });
+          return res.status(500).json({ error: "errors.server_error" });
         }
         await sendEmail();
       });
@@ -92,28 +92,28 @@ exports.apply_reset = async (req, res) => {
   const { token, newPassword } = req.body;
 
   if (!token || !newPassword) {
-    return res.status(400).json({ error: "Token et nouveau mot de passe requis.", update: false });
+    return res.status(400).json({ error: "reset.err_champs_requis", update: false });
   }
 
   if (newPassword.length < 6 || newPassword.length > 128) {
-    return res.status(400).json({ error: "Le mot de passe doit contenir entre 6 et 128 caractères", update: false });
+    return res.status(400).json({ error: "reset.err_mdp_longueur", update: false });
   }
 
   // 1. Find user by token and check expiry
   db.query('SELECT * FROM accounts WHERE reset_token = ?', [token], async (err, results) => {
     if (err) {
       console.error('Database error:', err);
-      return res.status(500).json({ error: "Erreur serveur.", update: false });
+      return res.status(500).json({ error: "errors.server_error", update: false });
     }
 
     if (results.length === 0) {
-      return res.status(400).json({ error: "Lien de réinitialisation invalide.", update: false });
+      return res.status(400).json({ error: "reset.err_lien_invalide", update: false });
     }
 
     const user = results[0];
 
     if (Date.now() > user.reset_token_expiry) {
-      return res.status(400).json({ error: "Le lien de réinitialisation a expiré.", update: false });
+      return res.status(400).json({ error: "reset.err_lien_expire", update: false });
     }
 
     // 2. Hash new password
@@ -122,14 +122,14 @@ exports.apply_reset = async (req, res) => {
       hashedPassword = await bcrypt.hash(newPassword, 12); // Using same salt rounds as register.js
     } catch (hashErr) {
       console.error('Hash error:', hashErr);
-      return res.status(500).json({ error: "Erreur lors du hachage du mot de passe.", update: false });
+      return res.status(500).json({ error: "reset.err_hash", update: false });
     }
 
     // 3. Update password and clear token fields
     db.query('UPDATE accounts SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?', [hashedPassword, user.id], (updateErr) => {
       if (updateErr) {
         console.error('Database error:', updateErr);
-        return res.status(500).json({ error: "Erreur lors de la mise à jour du mot de passe.", update: false });
+        return res.status(500).json({ error: "reset.err_update", update: false });
       }
 
       res.status(200).json({ message: "Mot de passe mis à jour avec succès.", update: true });
@@ -143,17 +143,17 @@ exports.verify_token = async (req, res) => {
   db.query('SELECT * FROM accounts WHERE reset_token = ?', [token], (err, results) => {
     if (err) {
       console.error('Database error:', err);
-      return res.status(500).json({ error: "Erreur serveur.", valid: false });
+      return res.status(500).json({ error: "errors.server_error", valid: false });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ error: "Lien de réinitialisation invalide.", valid: false });
+      return res.status(404).json({ error: "reset.err_lien_invalide", valid: false });
     }
 
     const user = results[0];
 
     if (Date.now() > user.reset_token_expiry) {
-      return res.status(400).json({ error: "Le lien de réinitialisation a expiré.", valid: false });
+      return res.status(400).json({ error: "reset.err_lien_expire", valid: false });
     }
 
     res.status(200).json({ message: "Token valide.", valid: true });

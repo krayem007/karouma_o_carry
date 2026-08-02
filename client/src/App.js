@@ -30,7 +30,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State for logged in status
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("language") || "ar";
+    const savedLang = localStorage.getItem("language") || "fr";
     i18n.changeLanguage(savedLang);
     document.documentElement.lang = savedLang;
     document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
