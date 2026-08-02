@@ -97,6 +97,11 @@ html {
   align-items: center !important;
   flex-wrap: nowrap !important;
   gap: 4px;
+  /* Span full collapse width so we can position items on both sides */
+  width: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  justify-content: flex-end;
 }
 
 /* Keep nav items inline on all screen sizes */
@@ -104,6 +109,13 @@ html {
 .navbar-nav .nav-item {
   white-space: nowrap;
   padding: 6px 12px !important;
+}
+
+/* Language switcher: always move to the LEFT (next to logo) */
+.navbar-nav > li.nav-item:last-child {
+  order: -1 !important;
+  margin-right: auto !important;
+  margin-left: 0 !important;
 }
 
 /* Language switcher nav item alignment */
