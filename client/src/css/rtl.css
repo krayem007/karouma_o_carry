@@ -266,6 +266,33 @@
   text-align: center;
 }
 
+/* Verrouiller le centrage du contenu du footer en RTL */
+[dir="rtl"] footer,
+[dir="rtl"] .footer-menu,
+[dir="rtl"] .footer-icons,
+[dir="rtl"] .footer-menu ul,
+[dir="rtl"] .footer-icons ul {
+  text-align: center !important;
+}
+
+/* Neutraliser la direction RTL hérité dans le footer pour que le centrage soit identique à la version française */
+[dir="rtl"] footer .container-fluid,
+[dir="rtl"] footer .container-fluid .row,
+[dir="rtl"] footer .container-fluid .col,
+[dir="rtl"] footer .container-fluid [class*="col-"] {
+  direction: ltr !important;
+  text-align: center !important;
+}
+
+[dir="rtl"] footer .footer-menu ul,
+[dir="rtl"] footer .footer-icons ul {
+  display: flex !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 /* Login / Register form */
 [dir="rtl"] .register {
   direction: rtl;
@@ -385,6 +412,11 @@
 
 [dir="rtl"] .container-fluid {
   direction: rtl;
+}
+
+/* Empêcher le décalage de la page vers la gauche en RTL (débordement horizontal mobile) */
+[dir="rtl"] body {
+  overflow-x: hidden;
 }
 
 /* InputGroup — swap negative margin for border-collapse in RTL */

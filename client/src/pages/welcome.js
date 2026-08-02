@@ -83,7 +83,7 @@ const Welcome = () => {
           fluid
           className="d-flex justify-content-center align-items-center flex-column welcome-cards-container"
         >
-          <Row className="justify-content-center gap-0 gap-md-4">
+          <Row className="justify-content-center gap-2 gap-md-4">
             <Col xs="auto" sm="auto">
               <Link to="/gerer" className="modern-card-link">
                 <div className="icon-wrapper">

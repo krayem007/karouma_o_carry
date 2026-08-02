@@ -91,6 +91,26 @@ html {
   border-top: solid #1abc9c 4px;
 }
 
+/* Force nav items on a single horizontal row with consistent spacing */
+.navbar-nav {
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 4px;
+}
+
+/* Keep nav items inline on all screen sizes */
+.navbar-nav .nav-link,
+.navbar-nav .nav-item {
+  white-space: nowrap;
+  padding: 6px 12px !important;
+}
+
+/* Language switcher nav item alignment */
+.navbar-nav .language-switcher {
+  padding: 6px 12px !important;
+}
+
 .navbartext {
   color: white !important;
   font-size: 16px !important;
