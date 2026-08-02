@@ -171,10 +171,34 @@
   margin-right: auto !important;
 }
 
-/* Navbar alignment */
+/* Navbar alignment — RTL: Language on LEFT, Connexion/Inscription on RIGHT */
 [dir="rtl"] .navbar-nav {
-  margin-right: auto;
-  margin-left: 0;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  width: 100%;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  justify-content: flex-end;
+}
+
+/* Language switcher: move to far LEFT with auto margin pushing auth links to the right */
+[dir="rtl"] .navbar-nav > li.nav-item:last-child {
+  order: -1 !important;
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+/* Prevent the container-fluid RTL direction from stacking navbar items */
+[dir="rtl"] .navbar .container-fluid {
+  direction: ltr !important;
+}
+
+/* Restore Arabic text direction for nav link text only */
+[dir="rtl"] .navbar-nav .nav-link,
+[dir="rtl"] .navbar-nav .navbartext,
+[dir="rtl"] .navbar-nav .language-switcher {
+  direction: rtl;
 }
 
 /* Form alignment */
