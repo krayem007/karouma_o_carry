@@ -5,10 +5,6 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import axios from "axios";
-
-const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || '',
-});
 import { Helmet } from "react-helmet-async";
 import i18n from "../i18n";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
@@ -23,6 +19,10 @@ import {
   Breadcrumb,
   Toast,
 } from "react-bootstrap";
+
+const instance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || '',
+});
 
 const CANONICAL = Config.SITE_DOMAIN + "/inscription";
 
