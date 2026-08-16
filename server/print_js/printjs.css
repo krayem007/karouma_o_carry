@@ -5,6 +5,12 @@
   font-size: 14px;
 }
 
+@font-face {
+  font-family: "Amiri";
+  src: url("Amiri-Regular.ttf") format("truetype");
+  font-display: block;
+}
+
 @page {
   size: A4;
   margin: 0;
@@ -24,7 +30,7 @@ body {
   margin: auto;
   padding: 20px;
   box-sizing: border-box;
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Times New Roman", "Amiri", Times, serif;
   border-bottom: 1px solid rgb(173, 173, 173);
   page-break-after: always;
   page-break-inside: avoid;

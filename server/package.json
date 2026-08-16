@@ -10,7 +10,8 @@
     "helmet": "^8.2.0",
     "mysql2": "^3.16.1",
     "nodemailer": "^8.0.7",
-    "puppeteer": "^24.19.0"
+    "puppeteer-core": "^24.43.1",
+    "@sparticuz/chromium": "^140.0.0"
   },
   "name": "server",
   "version": "1.0.0",

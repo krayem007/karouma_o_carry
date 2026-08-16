@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 
 class PuppeteerPool {
   constructor(maxBrowsers) {
@@ -14,11 +15,17 @@ class PuppeteerPool {
   async initialize() {
     if (this.initialized) return;
     this.initialized = true;
-    const promises = [];
+    const results = [];
     for (let i = 0; i < this.maxBrowsers; i++) {
-      promises.push(this._launchBrowser(i));
+      if (i > 0) await new Promise(r => setTimeout(r, 500));
+      try {
+        await this._launchBrowser(i);
+        results.push({ status: "fulfilled", value: i });
+      } catch (e) {
+        results.push({ status: "rejected", reason: e, index: i });
+        console.error(`[POOL] Browser ${i} failed to launch:`, e.message);
+      }
     }
-    const results = await Promise.allSettled(promises);
     const ok = results.filter(r => r.status === "fulfilled").length;
     if (ok === 0) {
       console.error("[POOL] All browsers failed to launch");
@@ -29,14 +36,9 @@ class PuppeteerPool {
 
   async _launchBrowser(index) {
     const browser = await puppeteer.launch({
-      executablePath: "/usr/bin/google-chrome",
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--lang=ar",
-        "--disable-features=IsolateOrigins,site-per-process"
-      ],
+      executablePath: await chromium.executablePath(),
+      headless: "shell",
+      args: [...chromium.args, "--lang=ar"],
     });
     const entry = { browser, index, alive: true };
     this.browsers.push(entry);
@@ -141,9 +143,13 @@ class PuppeteerPool {
       waiter.resolve(null);
     }
     this.waiting = [];
-    for (const entry of this.browsers) {
-      try { await entry.browser.close(); } catch (e) { }
-    }
+    const closeAll = this.browsers.map(e =>
+      Promise.race([
+        e.browser.close().catch(() => {}),
+        new Promise(r => setTimeout(r, 10000)),
+      ])
+    );
+    await Promise.all(closeAll);
     this.browsers = [];
     this.available = [];
     this.activeCount = 0;
