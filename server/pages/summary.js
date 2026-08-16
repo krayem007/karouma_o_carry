@@ -56,7 +56,6 @@ function calculateTotalAchatTTC1000(factures) {
 }
 
 exports.welcome = async (req, res) => {
-  console.log("summary func : ", req.body);
   if (req.session.authorized == true) {
     //res.json({"authorized" : "true" })
     const query = `
@@ -69,7 +68,6 @@ exports.welcome = async (req, res) => {
           .status(500)
           .json({ message: "Database error", authorized: "true" });
       }
-      console.log("query summary results : ", results);
       return res.json({ summary: results, authorized: "true" });
     });
   } else {
@@ -643,6 +641,6 @@ exports.print_doc = async (req, res) => {
     }
   } catch (err) {
     console.error("[PDF] print_doc error:", err.message);
-    res.status(500).send("Failed to generate PDF: " + (err?.message || err));
+    res.status(500).send("Failed to generate PDF");
   }
 };

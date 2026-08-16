@@ -2,7 +2,7 @@ import icon from "../images/icon.png";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -20,7 +20,7 @@ import {
 } from "react-bootstrap";
 
 const instance = axios.create({
-  baseURL: '', // Base URL of the Express backend
+  baseURL: process.env.REACT_APP_API_URL || '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
@@ -61,7 +61,6 @@ const Connexion = ({ setIsLoggedIn }) => {
         // If login is successful:
         if (response.data.status === 'success') {
           setAlert({ message: "", type: "" });
-          console.log(response.data.message);
           localStorage.setItem("user", response.data.user);
           const date = new Date(response.data.user_data.activite_date);
           localStorage.setItem("email", response.data.user_data.email);
@@ -153,8 +152,8 @@ const Connexion = ({ setIsLoggedIn }) => {
           </Toast>
         )}
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{t("login.page_title")}</Breadcrumb.Item>
         </Breadcrumb>

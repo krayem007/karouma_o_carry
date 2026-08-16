@@ -2,7 +2,7 @@ import icon from "../images/icon.png";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "", // Base URL of the Express backend
+  baseURL: process.env.REACT_APP_API_URL || '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
@@ -149,9 +149,7 @@ const Visualiser = () => {
 
   useEffect(() => {
     instance.get("/summary").then((response) => {
-      /*gg test*/ console.log("summary : ", response.data);
       if (response.data.authorized === "true") {
-        console.log("authorized client");
         setRows([]);
         let fnewRows = [];
         let [year, month] = ["0000", "00"];
@@ -195,7 +193,6 @@ const Visualiser = () => {
         });
         setRows((prev) => [...prev, ...fnewRows]);
       } else {
-        console.log("not authorized client");
         navigate("/connexion");
         //neet to logging first
       }
@@ -339,11 +336,11 @@ const print_doc = () => {
       </Helmet>
       <Container className="visualiser-page" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter") print_doc(); }}>
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/welcome">{t("welcome.page_title")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/welcome" }}>
+            {t("welcome.page_title")}
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{t("visualiser.page_title")}</Breadcrumb.Item>
         </Breadcrumb>

@@ -2,7 +2,7 @@ import icon from "../images/icon.png";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 const CANONICAL = Config.SITE_DOMAIN + "/";

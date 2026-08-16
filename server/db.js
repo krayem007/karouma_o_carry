@@ -8,6 +8,9 @@ module.exports = mysql.createPool({
   database: process.env.db,
   dateStrings: true,
   waitForConnections: true,
-  connectionLimit: 100,
+  connectionLimit: 10,
   queueLimit: 0,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });

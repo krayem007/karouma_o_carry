@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: '',
+  baseURL: process.env.REACT_APP_API_URL || '',
   withCredentials: true,
 });
 

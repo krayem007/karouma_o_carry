@@ -18,6 +18,12 @@ if (!process.env.SESSION_SECRET) {
 
 app.disable('x-powered-by');
 
+const isProd = process.env.NODE_ENV === 'production';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+const API_ORIGIN = process.env.API_ORIGIN || 'http://localhost:5002';
+
+app.set('trust proxy', 1);
+
 process.on('unhandledRejection', (reason, promise) => {
   console.error('UNHANDLED REJECTION:', reason);
 });
@@ -29,11 +35,11 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            scriptSrc: ["'self'", "https://unpkg.com", "https://cdnjs.cloudflare.com"].concat(isProd ? [] : ["'unsafe-inline'", "'unsafe-eval'"]),
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
             imgSrc: ["'self'", "data:"],
-            connectSrc: ["'self'", "http://localhost:5002", "http://localhost:3000"],
+            connectSrc: ["'self'", FRONTEND_URL, API_ORIGIN],
             formAction: ["'self'"],
         },
     },
@@ -42,12 +48,12 @@ app.use(helmet({
 
 // Enable CORS to allow requests from the React frontend
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: FRONTEND_URL,
     credentials: true,
   }));
 
 const authLimiter = process.env.SKIP_RATE_LIMIT
-  ? (req, res, next) => { if (process.env.NODE_ENV !== 'production') console.log('[RATE LIMIT] SKIPPED'); next(); }
+  ? (req, res, next) => { if (!isProd) console.log('[RATE LIMIT] SKIPPED'); next(); }
   : rateLimit({
       windowMs: 3 * 60 * 1000,
       max: 10,
@@ -56,17 +62,39 @@ const authLimiter = process.env.SKIP_RATE_LIMIT
       legacyHeaders: false,
     });
 
-app.use(express.json());
+const printLimiter = process.env.SKIP_RATE_LIMIT
+  ? (req, res, next) => { if (!isProd) console.log('[RATE LIMIT] SKIPPED'); next(); }
+  : rateLimit({
+      windowMs: 60 * 1000,
+      max: 20,
+      message: { error: true, message: "Trop de demandes d'impression. Réessayez dans une minute." },
+      standardHeaders: true,
+      legacyHeaders: false,
+    });
+
+const contactLimiter = process.env.SKIP_RATE_LIMIT
+  ? (req, res, next) => { if (!isProd) console.log('[RATE LIMIT] SKIPPED'); next(); }
+  : rateLimit({
+      windowMs: 60 * 60 * 1000,
+      max: 5,
+      message: { error: true, message: "Trop de messages envoyés. Réessayez dans une heure." },
+      standardHeaders: true,
+      legacyHeaders: false,
+    });
+
+app.use(express.json({ limit: '5mb' }));
 
 // Session middleware to manage user sessions
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    rolling: true,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProd,
       httpOnly: true,
       sameSite: "lax",
+      maxAge: 8 * 60 * 60 * 1000,
     },
   }));
 
@@ -83,16 +111,28 @@ app.post("/delete_declarations", require('./pages/dec').delete_declarations)
 app.post("/dec", require('./pages/dec').post_dec)
 app.post("/get_dec", require('./pages/dec').get_dec)
 app.post("/calculate_net", require('./pages/dec').calculate_net)
-app.post("/contact", require('./pages/contact').send_email)
+app.post("/contact", contactLimiter, require('./pages/contact').send_email)
 app.get("/summary", require('./pages/summary').welcome)
-app.post("/print_doc", require('./pages/summary').print_doc)
+app.post("/print_doc", printLimiter, require('./pages/summary').print_doc)
 app.post("/request_reset", authLimiter, require('./pages/reset_password').request_reset)
 app.post("/apply_reset", authLimiter, require('./pages/reset_password').apply_reset)
-app.get("/verify_reset_token/:token", require('./pages/reset_password').verify_token)
+app.post("/verify_reset_token", require('./pages/reset_password').verify_token)
 
-const port = 5002;
+// JSON 404 for unknown routes
+app.use((req, res) => {
+  res.status(404).json({ message: "Not found" });
+});
+
+// Central error handler
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ message: "Internal server error" });
+});
+
+const port = process.env.PORT || 5002;
 const server = app.listen(port, () => {
-  console.log("server started on port 5002");
+  console.log(`server started on port ${port}`);
   const pool = require('./puppeteer-pool')();
   pool.initialize().catch(err => console.error("[POOL] Init error:", err));
 });

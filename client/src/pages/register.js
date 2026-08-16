@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import axios from "axios";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import i18n from "../i18n";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -177,8 +177,8 @@ const Inscription = () => {
       )}
       <Container className="visualiser-page">
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{t("register.page_title")}</Breadcrumb.Item>
         </Breadcrumb>

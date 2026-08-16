@@ -18,6 +18,10 @@ exports.send_email = async (req, res) => {
     return res.status(400).json({ success: false, message: "Tous les champs obligatoires doivent être remplis" });
   }
 
+  if (name.length > 100 || email.length > 254 || (objet && objet.length > 200) || message.length > 2000) {
+    return res.status(400).json({ success: false, message: "Un ou plusieurs champs dépassent la longueur maximale autorisée" });
+  }
+
   // Expression régulière simple pour valider l'email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {

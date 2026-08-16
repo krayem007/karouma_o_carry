@@ -2,7 +2,7 @@ import icon from "../images/icon.png";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import {
@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 import { getErrorMessage } from "../js/getErrorMessage";
 
 const instance = axios.create({
-  baseURL: '',
+  baseURL: process.env.REACT_APP_API_URL || '',
   withCredentials: true,
 });
 
@@ -41,7 +41,7 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    instance.get(`/verify_reset_token/${token}`)
+    instance.post('/verify_reset_token', { token })
       .then((response) => {
         setIsValidToken(true);
       })
@@ -144,8 +144,8 @@ const ResetPassword = () => {
       )}
       <Container className="visualiser-page">
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
           <Breadcrumb.Item active>
             {t("reset.page_title")}

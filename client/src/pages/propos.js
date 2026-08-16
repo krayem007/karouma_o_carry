@@ -1,7 +1,7 @@
 import icon from "../images/icon.png";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Container, Breadcrumb } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
@@ -33,8 +33,8 @@ const Propos = () => {
       </Helmet>
       <Container className="visualiser-page">
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{t("propos.titre_meta")}</Breadcrumb.Item>
         </Breadcrumb>

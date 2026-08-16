@@ -4,7 +4,6 @@ const db = require('../db');
 
 
 exports.save = async (req, res) => {
-    console.log(req.body);
     let { password,
             email, 
             code_acte, 
@@ -60,8 +59,13 @@ exports.save = async (req, res) => {
             return res.json({ error: "register.err_email_existant" });
         }
         else{
-            let hashedPassword = await bcrypt.hash(password, 10);
-            console.log(hashedPassword)
+            let hashedPassword;
+            try {
+                hashedPassword = await bcrypt.hash(password, 10);
+            } catch (hashErr) {
+                console.error("Password hashing failed:", hashErr);
+                return res.json({ error: "register.err_inscription" });
+            }
             db.query('INSERT INTO accounts SET ?', {
                 code_acte: code_acte,
                 identifiant_fiscal: identifiant_fiscal,

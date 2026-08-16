@@ -165,7 +165,7 @@ let instance = null;
 
 module.exports = function getPool() {
   if (!instance) {
-    instance = new PuppeteerPool(Number(process.env.PDF_MAX_CONCURRENT) || 10);
+    instance = new PuppeteerPool(Number(process.env.PDF_MAX_CONCURRENT) || 2);
   }
   return instance;
 };

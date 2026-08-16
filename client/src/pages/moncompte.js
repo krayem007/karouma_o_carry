@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import {
@@ -23,7 +23,7 @@ import {
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: '',
+  baseURL: process.env.REACT_APP_API_URL || '',
   withCredentials: true,
 });
 
@@ -52,7 +52,6 @@ const Moncompte = ({ setIsLoggedIn }) => {
     details_regime: localStorage.getItem("details_regime") || "",
     secteur: localStorage.getItem("secteur") || ""
   };
-  console.log("data : ", data);
   const [validated, set_Validated] = useState(false);
   const [validated1, set_Validated1] = useState(false);
   const [showPasswords, setShowPasswords] = useState({ an: false, nv: false, confirm: false });
@@ -79,17 +78,12 @@ const Moncompte = ({ setIsLoggedIn }) => {
     secteur: data.secteur,
   });
 
-  console.log("form_data: ", form_Data)
-
   useEffect(() => {
 
     instance.get("/welcome").then((response) => {
-        /*gg test*/console.log(response.data);
       if (response.data.authorized === "true") {
-        console.log("authorized client");
       }
       else {
-        console.log("not authorized client");
         navigate("/connexion");
         //neet to logging first
       }
@@ -192,10 +186,8 @@ const Moncompte = ({ setIsLoggedIn }) => {
         secteur: form_Data.secteur,
         email: localStorage.getItem("email")
       };
-      console.log("changed data : ", changed_data)
       instance.post("/my_account_data", changed_data).then((response) => {
         if (response.data.update === true) {
-          console.log("before setting the local storage : ", changed_data);
           localStorage.setItem("code_acte", changed_data.code_acte);
           localStorage.setItem("identifiant_fiscal", changed_data.identifiant_fiscal);
           localStorage.setItem("identifiant_tva", changed_data.identifiant_tva);
@@ -339,8 +331,8 @@ const Moncompte = ({ setIsLoggedIn }) => {
       )}
       <Container className="visualiser-page">
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{t("moncompte.page_title")}</Breadcrumb.Item>
         </Breadcrumb>

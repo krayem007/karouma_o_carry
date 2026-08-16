@@ -20,7 +20,7 @@ import ResetPassword from "./pages/resetpassword";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: '', // Base URL of the Express backend
+  baseURL: process.env.REACT_APP_API_URL || '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
@@ -44,14 +44,11 @@ function App() {
   useEffect(() => {
 
     instance.get("/welcome").then((response) => {
-        /*gg test*/console.log(response.data);
       if (response.data.authorized === "true") {
-        console.log("authorized client");
         setIsLoggedIn(true);
         //navigate("/welcome");
       }
       else {
-        console.log("not authorized client");
         setIsLoggedIn(false);
         //neet to logging first
       }
@@ -60,7 +57,7 @@ function App() {
 
   return (
     <div>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <Routes>
           {/* Passing isLoggedIn and setIsLoggedIn as props to Home */}

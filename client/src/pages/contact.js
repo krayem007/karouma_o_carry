@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { getErrorMessage } from "../js/getErrorMessage";
 import {
   Breadcrumb,
   Container,
@@ -12,9 +11,14 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import icon from "../images/icon.png";
 import { useTranslation } from "react-i18next";
+import { getErrorMessage } from "../js/getErrorMessage";
+
+const instance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || '',
+});
 
 const CANONICAL = Config.SITE_DOMAIN + "/contact";
 
@@ -46,7 +50,7 @@ const Contact = () => {
     try {
       setDisabled(true);
 
-      const response = await axios.post('/contact', {
+      const response = await instance.post('/contact', {
         name,
         email,
         objet,
@@ -97,8 +101,8 @@ const Contact = () => {
 
       <Container className="visualiser-page">
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{t("contact.titre_meta")}</Breadcrumb.Item>
         </Breadcrumb>

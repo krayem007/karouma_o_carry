@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import icon from "../images/icon.png";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Breadcrumb, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 
 const instance = axios.create({
-  baseURL: '', // Base URL of the Express backend
+  baseURL: process.env.REACT_APP_API_URL || '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
@@ -21,17 +21,13 @@ const Welcome = () => {
 
 
   const user = localStorage.getItem("user");
-  console.log(user);
   const navigate = useNavigate(); // Use useNavigate hook outside of chngFn
   useEffect(() => {
 
     instance.get("/welcome").then((response) => {
-        /*gg test*/console.log(response.data);
       if (response.data.authorized === "true") {
-        console.log("authorized client");
       }
       else {
-        console.log("not authorized client");
         navigate("/connexion");
         //neet to logging first
       }
@@ -60,8 +56,8 @@ const Welcome = () => {
       </Helmet>
       <Container className="visualiser-page">
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{t("welcome.page_title")}</Breadcrumb.Item>
         </Breadcrumb>

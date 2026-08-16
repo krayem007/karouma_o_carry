@@ -10,7 +10,7 @@ import { withTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 const instance = axios.create({
-  baseURL: '', // Base URL of the Express backend
+  baseURL: process.env.REACT_APP_API_URL || '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
@@ -51,8 +51,8 @@ class Header extends React.Component {
                       to="/"
                       onClick={() => {
                         setIsLoggedIn(false);
-                        instance.post("/logout").then((response) => 
-                          {console.log(response.data);});
+                        localStorage.clear();
+                        instance.post("/logout").catch(() => {});
                         this.closeNavbar();
                       }}
                       className="navbartext"

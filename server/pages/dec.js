@@ -265,8 +265,6 @@ exports.post_dec = async (req, res) => {
     return res.status(401).json({ message: "not authorized", saved: false });
   }
 
-  console.log("gg Request body:", req.body);
-
   try {
     // 1. Get client ID
     console.log("gg the try");
@@ -674,7 +672,7 @@ exports.post_dec = async (req, res) => {
     console.error("Database operation failed:", err);
     return res
       .status(500)
-      .json({ message: "Operation failed", error: err.message, saved: false });
+      .json({ message: "Operation failed", saved: false });
   }
 };
 
@@ -739,7 +737,7 @@ exports.calculate_net = async (req, res) => {
     return res.status(200).json({ net: net });
   } catch (error) {
     console.error("Calculate net error:", error);
-    return res.status(500).json({ message: "Erreur de calcul", error: error.message });
+    return res.status(500).json({ message: "Erreur de calcul" });
   }
 };
 

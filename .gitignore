@@ -6,8 +6,12 @@ server/node_modules/
 client/build/
 
 # Environment files (contain credentials)
-# server/.env
-# !server/.env.example
+server/.env
+!server/.env.example
+client/.env
+
+# Database export (contains real accounts data)
+server/database_export.sql
 
 # Temporary files
 server/print_js/_temp_*.html

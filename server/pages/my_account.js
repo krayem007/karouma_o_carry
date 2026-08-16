@@ -2,16 +2,12 @@ const bcrypt = require('bcrypt');
 const db = require('../db');
 
 exports.change_my_account_data = (req, res) => {
-  console.log(req.body);
-  if (req.session.authorized != true) {
+  if (req.session.authorized != true || !req.session.user) {
     console.error('not authoraised');
     return res.status(500).json({ error: 'not authoraised' });
   }
 
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ error: 'Email requis', update: false });
-  }
+  const client_id = req.session.user;
 
   const updatableFields = [
     'code_acte', 'identifiant_fiscal', 'identifiant_tva',
@@ -42,8 +38,8 @@ exports.change_my_account_data = (req, res) => {
     return res.status(400).json({ error: 'Aucun champ à mettre à jour', update: false });
   }
 
-  values.push(email);
-  const sql = `UPDATE accounts SET ${setClauses.join(', ')} WHERE email = ?`;
+  values.push(client_id);
+  const sql = `UPDATE accounts SET ${setClauses.join(', ')} WHERE id = ?`;
 
   db.query(sql, values, (err, result) => {
     if (err) {
@@ -63,16 +59,16 @@ exports.change_my_account_data = (req, res) => {
 
 
 exports.update_language = (req, res) => {
-  if (req.session.authorized !== true) {
+  if (req.session.authorized !== true || !req.session.user) {
     return res.status(401).json({ error: 'not authorized', updated: false });
   }
 
-  const { email, language } = req.body;
-  if (!email || (language !== 'ar' && language !== 'fr')) {
+  const { language } = req.body;
+  if (language !== 'ar' && language !== 'fr') {
     return res.status(400).json({ error: 'Invalid language', updated: false });
   }
 
-  db.query('UPDATE accounts SET language = ? WHERE email = ?', [language, email], (err, result) => {
+  db.query('UPDATE accounts SET language = ? WHERE id = ?', [language, req.session.user], (err, result) => {
     if (err) {
       console.error('Error updating language:', err);
       return res.status(500).json({ error: 'Database error', updated: false });
@@ -87,16 +83,15 @@ exports.update_language = (req, res) => {
 
 
 exports.change_password = (req, res) => {
-  if (req.session.authorized != true) {
+  if (req.session.authorized != true || !req.session.user) {
     console.error('not authoraised');
     return res.status(500).json({ error: 'not authoraised', pssdate: false });
   }
-  console.log(req.body);
 
-  const { email, oldPassword, newPassword } = req.body;
+  const { oldPassword, newPassword } = req.body;
 
-  if (!email || !oldPassword || !newPassword) {
-    return res.status(400).json({ error: 'Email, oldPassword and newPassword are required.', pssdate: false });
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ error: 'oldPassword and newPassword are required.', pssdate: false });
   }
 
   if (newPassword.length < 6 || newPassword.length > 128) {
@@ -104,7 +99,7 @@ exports.change_password = (req, res) => {
   }
 
   // Step 1: Get the user's current hashed password
-  db.query('SELECT password FROM accounts WHERE email = ?', [email], async (err, results) => {
+  db.query('SELECT password FROM accounts WHERE id = ?', [req.session.user], async (err, results) => {
     if (err) {
       console.error('Database error:', err);
       return res.status(500).json({ error: 'Database error', pssdate: false });
@@ -127,7 +122,7 @@ exports.change_password = (req, res) => {
     const hashedNewPassword = await bcrypt.hash(newPassword, 12);
 
     // Step 4: Update the password
-    db.query('UPDATE accounts SET password = ? WHERE email = ?', [hashedNewPassword, email], (updateErr, updateResult) => {
+    db.query('UPDATE accounts SET password = ? WHERE id = ?', [hashedNewPassword, req.session.user], (updateErr, updateResult) => {
       if (updateErr) {
         console.error('Database error:', updateErr);
         return res.status(500).json({ error: 'Failed to update password', pssdate: false });
@@ -139,17 +134,15 @@ exports.change_password = (req, res) => {
 };
 
 exports.delete_account = async (req, res) => {
-  if (req.session.authorized != true) {
+  if (req.session.authorized != true || !req.session.user) {
     console.error('not authoraised');
     return res.status(500).json({ message: 'not authoraised', del: false });
   }
-  const { email, password } = req.body;
-  if (password.length === 0) {
+  const { password } = req.body;
+  if (!password || password.length === 0) {
     return res.status(200).json({ message: 'Veuillez saisir votre mot de passe actuel', del: false });
   }
-  console.log("data : ", req.body);
-  console.log("emai | password :", email, password);
-  db.query('SELECT password FROM accounts WHERE email = ?', [email], async (err, results) => {
+  db.query('SELECT password FROM accounts WHERE id = ?', [req.session.user], async (err, results) => {
     if (err) {
       console.error('Database error:');
       return res.status(500).json({ message: 'Database error', del: false });
@@ -168,8 +161,8 @@ exports.delete_account = async (req, res) => {
       return res.status(200).json({ message: 'Le mot de passe saisi est incorrect.', del: false });
     }
     else {
-      const sql = 'DELETE FROM accounts WHERE email = ?';
-      db.query(sql, [email], (err, result) => {
+      const sql = 'DELETE FROM accounts WHERE id = ?';
+      db.query(sql, [req.session.user], (err, result) => {
         if (err) {
           console.error('Error deleting user:', err);
           return res.status(500).json({ message: 'Internal server error', del: false });

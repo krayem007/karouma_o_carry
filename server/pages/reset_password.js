@@ -18,7 +18,7 @@ exports.request_reset = async (req, res) => {
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ error: "reinit.err_email_inconnu" });
+      return res.status(200).json({ message: "Si cette adresse e-mail existe, un lien de réinitialisation a été envoyé." });
     }
 
     const user = results[0];
@@ -48,7 +48,7 @@ exports.request_reset = async (req, res) => {
         }
       });
 
-      const resetLink = `http://localhost:3000/reset-password/${token}`;
+      const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${token}`;
 
       const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -138,7 +138,7 @@ exports.apply_reset = async (req, res) => {
 };
 
 exports.verify_token = async (req, res) => {
-  const { token } = req.params;
+  const { token } = req.body;
 
   db.query('SELECT * FROM accounts WHERE reset_token = ?', [token], (err, results) => {
     if (err) {

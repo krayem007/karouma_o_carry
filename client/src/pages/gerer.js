@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import Config from "./config.json";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -21,7 +21,7 @@ import axios from "axios";
 import { getErrorMessage } from "../js/getErrorMessage";
 
 const instance = axios.create({
-  baseURL: "", // Base URL of the Express backend
+  baseURL: process.env.REACT_APP_API_URL || '', // Base URL of the Express backend
   withCredentials: true, // Allow sending cookies with requests
 });
 
@@ -79,9 +79,6 @@ const Gerer = () => {
 
   const loadDeclaration = (m, a) => {
     setIsSaisieClicked(true);
-    console.log("deleted factures id before reset : ", deleteFactureIds);
-    console.log("deleted Paie id before reset : ", deletePaieIds);
-    console.log("deleted etenue id before reset : ", deleteRetenueIds);
     setFactures([]);
     setPaie([]);
     setRetenue([]);
@@ -91,7 +88,6 @@ const Gerer = () => {
     setReportTVA("");
     const date = { annee: a, mois: m };
     instance.post("/get_dec", date).then((response) => {
-      console.log(" decla found : ", response.data);
       if (response.data.dec === true) {
         setReportTVA(response.data.send_data.reporttva ?? "");
         //handleAddFacture(true, response.data.send_data.factures);
@@ -208,11 +204,8 @@ const Gerer = () => {
 
   useEffect(() => {
     instance.get("/welcome").then((response) => {
-      /*gg test*/ console.log(response.data);
       if (response.data.authorized === "true") {
-        console.log("authorized client");
       } else {
-        console.log("not authorized client");
         navigate("/connexion");
         //neet to logging first
       }
@@ -810,17 +803,17 @@ const Gerer = () => {
       )}
       <Container className="visualiser-page">
         <Breadcrumb>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/">{t("common.accueil")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/" }}>
+            {t("common.accueil")}
           </Breadcrumb.Item>
-          <Breadcrumb.Item className="no-decoration">
-            <Link to="/welcome">{t("welcome.page_title")}</Link>
+          <Breadcrumb.Item className="no-decoration" linkAs={Link} linkProps={{ to: "/welcome" }}>
+            {t("welcome.page_title")}
           </Breadcrumb.Item>
 
           <Breadcrumb.Item active>{t("gerer.page_title")}</Breadcrumb.Item>
         </Breadcrumb>
         <h1 className="form-title"> {t("gerer.page_title")} </h1>
-        <form noValidate onSubmit={submitFn} validated={validated}>
+        <form noValidate onSubmit={submitFn}>
           <Row className="row-gt align-items-center justify-content-start g-2">
             <Col xs={3} sm={3} md="auto">
               <Form.Group className="form-labelannee">
@@ -1486,7 +1479,6 @@ const Gerer = () => {
                                     type="number"
                                     min="0"
                                     defaultValue={-1}
-                                    isInvalid={true}
                                     placeholder="id"
                                     value={facture.id}
                                     onChange={
@@ -1733,7 +1725,6 @@ const Gerer = () => {
                                     className="textadj"
                                     type="number"
                                     min="0"
-                                    isInvalid={true}
                                     defaultValue={-1}
                                     placeholder="id"
                                     value={paie.id}
@@ -2037,7 +2028,6 @@ const Gerer = () => {
                                     className="textadj"
                                     type="number"
                                     min="0"
-                                    isInvalid={true}
                                     defaultValue={-1}
                                     placeholder="id"
                                     value={retenue.id}

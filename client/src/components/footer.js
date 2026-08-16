@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { withTranslation } from "react-i18next";
 
 class Footer extends React.Component {
