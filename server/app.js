@@ -2,6 +2,7 @@
 const express = require ("express");
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 const session = require('express-session');
 const cors = require("cors");
 const helmet = require('helmet');
@@ -10,6 +11,11 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 
 dotenv.config({path: '.env'});
+
+console.log('[ENV] cwd:', process.cwd());
+console.log('[ENV] .env present:', fs.existsSync('.env'));
+const expectedEnv = ['NODE_ENV','FRONTEND_URL','API_ORIGIN','SESSION_SECRET','db','db_host','db_user','db_password','DB_PORT','DB_SSL_CA','EMAIL_USER','EMAIL_PASS','ADMIN_EMAIL','PDF_MAX_CONCURRENT'];
+console.log('[ENV] visibles:', expectedEnv.filter(k => process.env[k]).join(', ') || 'AUCUNE');
 
 if (!process.env.SESSION_SECRET) {
     console.error("SESSION_SECRET n'est pas défini dans .env");
