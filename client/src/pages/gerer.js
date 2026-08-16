@@ -170,7 +170,7 @@ const Gerer = () => {
       }
       showAlert("error", msg);
     });
-  }, []);
+  }, [navigate, t]);
 
   const handleSaisie = (e) => {
     e.preventDefault();
