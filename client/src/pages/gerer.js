@@ -1,5 +1,5 @@
 import icon from "../images/icon.png";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import Config from "./config.json";
@@ -45,13 +45,13 @@ const Gerer = () => {
   const [isSaisieClicked, setIsSaisieClicked] = useState(false);
   const accordionKeys = ["0", "1", "2"]; // all your accordion items
   // Open only accordions that have data initially
-  const getOpenedAccordions = () => {
+  const getOpenedAccordions = useCallback(() => {
     const keys = [];
     if (factures.length > 0) keys.push("0");
     if (paie.length > 0) keys.push("1");
     if (retenue.length > 0) keys.push("2");
     return keys;
-  };
+  }, [factures.length, paie.length, retenue.length]);
   const [activeAccordion, setActiveAccordion] = useState(getOpenedAccordions);
   const [validated, set_Validated] = useState(false);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
@@ -77,7 +77,7 @@ const Gerer = () => {
     );
   };
 
-  const loadDeclaration = (m, a) => {
+  const loadDeclaration = useCallback((m, a) => {
     setIsSaisieClicked(true);
     setFactures([]);
     setPaie([]);
@@ -170,7 +170,7 @@ const Gerer = () => {
       }
       showAlert("error", msg);
     });
-  };
+  }, []);
 
   const handleSaisie = (e) => {
     e.preventDefault();
@@ -221,7 +221,7 @@ const Gerer = () => {
       setAnnee(anneeParam);
       loadDeclaration(moisParam, anneeParam);
     }
-  }, []);
+  }, [location.search, loadDeclaration]);
 
   const handleChangerMoisAnneeClick = () => {
     setIsSaisieClicked(false); // Reset isSaisieClicked to false
@@ -770,7 +770,7 @@ const Gerer = () => {
       const merged = new Set([...prev, ...openedByData]);
       return Array.from(merged);
     });
-  }, [factures.length, paie.length, retenue.length]);
+  }, [factures.length, paie.length, retenue.length, getOpenedAccordions]);
 
   return (
     <>
