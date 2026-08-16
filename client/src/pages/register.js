@@ -5,6 +5,10 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import Config from "./config.json";
 import axios from "axios";
+
+const instance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || '',
+});
 import { Helmet } from "react-helmet-async";
 import i18n from "../i18n";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
@@ -97,7 +101,7 @@ const Inscription = () => {
         secteur: form_Data.secteur,
         language: localStorage.getItem("language") || "fr"
       };
-      axios.post("/register", data).then((response) => {
+      instance.post("/register", data).then((response) => {
         const errKey = response.data?.error;
         if (typeof errKey === "string" && i18n.exists(errKey)) {
           setAlert({ message: t(errKey), type: "error" });
