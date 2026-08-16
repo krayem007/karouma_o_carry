@@ -1,5 +1,9 @@
 const puppeteer = require("puppeteer-core");
 const chromium = require("@sparticuz/chromium");
+const fs = require("fs");
+
+const SYSTEM_CHROME = "/usr/bin/google-chrome";
+const useSystemChrome = fs.existsSync(SYSTEM_CHROME);
 
 class PuppeteerPool {
   constructor(maxBrowsers) {
@@ -36,9 +40,13 @@ class PuppeteerPool {
 
   async _launchBrowser(index) {
     const browser = await puppeteer.launch({
-      executablePath: await chromium.executablePath(),
-      headless: "shell",
-      args: [...chromium.args, "--lang=ar"],
+      executablePath: useSystemChrome
+        ? SYSTEM_CHROME
+        : await chromium.executablePath(),
+      headless: useSystemChrome ? true : "shell",
+      args: useSystemChrome
+        ? ["--no-sandbox", "--disable-setuid-sandbox", "--lang=ar"]
+        : [...chromium.args, "--lang=ar"],
     });
     const entry = { browser, index, alive: true };
     this.browsers.push(entry);
