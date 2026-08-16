@@ -131,7 +131,7 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 5002;
-const server = app.listen(port, () => {
+const server = app.listen(port, '0.0.0.0', () => {
   console.log(`server started on port ${port}`);
   const pool = require('./puppeteer-pool')();
   pool.initialize().catch(err => console.error("[POOL] Init error:", err));
