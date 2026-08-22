@@ -75,11 +75,12 @@ exports.request_reset = async (req, res) => {
       };
 
       try {
+        await transporter.verify();
         await transporter.sendMail(mailOptions);
         return res.status(200).json({ message: "E-mail de réinitialisation envoyé avec succès." });
       } catch (emailErr) {
-        console.error("Error sending email:", emailErr);
-        return res.status(500).json({ error: "reinit.err_email_envoi" });
+        console.error("Error sending email:", emailErr.code || emailErr.message || emailErr);
+        return res.status(500).json({ error: "reinit.err_email_envoi", code: emailErr.code });
       }
     };
 
