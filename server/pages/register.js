@@ -94,5 +94,4 @@ exports.save = async (req, res) => {
                 })
         }
     })
-    return res;
 };

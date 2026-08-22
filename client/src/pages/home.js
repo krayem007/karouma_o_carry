@@ -5,6 +5,12 @@ import Config from "./config.json";
 import { Helmet } from "react-helmet-async";
 import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || '',
+});
+
 const CANONICAL = Config.SITE_DOMAIN + "/";
 
 const Home = ({ isLoggedIn }) => {
@@ -57,25 +63,14 @@ const Home = ({ isLoggedIn }) => {
 
     // Calcul du salaire net via l'API
     try {
-      const response = await fetch('/calculate_net', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          salaireBrut: brut,
-          chef: chefFamille,
-          enfants: enfants
-        }),
+      const response = await instance.post('/calculate_net', {
+        salaireBrut: brut,
+        chef: chefFamille,
+        enfants: enfants
       });
 
-      if (!response.ok) {
-        throw new Error(t("home.err_serveur"));
-      }
-
-      const data = await response.json();
-      if (data && data.net !== undefined) {
-        setSalaireNet(Number(data.net).toFixed(3));
+      if (response.data && response.data.net !== undefined) {
+        setSalaireNet(Number(response.data.net).toFixed(3));
       } else {
         setErrorMsg(t("home.err_calcul"));
       }

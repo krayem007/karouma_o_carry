@@ -40,6 +40,12 @@ exports.request_reset = async (req, res) => {
     }
 
     const sendEmail = async () => {
+      const frontendUrl = process.env.FRONTEND_URL;
+      if (!frontendUrl) {
+        console.error('[RESET] FRONTEND_URL is not set — cannot generate reset link');
+        return res.status(500).json({ error: "errors.server_error" });
+      }
+
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -48,7 +54,7 @@ exports.request_reset = async (req, res) => {
         }
       });
 
-      const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${token}`;
+      const resetLink = `${frontendUrl}/reset-password/${token}`;
 
       const mailOptions = {
         from: process.env.EMAIL_USER,
