@@ -64,10 +64,11 @@ exports.send_email = async (req, res) => {
   };
 
   try {
+    await transporter.verify();
     await transporter.sendMail(mailOptions);
     return res.status(200).json({ success: true, message: "Email sent" });
   } catch (error) {
-    console.error("Error sending email:", error);
-    return res.status(500).json({ success: false, message: "Error sending email" });
+    console.error("Error sending email:", error.code || error.message || error);
+    return res.status(500).json({ success: false, message: "Error sending email", code: error.code });
   }
 };
