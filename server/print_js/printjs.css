@@ -116,7 +116,7 @@ td {
 .table1style {
   width: 530px;
   height: 76px;
-  border: 1.5px;
+  border: 1.5px solid #000;
 }
 
 .table1tr1 {
@@ -237,19 +237,6 @@ td {
   font-weight: bold;
 }
 
-.paragraphe25 p {
-  font-weight: bold;
-}
-
-.paragraphe25 {
-  display: flex;
-  text-align: right;
-  padding-top: 50px;
-  padding-right: 10px;
-  clear: both;
-  /* Ensures the div is not floating beside the table */
-}
-
 .pagination1 {
   position: relative;
   text-align: left;
@@ -349,13 +336,13 @@ td {
 .table3style {
   width: 720px;
   height: 66px;
-  border: 1.5px;
+  border: 1.5px solid #000;
 }
 
 .table5style {
   width: 720px;
   height: 66px;
-  border: 1.5px;
+  border: 1.5px solid #000;
 }
 
 .table3td1 {
@@ -467,7 +454,7 @@ td {
 
 .table4style {
   width: 720px;
-  border: 1.5px;
+  border: 1.5px solid #000;
 }
 
 .table4style .table4td11 {
@@ -533,12 +520,6 @@ td {
 }
 
 .table42td111 {
-  min-width: 200px;
-  text-align: center;
-  height: 25px;
-}
-
-.table42td111 {
   width: 100px;
   text-align: center;
   height: 25px;
@@ -570,7 +551,7 @@ td {
 
 .table4td99 {
   width: 180px;
-  text-align: centre;
+  text-align: center;
   height: 25px;
 }
 
@@ -1113,11 +1094,6 @@ td {
   /* Enables flexbox for horizontal alignment */
   gap: 20px;
   /* Adds spacing between items */
-}
-
-.paragraphe10 {
-  display: flex;
-  padding-top: 5px;
 }
 
 .paragraphe10 {

@@ -603,6 +603,7 @@ exports.print_doc = async (req, res) => {
       await page.setViewport({ width: 1366, height: 768 });
       await page.emulateMediaType('print');
       await page.goto(fileUrl, { waitUntil: "networkidle0", timeout: 55000 });
+      await page.evaluate(() => document.fonts.ready);
 
       const pdfStream = await page.createPDFStream({
         printBackground: true,
