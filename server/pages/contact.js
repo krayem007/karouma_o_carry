@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const { getTransporter } = require('../utils/email');
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -28,19 +28,8 @@ exports.send_email = async (req, res) => {
     return res.status(400).json({ success: false, message: "Format d'email invalide" });
   }
 
-  // Configuration de Nodemailer avec les variables d'environnement
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    },
-    connectionTimeout: 10000,
-    socketTimeout: 10000,
-    family: 4,
-  });
+  // Configuration de Nodemailer avec résolution IPv4 explicite
+  const transporter = await getTransporter();
 
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);

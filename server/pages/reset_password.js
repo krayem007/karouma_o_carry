@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { getTransporter } = require('../utils/email');
 const db = require('../db');
 
 exports.request_reset = async (req, res) => {
@@ -46,18 +46,7 @@ exports.request_reset = async (req, res) => {
         return res.status(500).json({ error: "errors.server_error" });
       }
 
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS
-        },
-        connectionTimeout: 10000,
-        socketTimeout: 10000,
-        family: 4,
-      });
+      const transporter = await getTransporter();
 
       const resetLink = `${frontendUrl}/reset-password/${token}`;
 
