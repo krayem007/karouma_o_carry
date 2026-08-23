@@ -1,9 +1,25 @@
 const puppeteer = require("puppeteer-core");
-const chromium = require("@sparticuz/chromium");
 const fs = require("fs");
 
-const SYSTEM_CHROME = "/usr/bin/google-chrome";
-const useSystemChrome = fs.existsSync(SYSTEM_CHROME);
+const CHROME_ARGS = [
+  "--no-sandbox",
+  "--disable-setuid-sandbox",
+  "--lang=ar",
+  "--disable-features=IsolateOrigins,site-per-process",
+];
+
+const CHROME_PATHS = [
+  "/usr/bin/google-chrome",
+  "/usr/bin/chromium-browser",
+  "/usr/bin/chromium",
+];
+
+function findChromePath() {
+  for (const p of CHROME_PATHS) {
+    if (fs.existsSync(p)) return p;
+  }
+  return null;
+}
 
 class PuppeteerPool {
   constructor(maxBrowsers) {
@@ -39,14 +55,26 @@ class PuppeteerPool {
   }
 
   async _launchBrowser(index) {
+    const systemChrome = findChromePath();
+    let executablePath;
+    let useBundledChromium = false;
+
+    if (systemChrome) {
+      executablePath = systemChrome;
+      console.log(`[POOL] Using system Chrome: ${systemChrome}`);
+    } else {
+      const chromium = require("@sparticuz/chromium");
+      executablePath = await chromium.executablePath();
+      useBundledChromium = true;
+      console.log(`[POOL] Using @sparticuz/chromium: ${executablePath}`);
+    }
+
     const browser = await puppeteer.launch({
-      executablePath: useSystemChrome
-        ? SYSTEM_CHROME
-        : await chromium.executablePath(),
-      headless: useSystemChrome ? true : "shell",
-      args: useSystemChrome
-        ? ["--no-sandbox", "--disable-setuid-sandbox", "--lang=ar"]
-        : [...chromium.args, "--lang=ar"],
+      executablePath,
+      headless: true,
+      args: useBundledChromium
+        ? [...CHROME_ARGS, "--disable-gpu", "--disable-dev-shm-usage"]
+        : CHROME_ARGS,
     });
     const entry = { browser, index, alive: true };
     this.browsers.push(entry);
