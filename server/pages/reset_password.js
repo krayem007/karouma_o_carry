@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { getTransporter } = require('../utils/email');
+const { sendEmail } = require('../utils/email');
 const db = require('../db');
 
 exports.request_reset = async (req, res) => {
@@ -39,37 +39,31 @@ exports.request_reset = async (req, res) => {
       expiry = Date.now() + 3600000; // 1 heure à partir de maintenant
     }
 
-    const sendEmail = async () => {
+    const doSendEmail = async () => {
       const frontendUrl = process.env.FRONTEND_URL;
       if (!frontendUrl) {
         console.error('[RESET] FRONTEND_URL is not set — cannot generate reset link');
         return res.status(500).json({ error: "errors.server_error" });
       }
 
-      const transporter = await getTransporter();
-
       const resetLink = `${frontendUrl}/reset-password/${token}`;
 
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: `Réinitialisation de votre mot de passe`,
-        text: `Vous avez demandé à réinitialiser votre mot de passe.\n\nCliquez sur ce lien pour choisir un nouveau mot de passe : ${resetLink}\n\nCe lien expirera dans 1 heure.`,
-        html: `<h3>Réinitialisation de mot de passe</h3>
-               <p>Vous avez demandé à réinitialiser votre mot de passe.</p>
-               <p><a href="${resetLink}">Cliquez ici pour choisir un nouveau mot de passe</a></p>
-               <p>Ce lien expirera dans 1 heure.</p>
-               <br>
-               <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.</p>`
-      };
-
       try {
-        await transporter.verify();
-        await transporter.sendMail(mailOptions);
+        await sendEmail({
+          to: email,
+          subject: `Réinitialisation de votre mot de passe`,
+          text: `Vous avez demandé à réinitialiser votre mot de passe.\n\nCliquez sur ce lien pour choisir un nouveau mot de passe : ${resetLink}\n\nCe lien expirera dans 1 heure.`,
+          html: `<h3>Réinitialisation de mot de passe</h3>
+                 <p>Vous avez demandé à réinitialiser votre mot de passe.</p>
+                 <p><a href="${resetLink}">Cliquez ici pour choisir un nouveau mot de passe</a></p>
+                 <p>Ce lien expirera dans 1 heure.</p>
+                 <br>
+                 <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.</p>`
+        });
         return res.status(200).json({ message: "E-mail de réinitialisation envoyé avec succès." });
       } catch (emailErr) {
         console.error("Error sending email:", emailErr.code || emailErr.message || emailErr);
-        return res.status(500).json({ error: "reinit.err_email_envoi", code: emailErr.code });
+        return res.status(500).json({ error: "reinit.err_email_envoi" });
       }
     };
 
@@ -80,11 +74,10 @@ exports.request_reset = async (req, res) => {
           console.error('Error saving reset token:', updateErr);
           return res.status(500).json({ error: "errors.server_error" });
         }
-        await sendEmail();
+        await doSendEmail();
       });
     } else {
-      // Envoyer l'email directement avec le token existant
-      await sendEmail();
+      await doSendEmail();
     }
   });
 };
