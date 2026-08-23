@@ -20,7 +20,7 @@ body {
 .content {
   width: 100%;
   max-width: 210mm;
-  min-height: 297mm;
+  height: 297mm;
   margin: auto;
   padding: 20px;
   box-sizing: border-box;
@@ -30,7 +30,7 @@ body {
   page-break-inside: avoid;
   direction: rtl;
   text-align: right;
-  /* Ensure text aligns properly */
+  overflow: hidden;
 }
 
 .content:last-child {
@@ -59,7 +59,6 @@ img {
 }
 
 #table3 {
-  margin-left: auto;
 }
 
 #cellule3 {
@@ -179,7 +178,8 @@ td {
 }
 
 .paragraphe3 {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   padding-top: 5px;
   padding-right: 10px;
   gap: 40px;
@@ -448,7 +448,7 @@ td {
   padding-top: 2px;
   padding-left: 25px;
   font-size: 13px;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
 }
 
 .table41 {
@@ -466,7 +466,7 @@ td {
   padding-top: 10px;
   padding-left: 25px;
   font-size: 13px;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
 }
 
 .table4style {
@@ -609,7 +609,7 @@ td {
   text-align: right;
   padding-left: 7px;
   padding-right: 7px;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
 }
 
 .table42tr2 .table42td15 {
@@ -631,22 +631,22 @@ td {
   text-align: left;
   padding-left: 7px;
   padding-right: 7px;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
 }
 
 .table4tr6 .table4td2 {
   text-align: right;
   padding-left: 7px;
   padding-right: 7px;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
 }
 
 .table4tr2 .table4td5 {
   text-align: right;
   padding-left: 7px;
   padding-right: 7px;
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .table4tr2 .table4td22 {
@@ -691,31 +691,31 @@ td {
 }
 
 .table4td3 p {
-  padding-top: 5px;
+  padding-top: 3px;
   padding-right: 15px;
 }
 
 .table4td4 p {
-  padding-top: 5px;
+  padding-top: 3px;
   padding-right: 15px;
-  padding-bottom: 5px;
+  padding-bottom: 3px;
 }
 
 .table4td24 p {
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .table4td20 p {
-  padding-top: 5px;
+  padding-top: 3px;
   padding-right: 15px;
-  padding-bottom: 5px;
+  padding-bottom: 3px;
 }
 
 .table4td16 p {
-  padding-top: 5px;
+  padding-top: 3px;
   padding-right: 15px;
-  padding-bottom: 5px;
+  padding-bottom: 3px;
 }
 
 .table4style ul {
@@ -739,14 +739,14 @@ td {
   text-align: right;
   padding-left: 7px;
   padding-right: 7px;
-  padding-bottom: 7px;
+  padding-bottom: 4px;
 }
 
 .table4td6 {
   text-align: right;
   padding-left: 7px;
   padding-right: 7px;
-  padding-bottom: 7px;
+  padding-bottom: 4px;
 }
 
 .table4td15 {
@@ -793,13 +793,13 @@ td {
 
 .table4tr3 td {
   border-top: none;
-  padding-bottom: 30px;
+  padding-bottom: 18px;
 }
 
 .table4tr4 td {
   padding-top: 7px;
   border-top: none;
-  padding-bottom: 30px;
+  padding-bottom: 18px;
 }
 
 .table4tr18 td {
@@ -810,7 +810,7 @@ td {
 .table4tr5 td {
   padding-top: 7px;
   border-top: none;
-  padding-bottom: 15px;
+  padding-bottom: 8px;
 }
 
 .table4tr9 td {
@@ -866,19 +866,19 @@ td {
 
 .table4tr6 td {
   border-top: none;
-  padding-bottom: 15px;
+  padding-bottom: 8px;
 }
 
 .table4tr8 td {
   text-align: center;
   border-top: none;
-  padding-bottom: 15px;
-  padding-top: 15px;
+  padding-bottom: 8px;
+  padding-top: 8px;
 }
 
 .table4tr10 td {
   text-align: center;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
 }
 
 .table4td9 {
