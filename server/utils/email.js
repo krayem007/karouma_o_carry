@@ -1,28 +1,57 @@
-const nodemailer = require('nodemailer');
-const dns = require('dns').promises;
+const { google } = require('googleapis');
 
-let cachedTransporter = null;
-let cachedHost = null;
+let oauth2Client = null;
 
-async function getTransporter() {
-  const ipv4 = (await dns.resolve4('smtp.gmail.com'))[0];
-  if (cachedTransporter && cachedHost === ipv4) return cachedTransporter;
-
-  cachedHost = ipv4;
-  cachedTransporter = nodemailer.createTransport({
-    host: ipv4,
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    },
-    tls: { servername: 'smtp.gmail.com' },
-    connectionTimeout: 10000,
-    socketTimeout: 10000,
+function getClient() {
+  if (oauth2Client) return oauth2Client;
+  oauth2Client = new google.auth.OAuth2(
+    process.env.GMAIL_CLIENT_ID,
+    process.env.GMAIL_CLIENT_SECRET,
+    'https://developers.google.com/oauthplayground'
+  );
+  oauth2Client.setCredentials({
+    refresh_token: process.env.GMAIL_REFRESH_TOKEN,
   });
-
-  return cachedTransporter;
+  return oauth2Client;
 }
 
-module.exports = { getTransporter };
+function buildRawEmail({ from, to, subject, text, html }) {
+  const boundary = 'boundary_' + Date.now();
+  const parts = [
+    `From: ${from}`,
+    `To: ${to}`,
+    `Subject: =?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`,
+    'MIME-Version: 1.0',
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    '',
+    `--${boundary}`,
+    'Content-Type: text/plain; charset=UTF-8',
+    '',
+    text,
+    '',
+    `--${boundary}`,
+    'Content-Type: text/html; charset=UTF-8',
+    '',
+    html,
+    '',
+    `--${boundary}--`,
+  ];
+  return Buffer.from(parts.join('\r\n')).toString('base64url');
+}
+
+async function sendEmail({ to, subject, text, html }) {
+  const gmail = google.gmail({ version: 'v1', auth: getClient() });
+  const raw = buildRawEmail({
+    from: process.env.EMAIL_USER,
+    to,
+    subject,
+    text,
+    html,
+  });
+  await gmail.users.messages.send({
+    userId: 'me',
+    requestBody: { raw },
+  });
+}
+
+module.exports = { sendEmail };

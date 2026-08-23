@@ -1,4 +1,4 @@
-const { getTransporter } = require('../utils/email');
+const { sendEmail } = require('../utils/email');
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -13,7 +13,6 @@ function escapeHtml(str) {
 exports.send_email = async (req, res) => {
   const { name, email, objet, message } = req.body;
 
-  // Validation
   if (!name || !email || !message) {
     return res.status(400).json({ success: false, message: "Tous les champs obligatoires doivent être remplis" });
   }
@@ -22,42 +21,33 @@ exports.send_email = async (req, res) => {
     return res.status(400).json({ success: false, message: "Un ou plusieurs champs dépassent la longueur maximale autorisée" });
   }
 
-  // Expression régulière simple pour valider l'email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ success: false, message: "Format d'email invalide" });
   }
-
-  // Configuration de Nodemailer avec résolution IPv4 explicite
-  const transporter = await getTransporter();
 
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);
   const safeObjet = escapeHtml(objet || 'Non spécifié');
   const safeMessage = escapeHtml(message || '');
 
-  // Options de l'email
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.ADMIN_EMAIL,
-    subject: `Nouveau message de contact: ${safeObjet}`,
-    text: `Vous avez reçu un nouveau message de contact:\n\nNom: ${name}\nEmail: ${email}\nObjet: ${objet || 'Non spécifié'}\nMessage:\n${message}`,
-    html: `<h3>Vous avez reçu un nouveau message de contact :</h3>
-           <ul>
-             <li><strong>Nom :</strong> ${safeName}</li>
-             <li><strong>Email :</strong> ${safeEmail}</li>
-             <li><strong>Objet :</strong> ${safeObjet}</li>
-           </ul>
-           <h4>Message :</h4>
-           <p>${safeMessage.replace(/\n/g, '<br>')}</p>`
-  };
-
   try {
-    await transporter.verify();
-    await transporter.sendMail(mailOptions);
+    await sendEmail({
+      to: process.env.ADMIN_EMAIL,
+      subject: `Nouveau message de contact: ${safeObjet}`,
+      text: `Vous avez reçu un nouveau message de contact:\n\nNom: ${name}\nEmail: ${email}\nObjet: ${objet || 'Non spécifié'}\nMessage:\n${message}`,
+      html: `<h3>Vous avez reçu un nouveau message de contact :</h3>
+             <ul>
+               <li><strong>Nom :</strong> ${safeName}</li>
+               <li><strong>Email :</strong> ${safeEmail}</li>
+               <li><strong>Objet :</strong> ${safeObjet}</li>
+             </ul>
+             <h4>Message :</h4>
+             <p>${safeMessage.replace(/\n/g, '<br>')}</p>`
+    });
     return res.status(200).json({ success: true, message: "Email sent" });
   } catch (error) {
     console.error("Error sending email:", error.code || error.message || error);
-    return res.status(500).json({ success: false, message: "Error sending email", code: error.code });
+    return res.status(500).json({ success: false, message: "Error sending email" });
   }
 };
