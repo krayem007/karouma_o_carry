@@ -55,6 +55,10 @@ img {
   height: 25px;
 }
 
+#table3 {
+  margin-left: auto;
+}
+
 #cellule3 {
   text-align: center;
   width: 20px;
@@ -109,7 +113,7 @@ td {
 .table1style {
   width: 530px;
   height: 76px;
-  border: 1.5px solid #000;
+  border: 1.5px;
 }
 
 .table1tr1 {
@@ -329,13 +333,13 @@ td {
 .table3style {
   width: 730px;
   height: 66px;
-  border: 1.5px solid #000;
+  border: 1.5px;
 }
 
 .table5style {
   width: 730px;
   height: 66px;
-  border: 1.5px solid #000;
+  border: 1.5px;
 }
 
 .table3td1 {
@@ -439,7 +443,7 @@ td {
 
 .table4style {
   width: 730px;
-  border: 1.5px solid #000;
+  border: 1.5px;
 }
 
 .table4td1 {
@@ -528,7 +532,7 @@ td {
 
 .table4td99 {
   width: 180px;
-  text-align: center;
+  text-align: centre;
   height: 25px;
 }
 
