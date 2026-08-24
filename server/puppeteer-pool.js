@@ -1,9 +1,6 @@
 const puppeteer = require("puppeteer-core");
-const chromium = require("@sparticuz/chromium");
-const fs = require("fs");
 
-const SYSTEM_CHROME = "/usr/bin/google-chrome";
-const useSystemChrome = fs.existsSync(SYSTEM_CHROME);
+const SYSTEM_CHROME = process.env.CHROME_PATH || "/usr/bin/google-chrome";
 
 class PuppeteerPool {
   constructor(maxBrowsers) {
@@ -40,13 +37,14 @@ class PuppeteerPool {
 
   async _launchBrowser(index) {
     const browser = await puppeteer.launch({
-      executablePath: useSystemChrome
-        ? SYSTEM_CHROME
-        : await chromium.executablePath(),
-      headless: useSystemChrome ? true : "shell",
-      args: useSystemChrome
-        ? ["--no-sandbox", "--disable-setuid-sandbox", "--lang=ar"]
-        : [...chromium.args, "--lang=ar"],
+      executablePath: SYSTEM_CHROME,
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--lang=ar",
+        "--disable-features=IsolateOrigins,site-per-process",
+      ],
     });
 
     const entry = { browser, index, alive: true };
@@ -180,7 +178,7 @@ let instance = null;
 
 module.exports = function getPool() {
   if (!instance) {
-    instance = new PuppeteerPool(Number(process.env.PDF_MAX_CONCURRENT) || 2);
+    instance = new PuppeteerPool(Number(process.env.PDF_MAX_CONCURRENT) || 10);
   }
   return instance;
 };

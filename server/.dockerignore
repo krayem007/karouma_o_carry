@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+.env
+.env.*
+!.env.example
+*.pdf
+database_export.sql
+Dockerfile
+.dockerignore
+.git
