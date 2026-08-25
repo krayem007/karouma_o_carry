@@ -9,4 +9,5 @@ services:
       - ./server/.env
     environment:
       PORT: 5002
+      NODE_ENV: development
     restart: unless-stopped
