@@ -13,6 +13,8 @@ module.exports = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 30000,
   ssl: useCA
     ? { ca: fs.readFileSync(process.env.DB_SSL_CA), rejectUnauthorized: true }
     : { rejectUnauthorized: false },
