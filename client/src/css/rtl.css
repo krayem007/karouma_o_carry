@@ -262,7 +262,7 @@
 }
 
 [dir="rtl"] .card-body {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Page title alignment */
